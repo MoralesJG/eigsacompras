@@ -2,6 +2,8 @@ package com.eigsacompras.modelo;
 
 public class CompraProducto {
     private int idCompraProducto;
+    private int idCompra;
+    private int idProducto;
     private int partida;
     private String cantidad;
     private double precioUnitario;
@@ -10,12 +12,30 @@ public class CompraProducto {
     public CompraProducto() {
     }
 
-    public CompraProducto(int idCompraProducto, double total, double precioUnitario, String cantidad, int partida) {
-        this.idCompraProducto = idCompraProducto;
+    public CompraProducto(double total, double precioUnitario, String cantidad, int partida, int idProducto, int idCompra, int idCompraProducto) {
         this.total = total;
         this.precioUnitario = precioUnitario;
         this.cantidad = cantidad;
         this.partida = partida;
+        this.idProducto = idProducto;
+        this.idCompra = idCompra;
+        this.idCompraProducto = idCompraProducto;
+    }
+
+    public int getIdCompra() {
+        return idCompra;
+    }
+
+    public void setIdCompra(int idCompra) {
+        this.idCompra = idCompra;
+    }
+
+    public int getIdProducto() {
+        return idProducto;
+    }
+
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
     }
 
     public int getIdCompraProducto() {
@@ -62,6 +82,8 @@ public class CompraProducto {
     public String toString() {
         return "CompraProducto{" +
                 "idCompraProducto=" + idCompraProducto +
+                ", idCompra=" + idCompra +
+                ", idProducto=" + idProducto +
                 ", partida=" + partida +
                 ", cantidad='" + cantidad + '\'' +
                 ", precioUnitario=" + precioUnitario +
