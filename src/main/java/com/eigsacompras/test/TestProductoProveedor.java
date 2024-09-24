@@ -14,12 +14,12 @@ public class TestProductoProveedor{
             ProductoProveedorDAO productoProveedorDAO = new ProductoProveedorDAO(conexion);
 
             ProductoProveedor propre = new ProductoProveedor();
-            propre.setPrecioOfrecido(120.90);
-            propre.setDisponibilidad(TipoDisponibilidad.DISPONIBLE);
+            propre.setPrecioOfrecido(1450.90);
+            propre.setDisponibilidad(TipoDisponibilidad.NO_DISPONIBLE);
             propre.setIdProducto(1);
             propre.setIdProveedor(1);
-            if(productoProveedorDAO.eliminarProductoProveedor(2))
-                System.out.println("actualizadp");
+            if(productoProveedorDAO.agregarProductoProveedor(propre))
+                System.out.println("agreg<do");
             else
                 System.out.println("No agregado");
 
@@ -29,7 +29,7 @@ public class TestProductoProveedor{
             }
 
         } catch (Exception e) {
-            System.out.println("error al intentar accionar");
+            System.out.println("error al intentar accionar "+ e.getMessage());
         }
     }
 }

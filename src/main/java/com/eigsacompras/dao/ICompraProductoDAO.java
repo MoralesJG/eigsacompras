@@ -6,4 +6,9 @@ import java.util.List;
 public interface ICompraProductoDAO {
     boolean agregarCompraProducto(CompraProducto compraProducto);
     List<CompraProducto> listarCompraProducto();
+    boolean actualizarCompraProducto(CompraProducto compraProducto);
+    boolean eliminarCompraProducto(int idCompraProducto);
+    boolean buscarPorIdCompraProducto(int idCompraProducto);
+
+
 }

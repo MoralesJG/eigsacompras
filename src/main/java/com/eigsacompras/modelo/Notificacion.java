@@ -6,13 +6,15 @@ public class Notificacion {
     private int idNotificacion;
     private LocalDate fecha;
     private String mensaje;
+    private int idCompra;
 
     public Notificacion(){}
 
-    public Notificacion(int idNotificacion, String mensaje, LocalDate fecha) {
+    public Notificacion(int idNotificacion, String mensaje, LocalDate fecha, int idCompra) {
         this.idNotificacion = idNotificacion;
         this.mensaje = mensaje;
         this.fecha = fecha;
+        this.idCompra=idCompra;
     }
 
     public int getIdNotificacion() {
@@ -39,12 +41,21 @@ public class Notificacion {
         this.fecha = fecha;
     }
 
+    public int getIdCompra() {
+        return idCompra;
+    }
+
+    public void setIdCompra(int idCompra) {
+        this.idCompra = idCompra;
+    }
+
     @Override
     public String toString() {
         return "Notificacion{" +
                 "idNotificacion=" + idNotificacion +
                 ", fecha=" + fecha +
                 ", mensaje='" + mensaje + '\'' +
+                ", idCompra=" + idCompra +
                 '}';
     }
 }

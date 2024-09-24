@@ -70,11 +70,13 @@ public class CompraDAO implements ICompraDAO{
                 compra.setNombreComprador(rs.getString("nombre_comprador"));
                 compra.setRevisadoPor(rs.getString("revisado_por"));
                 compra.setAprobadoPor(rs.getString("aprobado_por"));
-                compra.setEstatus(TipoEstatus.valueOf(rs.getString("estatus")));
+                compra.setEstatus(TipoEstatus.valueOf(rs.getString("estatus").toUpperCase()));
                 compra.setNotasGenerales(rs.getString("notas_generales"));
-                compra.setTipo(TipoCompra.valueOf(rs.getString("tipo")));
-                compra.setFechaInicioRenta(rs.getDate("fecha_inicio_renta").toLocalDate());
-                compra.setFechaFinRenta(rs.getDate("fecha_fin_renta").toLocalDate());
+                compra.setTipo(TipoCompra.valueOf(rs.getString("tipo").toUpperCase()));
+                if(rs.getString("tipo").equalsIgnoreCase("renta")){
+                    compra.setFechaInicioRenta(rs.getDate("fecha_inicio_renta").toLocalDate());
+                    compra.setFechaFinRenta(rs.getDate("fecha_fin_renta").toLocalDate());
+                }
                 compra.setIdProveedor(rs.getInt("id_proveedor"));
                 compra.setIdUsuario(rs.getInt("id_usuario"));
 

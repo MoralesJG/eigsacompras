@@ -22,18 +22,21 @@ public class TestCompraDao {
             compra.setOrdenTrabajo("OT-54321");
             compra.setFechaEntrega(LocalDate.now().plusDays(7));
             compra.setAgenteProveedor("Proveedor Ejemplo");
-            compra.setNombreComprador("Gabriel");
+            compra.setNombreComprador("Gabriel M10");
             compra.setRevisadoPor("Natalia");
             compra.setAprobadoPor("La Señora");
             compra.setEstatus(TipoEstatus.PENDIENTE);
             compra.setNotasGenerales("Notas generales de prueba");
             compra.setTipo(TipoCompra.COMPRA);
+            compra.setIdUsuario(1);
+            compra.setIdProveedor(1);
 
-            // 4. Probar insertar compra
+            //compra.setIdCompra(1);
+
             if (compraDAO.agregarCompra(compra)) {
-                System.out.println("Compra registrada con éxito.");
+                System.out.println("Compra agregada con éxito.");
             } else {
-                System.err.println("Error al registrar la compra.");
+                System.err.println("Error al agregar la compra.");
             }
 
             // 5. Probar listar compras

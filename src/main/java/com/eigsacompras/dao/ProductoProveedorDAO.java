@@ -48,7 +48,7 @@ public class ProductoProveedorDAO implements IProductoProveedorDAO{
                 ProductoProveedor productoProveedor = new ProductoProveedor();
                 productoProveedor.setIdProductoProveedor(rs.getInt("idproducto_proveedor"));
                 productoProveedor.setPrecioOfrecido(rs.getDouble("precio_ofrecido"));
-                productoProveedor.setDisponibilidad(TipoDisponibilidad.valueOf(rs.getString("disponibilidad")));
+                productoProveedor.setDisponibilidad(TipoDisponibilidad.valueOf(rs.getString("disponibilidad").toUpperCase()));
                 productoProveedor.setIdProducto(rs.getInt("id_producto"));
                 productoProveedor.setIdProveedor(rs.getInt("id_proveedor"));
 
