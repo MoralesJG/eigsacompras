@@ -17,8 +17,8 @@ public class CompraDAO implements ICompraDAO{
     public CompraDAO(){
     }
     @Override
-    public boolean agregarCompra(Compra compra) {
-
+    public int agregarCompra(Compra compra) {
+        int idGenerado = -1;
         try{
             conexion = Conexion.getConexion();
             String sql = "INSERT INTO compra (orden_compra,condiciones,fecha_emision,orden_trabajo, fecha_entrega,agente_proveedor,nombre_comprador,revisado_por,aprobado_por,estatus,notas_generales,tipo,fecha_inicio_renta,fecha_fin_renta,id_proveedor,id_usuario)" +
@@ -47,12 +47,16 @@ public class CompraDAO implements ICompraDAO{
             ps.setInt(16, compra.getIdUsuario());
 
             ps.executeUpdate();
-            return true;
+
+            rs=ps.getGeneratedKeys();//se agrega el id de la compra al ser agregado
+            if(rs.next())
+                idGenerado=rs.getInt(1);
+            return idGenerado;//se retorna el id que lo tomará el compra controlador
         }catch (Exception e){
             System.out.println("Error al registrar la orden"+e.getMessage());
-            return false;
+            return idGenerado;
         }finally {
-            Conexion.cerrar(conexion, ps, null);
+            Conexion.cerrar(conexion, ps, rs);
         }//cierre finally
     }//cierre de agregarCompra
 

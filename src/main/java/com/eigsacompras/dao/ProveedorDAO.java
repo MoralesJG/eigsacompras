@@ -19,7 +19,8 @@ public class ProveedorDAO implements IProveedorDAO{
     }
 
     @Override
-    public boolean agregarProveedor(Proveedor proveedor) {
+    public int agregarProveedor(Proveedor proveedor) {
+        int idGenerado = -1;
         try {
             conexion = Conexion.getConexion();
             String sql = "INSERT INTO proveedor (nombre,email,telefono,ubicacion) VALUES (?,?,?,?)";
@@ -30,12 +31,16 @@ public class ProveedorDAO implements IProveedorDAO{
             ps.setString(4,proveedor.getUbicacion());
 
             ps.executeUpdate();
-            return true;
+
+            rs=ps.getGeneratedKeys();//se agrega el id de la compra al ser agregado
+            if(rs.next())
+                idGenerado=rs.getInt(1);
+            return idGenerado;//se retorna el id que lo tomará el proveedor controlador
         }catch (SQLException e){
             System.out.println("Error al insertar"+e.getMessage());
-            return false;
+            return idGenerado;
         }finally {
-            Conexion.cerrar(conexion, ps, null);
+            Conexion.cerrar(conexion, ps, rs);
         }//cierre finally
     }//agregar
 

@@ -15,7 +15,7 @@ public class CompraProductoDAO implements ICompraProductoDAO{
     private PreparedStatement ps;
     private ResultSet rs;
 
-    public CompraProductoDAO(Connection conexion){
+    public CompraProductoDAO(){
     }
 
     @Override

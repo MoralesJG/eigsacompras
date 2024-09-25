@@ -19,7 +19,8 @@ public class ProductoDAO implements IProductoDAO{
     }
 
     @Override
-    public boolean agregarProducto(Producto producto) {
+    public int agregarProducto(Producto producto) {
+        int idGenerado = -1;
         try {
             conexion = Conexion.getConexion();
             String sql = "INSERT INTO producto (descripcion,precio) VALUES (?,?)";
@@ -28,12 +29,15 @@ public class ProductoDAO implements IProductoDAO{
             ps.setDouble(2,producto.getPrecio());
             ps.executeUpdate();
 
-            return true;
+            rs=ps.getGeneratedKeys();//se agrega el id de la compra al ser agregado
+            if(rs.next())
+                idGenerado=rs.getInt(1);
+            return idGenerado;//se retorna el id que lo tomará el producto controlador
         } catch (SQLException e) {
             System.out.println("Error al insertar "+e.getMessage());
-            return false;
+            return idGenerado;
         }finally {
-            Conexion.cerrar(conexion, ps, null);
+            Conexion.cerrar(conexion, ps, rs);
         }//cierre finally
     }//insertar
 

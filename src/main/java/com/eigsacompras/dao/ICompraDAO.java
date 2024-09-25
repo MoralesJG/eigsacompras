@@ -5,7 +5,7 @@ import com.eigsacompras.modelo.Compra;
 import java.util.List;
 
 public interface ICompraDAO {
-    boolean agregarCompra(Compra compra);
+    int agregarCompra(Compra compra);
     List<Compra> listarCompras();
     boolean actualizarCompra(Compra compra);
     boolean eliminarCompra(int idCompra);
