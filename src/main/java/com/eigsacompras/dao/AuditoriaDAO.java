@@ -1,5 +1,6 @@
 package com.eigsacompras.dao;
 
+import com.eigsacompras.basededatos.Conexion;
 import com.eigsacompras.enums.TipoAccion;
 import com.eigsacompras.modelo.Auditoria;
 
@@ -14,15 +15,17 @@ import java.util.List;
 public class AuditoriaDAO implements IAuditoriaDAO{
     private Connection conexion;
     private PreparedStatement ps;
-    public AuditoriaDAO(Connection conexion){
-        this.conexion=conexion;
+    private ResultSet rs;
+
+    public AuditoriaDAO(){
     }
 
     @Override
     public boolean agregarAuditoria(Auditoria auditoria) {
-        String sql = "INSERT INTO auditoria (tabla_afectada,id_registro_afectado,accion,fecha_cambio,descripcion_cambio,id_usuario)" +
-                "VALUES(?,?,?,?,?,?)";
         try {
+            conexion= Conexion.getConexion();
+            String sql = "INSERT INTO auditoria (tabla_afectada,id_registro_afectado,accion,fecha_cambio,descripcion_cambio,id_usuario)" +
+                    "VALUES(?,?,?,?,?,?)";
             ps = conexion.prepareStatement(sql);
             ps.setString(1,auditoria.getTablaAfectada());
             ps.setInt(2,auditoria.getIdRegistroAfectado());
@@ -36,16 +39,19 @@ public class AuditoriaDAO implements IAuditoriaDAO{
         } catch (SQLException e) {
             System.out.println("Error al insertar "+e.getMessage());
             return false;
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
     }//agregar
 
     @Override
     public List<Auditoria> listarAuditoria() {
         List<Auditoria> listaAuditoria = new ArrayList<>();
-        String sql = "SELECT * FROM auditoria";
         try {
+            conexion= Conexion.getConexion();
+            String sql = "SELECT * FROM auditoria";
             ps = conexion.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()){
                 Auditoria auditoria = new Auditoria();
                 auditoria.setIdAuditoria(rs.getInt("id_auditoria"));
@@ -60,13 +66,15 @@ public class AuditoriaDAO implements IAuditoriaDAO{
             }
         } catch (SQLException e) {
             System.out.println("Error al mostrar "+e.getMessage());
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }//cierre finally
+
         return listaAuditoria;
     }//listar
 
     @Override
     public boolean buscarAuditoriaPorId(int idAuditoria) {
-
         return false;
     }
 }

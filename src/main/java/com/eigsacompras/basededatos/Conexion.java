@@ -1,9 +1,9 @@
 package com.eigsacompras.basededatos;
 
 import com.eigsacompras.utilidades.ConfigDB;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+
+import javax.swing.*;
+import java.sql.*;
 
 public class Conexion {
     private static final String URL = ConfigDB.getPropiedad("url");
@@ -19,5 +19,31 @@ public class Conexion {
             System.out.println("Error en la conexión: " + e.getMessage());
         }
         return conexion;
-    }
+    }//cierre Connection
+
+    public static void cerrar(Connection conn, PreparedStatement ps, ResultSet rs) {
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null,"Falló al cerrar la Conexión");
+            }
+        }//cierre if
+
+        if (ps != null) {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null,"Falló al cerrar la Conexión");
+            }
+        }//cierre if
+
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null,"Falló al cerrar la Conexión");
+            }
+        }//cierre if
+    }//cerrar
 }

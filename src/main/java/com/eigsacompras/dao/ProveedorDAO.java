@@ -1,5 +1,6 @@
 package com.eigsacompras.dao;
 
+import com.eigsacompras.basededatos.Conexion;
 import com.eigsacompras.modelo.Proveedor;
 
 import java.sql.Connection;
@@ -12,15 +13,16 @@ import java.util.List;
 public class ProveedorDAO implements IProveedorDAO{
     private Connection conexion;
     private PreparedStatement ps;
+    private ResultSet rs;
 
-    public ProveedorDAO(Connection conexion){
-        this.conexion=conexion;
+    public ProveedorDAO(){
     }
 
     @Override
     public boolean agregarProveedor(Proveedor proveedor) {
-        String sql = "INSERT INTO proveedor (nombre,email,telefono,ubicacion) VALUES (?,?,?,?)";
         try {
+            conexion = Conexion.getConexion();
+            String sql = "INSERT INTO proveedor (nombre,email,telefono,ubicacion) VALUES (?,?,?,?)";
             ps = conexion.prepareStatement(sql);
             ps.setString(1,proveedor.getNombre());
             ps.setString(2,proveedor.getCorreo());
@@ -32,16 +34,18 @@ public class ProveedorDAO implements IProveedorDAO{
         }catch (SQLException e){
             System.out.println("Error al insertar"+e.getMessage());
             return false;
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
     }//agregar
 
     @Override
     public List<Proveedor> listarProveedor() {
         List<Proveedor> listaProveedor = new ArrayList<>();
-        String sql = "SELECT * FROM proveedor";
         try{
+            String sql = "SELECT * FROM proveedor";
             ps = conexion.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()){
                 Proveedor proveedor = new Proveedor();
                 proveedor.setIdProveedor(rs.getInt("id_proveedor"));
@@ -53,14 +57,17 @@ public class ProveedorDAO implements IProveedorDAO{
             }//while
         }catch (SQLException e){
             System.out.println("Error al listar proveedor "+e.getMessage());
-        }//try
+        }finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }//cierre finally
         return listaProveedor;
     }//listar
 
     @Override
     public boolean actualizarProveedor(Proveedor proveedor) {
-        String sql = "UPDATE proveedor SET nombre=?,email=?,telefono=?,ubicacion=? WHERE id_proveedor=?";
         try {
+            conexion = Conexion.getConexion();
+            String sql = "UPDATE proveedor SET nombre=?,email=?,telefono=?,ubicacion=? WHERE id_proveedor=?";
             ps = conexion.prepareStatement(sql);
             ps.setString(1,proveedor.getNombre());
             ps.setString(2,proveedor.getCorreo());
@@ -72,13 +79,16 @@ public class ProveedorDAO implements IProveedorDAO{
         } catch (SQLException e) {
             System.out.println("Error al actualizar "+e.getMessage());
             return false;
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
     }//actualizar
 
     @Override
     public boolean eliminarProveedor(int idProveedor) {
-        String sql = "DELETE FROM proveedor WHERE id_proveedor=?";
         try {
+            conexion = Conexion.getConexion();
+            String sql = "DELETE FROM proveedor WHERE id_proveedor=?";
             ps=conexion.prepareStatement(sql);
             ps.setInt(1,idProveedor);
             ps.executeUpdate();
@@ -86,7 +96,9 @@ public class ProveedorDAO implements IProveedorDAO{
         } catch (SQLException e) {
             System.out.println("Error al eliminar "+e.getMessage());
             return false;
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
     }//eliminar
 
     @Override

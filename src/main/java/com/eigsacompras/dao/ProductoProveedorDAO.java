@@ -1,5 +1,6 @@
 package com.eigsacompras.dao;
 
+import com.eigsacompras.basededatos.Conexion;
 import com.eigsacompras.enums.TipoDisponibilidad;
 import com.eigsacompras.modelo.ProductoProveedor;
 
@@ -11,18 +12,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductoProveedorDAO implements IProductoProveedorDAO{
-    private PreparedStatement ps;
     private Connection conexion;
+    private ResultSet rs;
+    private PreparedStatement ps;
 
-    public ProductoProveedorDAO(Connection conexion){
-        this.conexion=conexion;
+    public ProductoProveedorDAO(){
     }
 
     @Override
     public boolean agregarProductoProveedor(ProductoProveedor productoProveedor) {
-        String sql = "INSERT INTO producto_proveedor (precio_ofrecido,disponibilidad,id_producto,id_proveedor)" +
-                "VALUES (?,?,?,?)";
         try {
+            conexion = Conexion.getConexion();
+            String sql = "INSERT INTO producto_proveedor (precio_ofrecido,disponibilidad,id_producto,id_proveedor)" +
+                    "VALUES (?,?,?,?)";
             ps = conexion.prepareStatement(sql);
             ps.setDouble(1,productoProveedor.getPrecioOfrecido());
             ps.setString(2,productoProveedor.getDisponibilidad().name());
@@ -34,16 +36,19 @@ public class ProductoProveedorDAO implements IProductoProveedorDAO{
         } catch (SQLException e) {
             System.out.println("Error al agregar"+e.getMessage());
             return false;
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
     }//agregar
 
     @Override
     public List<ProductoProveedor> listarProductoProveedor() {
         List<ProductoProveedor> listarProductoProveedor = new ArrayList<>();
-        String sql = "SELECT * FROM producto_proveedor";
         try {
+            conexion = Conexion.getConexion();
+            String sql = "SELECT * FROM producto_proveedor";
             ps = conexion.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()){
                 ProductoProveedor productoProveedor = new ProductoProveedor();
                 productoProveedor.setIdProductoProveedor(rs.getInt("idproducto_proveedor"));
@@ -57,14 +62,18 @@ public class ProductoProveedorDAO implements IProductoProveedorDAO{
 
         } catch (SQLException e) {
             System.out.println("Error al listar"+e.getMessage());
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }//cierre finally
+
         return listarProductoProveedor;
-    }
+    }//listar
 
     @Override
     public boolean actualizarProductoProveedor(ProductoProveedor productoProveedor) {
-        String sql = "UPDATE producto_proveedor SET precio_ofrecido=?,disponibilidad=?,id_producto=?,id_proveedor=? WHERE idproducto_proveedor=?";
         try {
+            conexion = Conexion.getConexion();
+            String sql = "UPDATE producto_proveedor SET precio_ofrecido=?,disponibilidad=?,id_producto=?,id_proveedor=? WHERE idproducto_proveedor=?";
             ps = conexion.prepareStatement(sql);
             ps.setDouble(1,productoProveedor.getPrecioOfrecido());
             ps.setString(2,productoProveedor.getDisponibilidad().name());
@@ -77,13 +86,16 @@ public class ProductoProveedorDAO implements IProductoProveedorDAO{
         } catch (SQLException e) {
             System.out.println("Error al actualizar "+e.getMessage());
             return false;
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
     }//actualizar
 
     @Override
     public boolean eliminarProductoProveedor(int idProductoProveedor) {
-        String sql = "DELETE FROM producto_proveedor WHERE idproducto_proveedor = ?";
         try {
+            conexion = Conexion.getConexion();
+            String sql = "DELETE FROM producto_proveedor WHERE idproducto_proveedor = ?";
             ps = conexion.prepareStatement(sql);
             ps.setInt(1,idProductoProveedor);
             ps.executeUpdate();
@@ -92,7 +104,9 @@ public class ProductoProveedorDAO implements IProductoProveedorDAO{
         } catch (SQLException e) {
             System.out.println("Error al eliminar "+e.getMessage());
             return false;
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
     }//eliminar
 
     @Override

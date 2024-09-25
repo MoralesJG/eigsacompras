@@ -1,5 +1,6 @@
 package com.eigsacompras.dao;
 
+import com.eigsacompras.basededatos.Conexion;
 import com.eigsacompras.enums.TipoCompra;
 import com.eigsacompras.enums.TipoEstatus;
 import com.eigsacompras.modelo.Compra;
@@ -10,17 +11,19 @@ import java.util.List;
 
 public class CompraDAO implements ICompraDAO{
     private Connection conexion;
+    private PreparedStatement ps;
+    private ResultSet rs;
 
-    public CompraDAO(Connection conexion){
-        this.conexion=conexion;
+    public CompraDAO(){
     }
     @Override
     public boolean agregarCompra(Compra compra) {
-        String sql = "INSERT INTO compra (orden_compra,condiciones,fecha_emision,orden_trabajo, fecha_entrega,agente_proveedor,nombre_comprador,revisado_por,aprobado_por,estatus,notas_generales,tipo,fecha_inicio_renta,fecha_fin_renta,id_proveedor,id_usuario)" +
-                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        try{
-            PreparedStatement ps = conexion.prepareStatement(sql);
 
+        try{
+            conexion = Conexion.getConexion();
+            String sql = "INSERT INTO compra (orden_compra,condiciones,fecha_emision,orden_trabajo, fecha_entrega,agente_proveedor,nombre_comprador,revisado_por,aprobado_por,estatus,notas_generales,tipo,fecha_inicio_renta,fecha_fin_renta,id_proveedor,id_usuario)" +
+                    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            ps = conexion.prepareStatement(sql);
             ps.setString(1, compra.getOrdenCompra());
             ps.setString(2, compra.getCondiciones());
             ps.setDate(3,java.sql.Date.valueOf(compra.getFechaEmision()));
@@ -48,16 +51,20 @@ public class CompraDAO implements ICompraDAO{
         }catch (Exception e){
             System.out.println("Error al registrar la orden"+e.getMessage());
             return false;
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
     }//cierre de agregarCompra
 
     @Override
     public List<Compra> listarCompras() {
         List<Compra> listaCompras = new ArrayList<>();
-        String sql = "SELECT * FROM compra";
+
         try {
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            conexion = Conexion.getConexion();
+            String sql = "SELECT * FROM compra";
+            ps = conexion.prepareStatement(sql);
+            rs = ps.executeQuery();
             while(rs.next()){
                 Compra compra = new Compra();
                 compra.setIdCompra(rs.getInt("id_compra"));
@@ -84,14 +91,18 @@ public class CompraDAO implements ICompraDAO{
             }
         }catch (SQLException e){
             System.out.println("Error al mostrar las compras"+e.getMessage());
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }//cierre finally
         return listaCompras;
     }//listar
 
     @Override
     public boolean actualizarCompra(Compra compra) {
-        String sql = "UPDATE compra SET orden_compra = ?, condiciones = ?, fecha_emision = ?, orden_trabajo = ?, fecha_entrega = ?, agente_proveedor = ?, nombre_comprador = ?, revisado_por = ?, aprobado_por = ?, estatus = ?, notas_generales = ?, tipo = ?, fecha_inicio_renta=?,fecha_fin_renta=?,id_proveedor=?,id_usuario=? WHERE id_compra = ?";
         try {
+            conexion = Conexion.getConexion();
+            String sql = "UPDATE compra SET orden_compra = ?, condiciones = ?, fecha_emision = ?, orden_trabajo = ?, fecha_entrega = ?, agente_proveedor = ?, nombre_comprador = ?, revisado_por = ?, aprobado_por = ?, estatus = ?, notas_generales = ?, tipo = ?, fecha_inicio_renta=?,fecha_fin_renta=?,id_proveedor=?,id_usuario=? " +
+                    "WHERE id_compra = ?";
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setString(1, compra.getOrdenCompra());
             ps.setString(2, compra.getCondiciones());
@@ -120,13 +131,16 @@ public class CompraDAO implements ICompraDAO{
         } catch (SQLException e) {
             System.out.println("Error al actualizar la compra: " + e.getMessage());
             return false;
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
     }//actualizar
 
     @Override
     public boolean eliminarCompra(int idCompra) {
-        String sql = "DELETE FROM compra WHERE id_compra = ?";
         try {
+            conexion = Conexion.getConexion();
+            String sql = "DELETE FROM compra WHERE id_compra = ?";
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setInt(1, idCompra);
             ps.executeUpdate();
@@ -134,7 +148,9 @@ public class CompraDAO implements ICompraDAO{
         } catch (SQLException e) {
             System.out.println("Error al eliminar la compra: " + e.getMessage());
             return false;
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
     }//eliminar
 
     @Override

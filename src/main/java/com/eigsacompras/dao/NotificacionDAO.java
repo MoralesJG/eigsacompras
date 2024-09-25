@@ -1,5 +1,6 @@
 package com.eigsacompras.dao;
 
+import com.eigsacompras.basededatos.Conexion;
 import com.eigsacompras.modelo.Notificacion;
 
 import java.sql.Connection;
@@ -10,17 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NotificacionDAO implements INotificacionDAO{
+    private Connection conexion;
     private PreparedStatement ps;
-    private final Connection conexion;
+    private ResultSet rs;
 
-    public NotificacionDAO(Connection conexion){
-        this.conexion=conexion;
+    public NotificacionDAO(){
     }
     @Override
     public boolean agregarNotificacion(Notificacion notificacion) {
-        String sql = "INSERT INTO notificacion(fecha,mensaje,id_compra) " +
-                "VALUES(?,?,?)";
         try {
+            conexion = Conexion.getConexion();
+            String sql = "INSERT INTO notificacion(fecha,mensaje,id_compra) " +
+                    "VALUES(?,?,?)";
             ps = conexion.prepareStatement(sql);
             ps.setDate(1,java.sql.Date.valueOf(notificacion.getFecha()));
             ps.setString(2,notificacion.getMensaje());
@@ -30,16 +32,19 @@ public class NotificacionDAO implements INotificacionDAO{
         } catch (SQLException e) {
             System.out.println("Error al insertar "+e.getMessage());
             return false;
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
     }//agregar
 
     @Override
     public List<Notificacion> listarNotificacion() {
         List<Notificacion> listarnotificacion = new ArrayList<>();
-        String sql = "SELECT * FROM notificacion";
         try {
+            conexion = Conexion.getConexion();
+            String sql = "SELECT * FROM notificacion";
             ps = conexion.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()){
                 Notificacion notificacion = new Notificacion();
                 notificacion.setIdNotificacion(rs.getInt("id_notificacion"));
@@ -50,14 +55,17 @@ public class NotificacionDAO implements INotificacionDAO{
             }
         } catch (SQLException e) {
             System.out.println("Error al listar"+ e.getMessage());
-        }
+        }finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }//cierre finally
         return listarnotificacion;
-    }
+    }//listar
 
     @Override
     public boolean actualizarNotificacion(Notificacion notificacion) {
-        String sql = "UPDATE notificacion SET fecha=?,mensaje=?,id_compra=? WHERE id_notificacion=?";
         try {
+            conexion = Conexion.getConexion();
+            String sql = "UPDATE notificacion SET fecha=?,mensaje=?,id_compra=? WHERE id_notificacion=?";
             ps = conexion.prepareStatement(sql);
             ps.setDate(1,java.sql.Date.valueOf(notificacion.getFecha()));
             ps.setString(2,notificacion.getMensaje());
@@ -69,13 +77,16 @@ public class NotificacionDAO implements INotificacionDAO{
         } catch (SQLException e) {
             System.out.println("Erro al actualizar"+ e.getMessage());
             return false;
-        }
-    }
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
+    }//actualizar
 
     @Override
     public boolean eliminarNotificacion(int idNotificacion) {
-        String sql = "DELETE FROM notificacion WHERE id_notificacion=?";
         try {
+            conexion = Conexion.getConexion();
+            String sql = "DELETE FROM notificacion WHERE id_notificacion=?";
             ps = conexion.prepareStatement(sql);
             ps.setInt(1,idNotificacion);
             ps.executeUpdate();
@@ -84,8 +95,10 @@ public class NotificacionDAO implements INotificacionDAO{
         } catch (SQLException e) {
             System.out.println("Error al eliminar"+e.getMessage());
             return false;
-        }
-    }
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
+    }//eliminar
 
     @Override
     public boolean buscarPorIdNotificacion(int idNotificacion) {
