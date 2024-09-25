@@ -21,6 +21,14 @@ public class CompraProducto {
         this.idCompra = idCompra;
         this.idCompraProducto = idCompraProducto;
     }
+    public CompraProducto(double total, double precioUnitario, String cantidad, int partida, int idProducto, int idCompra) {
+        this.total = total;
+        this.precioUnitario = precioUnitario;
+        this.cantidad = cantidad;
+        this.partida = partida;
+        this.idProducto = idProducto;
+        this.idCompra = idCompra;
+    }
 
     public int getIdCompra() {
         return idCompra;

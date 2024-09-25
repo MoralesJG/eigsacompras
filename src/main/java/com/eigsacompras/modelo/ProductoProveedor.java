@@ -18,6 +18,12 @@ public class ProductoProveedor {
         this.disponibilidad = disponibilidad;
         this.precioOfrecido = precioOfrecido;
     }
+    public ProductoProveedor(int idProveedor, int idProducto, TipoDisponibilidad disponibilidad, double precioOfrecido) {
+        this.idProveedor = idProveedor;
+        this.idProducto = idProducto;
+        this.disponibilidad = disponibilidad;
+        this.precioOfrecido = precioOfrecido;
+    }
 
     public int getIdProductoProveedor() {
         return idProductoProveedor;

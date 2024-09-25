@@ -16,6 +16,11 @@ public class Notificacion {
         this.fecha = fecha;
         this.idCompra=idCompra;
     }
+    public Notificacion(String mensaje, LocalDate fecha, int idCompra) {
+        this.mensaje = mensaje;
+        this.fecha = fecha;
+        this.idCompra=idCompra;
+    }
 
     public int getIdNotificacion() {
         return idNotificacion;

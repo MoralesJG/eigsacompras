@@ -104,7 +104,7 @@ public class CompraProductoDAO implements ICompraProductoDAO{
     }//eliminar
 
     @Override
-    public boolean buscarPorIdCompraProducto(int idCompraProducto) {
+    public boolean buscarCompraProductoPorId(int idCompraProducto) {
         return false;
     }
 }

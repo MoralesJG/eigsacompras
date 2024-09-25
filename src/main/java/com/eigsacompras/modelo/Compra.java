@@ -46,6 +46,24 @@ public class Compra {
         this.tipo = tipo;
         this.idUsuario = idUsuario;
     }
+    public Compra(String condiciones, String ordenCompra, String ordenTrabajo, LocalDate fechaEmision, LocalDate fechaEntrega, String nombreComprador, String agenteProveedor, String revisadoPor, String notasGenerales, String aprobadoPor, TipoEstatus estatus, LocalDate fechaInicioRenta, int idProveedor, LocalDate fechaFinRenta, TipoCompra tipo, int idUsuario) {
+        this.condiciones = condiciones;
+        this.ordenCompra = ordenCompra;
+        this.ordenTrabajo = ordenTrabajo;
+        this.fechaEmision = fechaEmision;
+        this.fechaEntrega = fechaEntrega;
+        this.nombreComprador = nombreComprador;
+        this.agenteProveedor = agenteProveedor;
+        this.revisadoPor = revisadoPor;
+        this.notasGenerales = notasGenerales;
+        this.aprobadoPor = aprobadoPor;
+        this.estatus = estatus;
+        this.fechaInicioRenta = fechaInicioRenta;
+        this.idProveedor = idProveedor;
+        this.fechaFinRenta = fechaFinRenta;
+        this.tipo = tipo;
+        this.idUsuario = idUsuario;
+    }
 
     public int getIdCompra() {
         return idCompra;

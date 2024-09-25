@@ -23,6 +23,13 @@ public class Usuario {
         this.tipo = tipo;
     }
 
+    public Usuario( String contrasena, String correo, String nombre, TipoAcceso tipo) {
+        this.contrasena = contrasena;
+        this.correo = correo;
+        this.nombre = nombre;
+        this.tipo = tipo;
+    }
+
     public int getIdUsuario() {
         return idUsuario;
     }

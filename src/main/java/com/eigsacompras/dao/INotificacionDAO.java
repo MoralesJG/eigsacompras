@@ -8,7 +8,7 @@ public interface INotificacionDAO {
     boolean agregarNotificacion(Notificacion notificacion);
     List<Notificacion> listarNotificacion();
     boolean actualizarNotificacion(Notificacion notificacion);
-    boolean elimincarNotificacion(int idNotificacion);
+    boolean eliminarNotificacion(int idNotificacion);
     boolean buscarPorIdNotificacion(int idNotificacion);
 
 

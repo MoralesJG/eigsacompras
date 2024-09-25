@@ -24,6 +24,14 @@ public class Auditoria {
         this.idRegistroAfectado = idRegistroAfectado;
         this.tablaAfectada = tablaAfectada;
     }
+    public Auditoria(int idUsuario, String descripcion, LocalDate fechaCambio, TipoAccion accion, int idRegistroAfectado, String tablaAfectada) {
+        this.idUsuario = idUsuario;
+        this.descripcion = descripcion;
+        this.fechaCambio = fechaCambio;
+        this.accion = accion;
+        this.idRegistroAfectado = idRegistroAfectado;
+        this.tablaAfectada = tablaAfectada;
+    }
 
     public int getIdUsuario() {
         return idUsuario;

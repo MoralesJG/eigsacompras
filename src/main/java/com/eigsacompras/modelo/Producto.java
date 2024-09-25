@@ -12,6 +12,10 @@ public class Producto {
         this.precio = precio;
         this.descripcion = descripcion;
     }
+    public Producto(double precio, String descripcion) {
+        this.precio = precio;
+        this.descripcion = descripcion;
+    }
 
     public double getPrecio() {
         return precio;
