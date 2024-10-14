@@ -1,11 +1,14 @@
 package com.eigsacompras.modelo;
 
+import java.util.List;
+
 public class Proveedor {
     private int idProveedor;
     private String nombre;
     private String correo;
     private String telefono;
     private String ubicacion;
+    private List<ProductoProveedor> productos;//solo a nivel de aplicacion
 
     public Proveedor(){}
 
@@ -66,6 +69,14 @@ public class Proveedor {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public List<ProductoProveedor> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(List<ProductoProveedor> productos) {
+        this.productos = productos;
     }
 
     @Override

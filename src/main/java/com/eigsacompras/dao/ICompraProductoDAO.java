@@ -7,6 +7,6 @@ public interface ICompraProductoDAO {
     boolean agregarCompraProducto(CompraProducto compraProducto);
     List<CompraProducto> listarCompraProducto();
     boolean actualizarCompraProducto(CompraProducto compraProducto);
-    boolean eliminarCompraProducto(int idCompraProducto);
+    boolean eliminarCompraProducto(int idCompra);
     boolean buscarCompraProductoPorId(int idCompraProducto);
 }

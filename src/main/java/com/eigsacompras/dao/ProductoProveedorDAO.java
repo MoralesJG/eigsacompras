@@ -92,12 +92,12 @@ public class ProductoProveedorDAO implements IProductoProveedorDAO{
     }//actualizar
 
     @Override
-    public boolean eliminarProductoProveedor(int idProductoProveedor) {
+    public boolean eliminarProductoProveedor(int idProveedor) {
         try {
             conexion = Conexion.getConexion();
-            String sql = "DELETE FROM producto_proveedor WHERE idproducto_proveedor = ?";
+            String sql = "DELETE FROM producto_proveedor WHERE id_proveedor = ?";//se elimina a traves del id proveedor
             ps = conexion.prepareStatement(sql);
-            ps.setInt(1,idProductoProveedor);
+            ps.setInt(1,idProveedor);
             ps.executeUpdate();
 
             return true;

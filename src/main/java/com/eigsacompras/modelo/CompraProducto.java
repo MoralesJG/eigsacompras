@@ -9,6 +9,8 @@ public class CompraProducto {
     private double precioUnitario;
     private double total;
 
+    private String descripcionProducto;
+
     public CompraProducto() {
     }
 
@@ -28,6 +30,14 @@ public class CompraProducto {
         this.partida = partida;
         this.idProducto = idProducto;
         this.idCompra = idCompra;
+    }
+
+    public String getDescripcionProducto() {
+        return descripcionProducto;
+    }
+
+    public void setDescripcionProducto(String descripcionProducto) {
+        this.descripcionProducto = descripcionProducto;
     }
 
     public int getIdCompra() {

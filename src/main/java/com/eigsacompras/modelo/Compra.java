@@ -4,6 +4,7 @@ import com.eigsacompras.enums.TipoCompra;
 import com.eigsacompras.enums.TipoEstatus;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Compra {
    private int idCompra;
@@ -23,6 +24,8 @@ public class Compra {
    private LocalDate fechaFinRenta;
    private int idProveedor;
    private int idUsuario;
+
+   private List<CompraProducto> productos;//solo a nivel de aplicación
 
     public Compra() {
     }
@@ -63,6 +66,14 @@ public class Compra {
         this.fechaFinRenta = fechaFinRenta;
         this.tipo = tipo;
         this.idUsuario = idUsuario;
+    }
+
+    public List<CompraProducto> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(List<CompraProducto> productos) {
+        this.productos = productos;
     }
 
     public int getIdCompra() {

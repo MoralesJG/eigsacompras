@@ -96,13 +96,13 @@ public class CompraProductoDAO implements ICompraProductoDAO{
     }//actualizar
 
     @Override
-    public boolean eliminarCompraProducto(int idCompraProducto) {
+    public boolean eliminarCompraProducto(int idCompra) {
 
         try {
             conexion = Conexion.getConexion();
-            String sql = "DELETE FROM compra_producto WHERE idcompra_producto=?";
+            String sql = "DELETE FROM compra_producto WHERE id_compra=?";//se elimina a traves de su relacion con la compra
             ps = conexion.prepareStatement(sql);
-            ps.setInt(1,idCompraProducto);
+            ps.setInt(1,idCompra);
             ps.executeUpdate();
 
             return true;

@@ -8,6 +8,7 @@ public class ProductoProveedor {
     private TipoDisponibilidad disponibilidad;
     private int idProducto;
     private int idProveedor;
+    private Producto producto;//a nivel de aplicacion
 
     public ProductoProveedor(){}
 
@@ -63,6 +64,14 @@ public class ProductoProveedor {
 
     public void setIdProveedor(int idProveedor) {
         this.idProveedor = idProveedor;
+    }
+
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
     }
 
     @Override
