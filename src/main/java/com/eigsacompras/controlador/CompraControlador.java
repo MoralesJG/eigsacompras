@@ -1,26 +1,45 @@
 package com.eigsacompras.controlador;
 
 import com.eigsacompras.dao.CompraDAO;
+import com.eigsacompras.dao.CompraProductoDAO;
 import com.eigsacompras.enums.TipoCompra;
 import com.eigsacompras.enums.TipoEstatus;
 import com.eigsacompras.modelo.Compra;
+import com.eigsacompras.modelo.CompraProducto;
 import javax.swing.*;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class CompraControlador {
     private CompraDAO compraDAO;
     private LocalDate fechaActual = LocalDate.now();
+    private CompraProductoDAO compraProductoDAO;
+
 
     public CompraControlador(){
         this.compraDAO = new CompraDAO();
     }
-    public void agregraCompra(String ordenCompra, String condiciones, LocalDate fechaEmision, String ordenTrabajo, LocalDate fechaEntrega, String agenteProveedor, String nombreComprador, String revisadoPor, String aprobadoPor, TipoEstatus estatus, String notasGenerales, TipoCompra tipo,LocalDate fechaInicioRenta,LocalDate fechaFinRenta,int idProveedor,int idUsuario){
+
+    public void agregarCompras(String ordenCompra, String condiciones, LocalDate fechaEmision, String ordenTrabajo, LocalDate fechaEntrega, String agenteProveedor, String nombreComprador, String revisadoPor, String aprobadoPor, TipoEstatus estatus, String notasGenerales, TipoCompra tipo,LocalDate fechaInicioRenta,LocalDate fechaFinRenta,int idProveedor,int idUsuario, List<CompraProducto> compraProductos){
         if(validarCompra(ordenCompra, condiciones, fechaEmision, ordenTrabajo, fechaEntrega, agenteProveedor, nombreComprador, revisadoPor, aprobadoPor, estatus, notasGenerales, tipo,fechaInicioRenta,fechaFinRenta,idProveedor,idUsuario)){
             Compra compra = new Compra(condiciones,ordenCompra,ordenTrabajo,fechaEmision,fechaEntrega,nombreComprador,agenteProveedor,revisadoPor,notasGenerales,aprobadoPor,estatus,fechaInicioRenta,idProveedor,fechaFinRenta,tipo,idUsuario);
-            compraDAO.agregarCompra(compra);
+            try{
+                int idCompra = compraDAO.agregarCompra(compra);
+
+                //se agrega a la tabla CompraProducto
+                for(CompraProducto producto: compraProductos){
+                    producto.setIdCompra(idCompra);
+                    compraProductoDAO.agregarCompraProducto(producto);
+                }
+
+                JOptionPane.showMessageDialog(null, "Compra agregada correctamente.", "Agregado", JOptionPane.INFORMATION_MESSAGE);
+            }catch (Exception e){
+                JOptionPane.showMessageDialog(null, "Error al agregar la compra. Por favor, inténtelo nuevamente. Error: "+e, "No agregado", JOptionPane.ERROR_MESSAGE);
+            }
         }else {
             JOptionPane.showMessageDialog(null,"Hay uno o más campos vacíos, Revíselos","Campo vacío",JOptionPane.WARNING_MESSAGE);
         }
@@ -30,17 +49,31 @@ public class CompraControlador {
         return compraDAO.listarCompras();
     };
 
-    public void actualizarCompra(String ordenCompra, String condiciones, LocalDate fechaEmision, String ordenTrabajo, LocalDate fechaEntrega, String agenteProveedor, String nombreComprador, String revisadoPor, String aprobadoPor, TipoEstatus estatus, String notasGenerales, TipoCompra tipo,LocalDate fechaInicioRenta,LocalDate fechaFinRenta,int idProveedor,int idUsuario,int idCompra){
+    public void actualizarCompra(String ordenCompra, String condiciones, LocalDate fechaEmision, String ordenTrabajo, LocalDate fechaEntrega, String agenteProveedor, String nombreComprador, String revisadoPor, String aprobadoPor, TipoEstatus estatus, String notasGenerales, TipoCompra tipo,LocalDate fechaInicioRenta,LocalDate fechaFinRenta,int idProveedor,int idUsuario,int idCompra, List<CompraProducto> compraProductos){
         if(validarCompra(ordenCompra, condiciones, fechaEmision, ordenTrabajo, fechaEntrega, agenteProveedor, nombreComprador, revisadoPor, aprobadoPor, estatus, notasGenerales, tipo,fechaInicioRenta,fechaFinRenta,idProveedor,idUsuario)){
             Compra compra = new Compra(idCompra,condiciones,ordenCompra,ordenTrabajo,fechaEmision,fechaEntrega,nombreComprador,agenteProveedor,revisadoPor,notasGenerales,aprobadoPor,estatus,fechaInicioRenta,idProveedor,fechaFinRenta,tipo,idUsuario);
-            compraDAO.actualizarCompra(compra);
+
+            if(compraDAO.actualizarCompra(compra)) {
+                //se actualizar compraProducto
+                for (CompraProducto producto : compraProductos) {
+                    compraProductoDAO.actualizarCompraProducto(producto);
+                }//for
+                JOptionPane.showMessageDialog(null, "Todo actualizado correctamente.", "Actualizado", JOptionPane.INFORMATION_MESSAGE);
+            }else{
+                JOptionPane.showMessageDialog(null, "Error al actualizar la compra. Por favor, inténtelo nuevamente.", "No actualizado", JOptionPane.ERROR_MESSAGE);
+            }//if compraDAO
         }else{
             JOptionPane.showMessageDialog(null,"Hay uno o más campos vacíos, Revíselos","Campo vacío",JOptionPane.WARNING_MESSAGE);
-        }
+        }//if validar
     }//actualizarCompra
 
     public void eliminarCompra(int idCompra){
-        compraDAO.eliminarCompra(idCompra);
+        if(compraDAO.eliminarCompra(idCompra)){
+            compraProductoDAO.eliminarCompraProducto(idCompra);
+            JOptionPane.showMessageDialog(null, "Compra eliminada correctamente.", "Eliminado", JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            JOptionPane.showMessageDialog(null, "Error al eliminar la compra. Por favor, inténtelo nuevamente.", "No eliminado", JOptionPane.ERROR_MESSAGE);
+        }
     }//eliminar
 
     public boolean validarCompra(String ordenCompra, String condiciones, LocalDate fechaEmision, String ordenTrabajo, LocalDate fechaEntrega, String agenteProveedor, String nombreComprador, String revisadoPor, String aprobadoPor, TipoEstatus estatus, String notasGenerales, TipoCompra tipo, LocalDate fechaInicioRenta, LocalDate fechaFinRenta, int idProveedor, int idUsuario){
@@ -78,5 +111,4 @@ public class CompraControlador {
         };
         return true;
     }//validar
-
 }

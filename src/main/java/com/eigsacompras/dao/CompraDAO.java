@@ -21,7 +21,7 @@ public class CompraDAO implements ICompraDAO{
     public CompraDAO(){
     }
     @Override
-    public int agregarCompra(Compra compra, List<CompraProducto> compraProducto) {
+    public int agregarCompra(Compra compra) {
         int idGenerado = -1;
         try{
             conexion = Conexion.getConexion();
@@ -129,7 +129,7 @@ public class CompraDAO implements ICompraDAO{
     }//listar
 
     @Override
-    public boolean actualizarCompra(Compra compra, List<CompraProducto> compraProducto) {
+    public boolean actualizarCompra(Compra compra) {
         try {
             conexion = Conexion.getConexion();
             String sql = "UPDATE compra SET orden_compra = ?, condiciones = ?, fecha_emision = ?, orden_trabajo = ?, fecha_entrega = ?, agente_proveedor = ?, nombre_comprador = ?, revisado_por = ?, aprobado_por = ?, estatus = ?, notas_generales = ?, tipo = ?, fecha_inicio_renta=?,fecha_fin_renta=?,id_proveedor=?,id_usuario=? " +
