@@ -3,7 +3,9 @@ package com.eigsacompras.dao;
 import com.eigsacompras.basededatos.Conexion;
 import com.eigsacompras.enums.TipoAcceso;
 import com.eigsacompras.modelo.Usuario;
+import com.eigsacompras.utilidades.EncryptedPassword;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -110,4 +112,42 @@ public class UsuarioDAO implements IUsuarioDAO{
     public Usuario buscarUsuarioPorId(int idUsuario) {
         return null;
     }
+
+    @Override
+    public String obtenerPassword(String correo){
+        String password = null;
+        try {
+            conexion = Conexion.getConexion();
+            String sql = "SELECT contrasena FROM usuario WHERE email=?";
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1,correo);
+            rs = ps.executeQuery();
+            if (rs.next()){
+                password =  rs.getString("contrasena");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al validar la contraseña" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }
+        return password;
+    }
+
+    @Override
+    public boolean cambiarPassword(String correo, String nuevoPassword){
+        try {
+            conexion = Conexion.getConexion();
+            String sql = "UPDATE usuario SET contrasena =? WHERE email=?";
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1,nuevoPassword);
+            ps.setString(2,correo);
+            ps.executeUpdate();
+            return true;
+        }catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Error al cambiar la contraseña" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
+    }//cambioContraseña
 }
