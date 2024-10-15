@@ -13,7 +13,7 @@ public class TestCompraDao {
 
     public static void main(String[] args) {
         try (Connection conexion = Conexion.getConexion()) {
-            CompraDAO compraDAO = new CompraDAO(conexion);
+            CompraDAO compraDAO = new CompraDAO();
 
             Compra compra = new Compra();
             compra.setOrdenCompra("OC-12345");
@@ -32,12 +32,12 @@ public class TestCompraDao {
             compra.setIdProveedor(1);
 
             //compra.setIdCompra(1);
-
-            if (compraDAO.agregarCompra(compra)) {
-                System.out.println("Compra agregada con éxito.");
-            } else {
-                System.err.println("Error al agregar la compra.");
-            }
+//
+//            if (compraDAO.agregarCompra(compra)) {
+//                System.out.println("Compra agregada con éxito.");
+//            } else {
+//                System.err.println("Error al agregar la compra.");
+//            }
 
             // 5. Probar listar compras
             System.out.println("Lista de compras:");

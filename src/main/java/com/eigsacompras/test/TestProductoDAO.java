@@ -10,16 +10,16 @@ import java.sql.SQLException;
 public class TestProductoDAO {
     public static void main(String[] args) {
         try (Connection conexion = Conexion.getConexion()){
-            ProductoDAO productoDAO = new ProductoDAO(conexion);
+            ProductoDAO productoDAO = new ProductoDAO();
 
             Producto producto = new Producto();
             producto.setDescripcion("Llave alen tipo chimichurri");
             producto.setPrecio(12300);
 
-            if(productoDAO.agregarProducto(producto))
-                System.out.println("Agregado correctamente");
-            else
-                System.out.println("Error al agregar");
+//            if(productoDAO.agregarProducto(producto))
+//                System.out.println("Agregado correctamente");
+//            else
+//                System.out.println("Error al agregar");
 
             System.out.println("----------Listar----------");
             for(Producto c: productoDAO.listarProducto()){

@@ -10,4 +10,7 @@ public interface IUsuarioDAO {
     boolean actualizarUsuario(Usuario usuario);
     boolean eliminarUsuario(int idUsuario);
     Usuario buscarUsuarioPorId(int idUsuario);
+    String obtenerPassword(String correo);
+    boolean cambiarPassword(String correo, String password);
+
 }

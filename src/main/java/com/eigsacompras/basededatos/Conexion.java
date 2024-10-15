@@ -1,14 +1,14 @@
 package com.eigsacompras.basededatos;
 
-import com.eigsacompras.utilidades.ConfigDB;
+import com.eigsacompras.utilidades.ConfigLoader;
 
 import javax.swing.*;
 import java.sql.*;
 
 public class Conexion {
-    private static final String URL = ConfigDB.getPropiedad("url");
-    private static final String USER = ConfigDB.getPropiedad("user");
-    private static final String PASSWORD = ConfigDB.getPropiedad("password");
+    private static final String URL = ConfigLoader.getPropiedad("url");
+    private static final String USER = ConfigLoader.getPropiedad("user");
+    private static final String PASSWORD = ConfigLoader.getPropiedad("password");
 
     public static Connection getConexion() {
         Connection conexion = null;

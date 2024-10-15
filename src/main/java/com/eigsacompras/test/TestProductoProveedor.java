@@ -11,7 +11,7 @@ public class TestProductoProveedor{
     public static void main(String[] args) {
         try {
             Connection conexion = Conexion.getConexion();
-            ProductoProveedorDAO productoProveedorDAO = new ProductoProveedorDAO(conexion);
+            ProductoProveedorDAO productoProveedorDAO = new ProductoProveedorDAO();
 
             ProductoProveedor propre = new ProductoProveedor();
             propre.setPrecioOfrecido(1450.90);

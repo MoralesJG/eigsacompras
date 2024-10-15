@@ -14,7 +14,7 @@ import java.util.List;
 public class TestAuditoriaDAO {
     public static void main(String[] args) {
         Connection conexion = Conexion.getConexion();
-        AuditoriaDAO auditoriaDAO = new AuditoriaDAO(conexion);
+        AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
 
         Auditoria auditoria = new Auditoria();
         auditoria.setTablaAfectada("Compra");
