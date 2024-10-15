@@ -10,7 +10,7 @@ public class TestCompraProducto {
     public static void main(String[] args) {
         try {
             Connection conexion = Conexion.getConexion();
-            CompraProductoDAO compraProductoDAO = new CompraProductoDAO(conexion);
+            CompraProductoDAO compraProductoDAO = new CompraProductoDAO();
 
             CompraProducto compraProducto = new CompraProducto();
             compraProducto.setIdCompra(1);

@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class TestUsuarioDao {
     public static void main(String[] args) {
         try (Connection conexion = Conexion.getConexion()){
-            UsuarioDAO usuarioDAO = new UsuarioDAO(conexion);
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
             Usuario usuario = new Usuario(4);
             usuario.setNombre("luisa");
             usuario.setCorreo("montse.21@gmail.com");

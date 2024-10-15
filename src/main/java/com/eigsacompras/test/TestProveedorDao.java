@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class TestProveedorDao {
     public static void main(String[] args) {
         try(Connection conexion = Conexion.getConexion()){
-            ProveedorDAO proveedorDAO = new ProveedorDAO(conexion);
+            ProveedorDAO proveedorDAO = new ProveedorDAO();
 
             Proveedor proveedor = new Proveedor();
             proveedor.setNombre("TISA SA DE CV");
@@ -19,10 +19,10 @@ public class TestProveedorDao {
             proveedor.setTelefono("9373779071");
             proveedor.setUbicacion("Carretera al amcayo 2da Seccion Reforma Chis.");
 
-            if(proveedorDAO.agregarProveedor(proveedor))
-                System.out.println("Proveedor agregado");
-            else
-                System.out.println("Proveedor no agregado");
+//            if(proveedorDAO.agregarProveedor(proveedor))
+//                System.out.println("Proveedor agregado");
+//            else
+//                System.out.println("Proveedor no agregado");
 
             System.out.println("----------Listar----------");
             for(Proveedor c : proveedorDAO.listarProveedor()){
