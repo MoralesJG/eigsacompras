@@ -49,6 +49,22 @@ public class CompraControlador {
         return compraDAO.listarCompras();
     };
 
+    public int listarComprasPendientes(){
+        return compraDAO.listarComprasPendientes();
+    }//comprasPendientes
+
+    public int listarComprasDelMes(){
+        return compraDAO.listarComprasDelMes();
+    }//compras mes
+
+    public int listarComprasTotales(){
+        return compraDAO.listarComprasTotales();
+    }//comprasTotales
+
+    public Compra listarProximoEntregar(){
+        return compraDAO.listarProximoEntregar();
+    }//promixo a entrega
+
     public void actualizarCompra(String ordenCompra, String condiciones, LocalDate fechaEmision, String ordenTrabajo, LocalDate fechaEntrega, String agenteProveedor, String nombreComprador, String revisadoPor, String aprobadoPor, TipoEstatus estatus, String notasGenerales, TipoCompra tipo,LocalDate fechaInicioRenta,LocalDate fechaFinRenta,int idProveedor,int idUsuario,int idCompra, List<CompraProducto> compraProductos){
         if(validarCompra(ordenCompra, condiciones, fechaEmision, ordenTrabajo, fechaEntrega, agenteProveedor, nombreComprador, revisadoPor, aprobadoPor, estatus, notasGenerales, tipo,fechaInicioRenta,fechaFinRenta,idProveedor,idUsuario)){
             Compra compra = new Compra(idCompra,condiciones,ordenCompra,ordenTrabajo,fechaEmision,fechaEntrega,nombreComprador,agenteProveedor,revisadoPor,notasGenerales,aprobadoPor,estatus,fechaInicioRenta,idProveedor,fechaFinRenta,tipo,idUsuario);

@@ -8,6 +8,7 @@ import com.eigsacompras.modelo.CompraProducto;
 
 import javax.swing.*;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ public class CompraDAO implements ICompraDAO{
         try{
             conexion = Conexion.getConexion();
             String sql = "INSERT INTO compra (orden_compra,condiciones,fecha_emision,orden_trabajo, fecha_entrega,agente_proveedor,nombre_comprador,revisado_por,aprobado_por,estatus,notas_generales,tipo,fecha_inicio_renta,fecha_fin_renta,id_proveedor,id_usuario)" +
-                    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             ps = conexion.prepareStatement(sql);
             ps.setString(1, compra.getOrdenCompra());
             ps.setString(2, compra.getCondiciones());
@@ -58,7 +59,7 @@ public class CompraDAO implements ICompraDAO{
             return idGenerado;//se retorna el id que lo tomará el compra controlador
 
         }catch (Exception e){
-            JOptionPane.showMessageDialog(null, "Error al agregar la compra" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al agregar la compra \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return idGenerado;
         }finally {
             Conexion.cerrar(conexion, ps, rs);
@@ -71,16 +72,20 @@ public class CompraDAO implements ICompraDAO{
         Map<Integer, Compra> compraMap = new HashMap<>();
         try {
             conexion = Conexion.getConexion();
-            String sql = "SELECT c.*, p.nombre AS nombreProveedor, cp.partida, cp.cantidad, cp.precio_unitario, cp.total, prod.descripcion AS descripcion_producto" +
-                    "FROM compra c JOIN compra_producto cp ON c.id_compra = cp.id_compra" +
-                    "JOIN producto prod ON cp.id_producto = prod.id_producto" +
-                    "JOIN proveedor p ON c.id_proveedor = p.id_proveedor" +
-                    "ORDER BY c.id_compra";
+            String sql = "SELECT c.*, p.nombre AS nombreProveedor, cp.partida, cp.cantidad, cp.precio_unitario, cp.total, prod.descripcion AS descripcion_producto " +
+                    "FROM compra c LEFT JOIN compra_producto cp ON c.id_compra = cp.id_compra " +
+                    "LEFT JOIN producto prod ON cp.id_producto = prod.id_producto " +
+                    "LEFT JOIN proveedor p ON c.id_proveedor = p.id_proveedor " +
+                    "UNION "+
+                    "SELECT c.*, p.nombre AS nombreProveedor, cp.partida, cp.cantidad, cp.precio_unitario, cp.total, prod.descripcion AS descripcion_producto " +
+                    "FROM compra c RIGHT JOIN compra_producto cp ON c.id_compra = cp.id_compra " +
+                    "RIGHT JOIN producto prod ON cp.id_producto = prod.id_producto " +
+                    "RIGHT JOIN proveedor p ON c.id_proveedor = p.id_proveedor";
+
             ps = conexion.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
                 int idCompra = rs.getInt("id_compra");
-
                 Compra compra = compraMap.get(idCompra);
                 if (compra == null) {
                     compra = new Compra();
@@ -117,16 +122,105 @@ public class CompraDAO implements ICompraDAO{
                 compraProducto.setDescripcionProducto(rs.getString("descripcion_producto"));
 
                 compra.getProductos().add(compraProducto);
+                //System.out.println(compra);
             }//cierre WHILE
             listaCompras.addAll(compraMap.values());//se convierte el mapa a una lista de compras
 
         }catch (SQLException e){
-            JOptionPane.showMessageDialog(null, "Error al mostrar la compras" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al mostrar la compras \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally {
             Conexion.cerrar(conexion, ps, rs);
         }//cierre finally
+        //System.out.println(listaCompras.size());
         return listaCompras;
     }//listar
+
+    @Override
+    public int listarComprasPendientes(){
+        int registros = -1;
+        try {
+            conexion = Conexion.getConexion();
+            String sql = "SELECT COUNT(*) AS total FROM compra WHERE estatus = 'pendiente'";
+            ps = conexion.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if(rs.next()){
+                registros = rs.getInt("total");
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al mostrar las compras pendientes \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }
+        return registros;
+    }//listarPendientes
+
+    @Override
+    public int listarComprasDelMes(){
+        int registros = -1;
+        LocalDate fecha = LocalDate.now();
+        int mesActual = fecha.getMonthValue();
+        int periodoActual = fecha.getYear(); //año actual
+
+        try {
+            conexion = Conexion.getConexion();
+            String sql = "SELECT COUNT(*) AS total FROM compra WHERE MONTH(fecha_entrega)=? AND YEAR(fecha_entrega)=?";
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1,mesActual);
+            ps.setInt(2,periodoActual);
+            rs=ps.executeQuery();
+            if (rs.next()){
+                registros=rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al mostrar las compras del mes \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }
+        return registros;
+    }//listar compras del mes
+
+    @Override
+    public int listarComprasTotales(){
+        int registros = -1;
+        try {
+            conexion = Conexion.getConexion();
+            String sql = "SELECT COUNT(*) AS total FROM compra";
+            ps=conexion.prepareStatement(sql);
+            rs=ps.executeQuery();
+            if(rs.next()){
+                registros=rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al mostrar las compras totales \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }
+        return registros;
+    }//comprasTotales
+
+    @Override
+    public Compra listarProximoEntregar(){
+        Compra compra = null;
+        try {
+            conexion = Conexion.getConexion();
+            String sql = "SELECT orden_compra, fecha_entrega FROM compra " +
+                    "WHERE fecha_entrega >= CURDATE() " +
+                    "ORDER BY fecha_entrega ASC LIMIT 1";
+            ps = conexion.prepareStatement(sql);
+            rs= ps.executeQuery();
+            if(rs.next()){
+                compra = new Compra();
+                compra.setOrdenCompra(rs.getString("orden_compra"));
+                compra.setFechaEntrega(rs.getDate("fecha_entrega").toLocalDate());
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al listar la compra más reciente \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }
+        return compra;
+    }
 
     @Override
     public boolean actualizarCompra(Compra compra) {
@@ -161,7 +255,7 @@ public class CompraDAO implements ICompraDAO{
 
             return true;
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al agregar la compra" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al agregar la compra \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }finally {
             Conexion.cerrar(conexion, ps, null);
@@ -179,7 +273,7 @@ public class CompraDAO implements ICompraDAO{
 
             return true;
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al eliminar la compra" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al eliminar la compra \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }finally {
             Conexion.cerrar(conexion, ps, null);
