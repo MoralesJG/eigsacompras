@@ -121,16 +121,40 @@
             </properties>
             <border type="none"/>
             <children>
-              <grid id="43723" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="0"/>
+              <grid id="43723" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="20" left="40" bottom="20" right="40"/>
                 <constraints border-constraint="North"/>
                 <properties>
                   <background color="-1"/>
                 </properties>
                 <border type="none"/>
-                <children/>
+                <children>
+                  <component id="b5f4c" class="javax.swing.JTextField" binding="JTF_Buscar">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <background color="-1"/>
+                      <font name="Roboto Light" size="17"/>
+                      <foreground color="-16777216"/>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="168da" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <font name="Roboto Light" size="16"/>
+                      <foreground color="-16777216"/>
+                      <text value="Buscar"/>
+                    </properties>
+                  </component>
+                </children>
               </grid>
-              <grid id="40d55" layout-manager="GridLayoutManager" row-count="1" column-count="13" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="40d55" layout-manager="GridLayoutManager" row-count="1" column-count="14" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="35" left="20" bottom="35" right="20"/>
                 <constraints border-constraint="South"/>
                 <properties>
@@ -155,14 +179,14 @@
                     </constraints>
                     <properties>
                       <background color="-13330213"/>
-                      <font name="Roboto Light" size="16"/>
+                      <font name="Roboto Light" size="16" style="1"/>
                       <foreground color="-16777216"/>
                       <text value="Modificar"/>
                     </properties>
                   </component>
                   <component id="95136" class="javax.swing.JButton" binding="JB_comprasEliminar">
                     <constraints>
-                      <grid row="0" column="12" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="13" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <background color="-6548214"/>
@@ -173,7 +197,7 @@
                   </component>
                   <hspacer id="ba504">
                     <constraints>
-                      <grid row="0" column="11" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="12" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                   </hspacer>
                   <hspacer id="38ccd">
@@ -183,22 +207,22 @@
                   </hspacer>
                   <hspacer id="e44aa">
                     <constraints>
-                      <grid row="0" column="9" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="10" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                   </hspacer>
                   <hspacer id="12664">
                     <constraints>
-                      <grid row="0" column="10" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="11" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                   </hspacer>
                   <hspacer id="a922b">
                     <constraints>
-                      <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="9" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                   </hspacer>
                   <hspacer id="39235">
                     <constraints>
-                      <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                      <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                   </hspacer>
                   <hspacer id="bd0f0">
@@ -221,10 +245,14 @@
                       <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                   </hspacer>
+                  <hspacer id="38738">
+                    <constraints>
+                      <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                  </hspacer>
                 </children>
               </grid>
-              <grid id="1ba03" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="0"/>
+              <grid id="1ba03" binding="JP_TablaCompras" layout-manager="BorderLayout" hgap="0" vgap="0">
                 <constraints border-constraint="Center"/>
                 <properties/>
                 <border type="none"/>
@@ -439,7 +467,7 @@
                           <background color="-1"/>
                           <font name="Roboto Light" size="18"/>
                           <foreground color="-14933645"/>
-                          <text value="No. 19539"/>
+                          <text value="No. ----"/>
                         </properties>
                       </component>
                       <component id="96265" class="javax.swing.JLabel" binding="JL_FechaEntrega">
@@ -450,7 +478,7 @@
                           <enabled value="true"/>
                           <font name="Roboto Light" size="18"/>
                           <foreground color="-14933645"/>
-                          <text value="18 de Octubre, 2024"/>
+                          <text value="-- de ----, ----"/>
                         </properties>
                       </component>
                     </children>
@@ -547,7 +575,7 @@
                   </hspacer>
                 </children>
               </grid>
-              <grid id="eea57" binding="JP_Tabla" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="eea57" binding="JP_TablaInicio" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints border-constraint="Center"/>
                 <properties>

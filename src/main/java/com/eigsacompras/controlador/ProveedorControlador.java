@@ -42,6 +42,10 @@ public class ProveedorControlador {
         return proveedorDAO.listarProveedor();
     }//listar
 
+    public Proveedor listarProveedorPorId(int idProveedor){
+        return proveedorDAO.buscarProveedorPorId(idProveedor);
+    }//listar por id
+
     public void actualizarProveedor(String nombre, String correo, String telefono, String ubicacion, int idProveedor, List<ProductoProveedor> productosProveedor){
         if(validarProveedor(nombre, correo, telefono,ubicacion)){
             Proveedor proveedor = new Proveedor (ubicacion,telefono,nombre,correo,idProveedor);

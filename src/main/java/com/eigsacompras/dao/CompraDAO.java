@@ -9,10 +9,7 @@ import com.eigsacompras.modelo.CompraProducto;
 import javax.swing.*;
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CompraDAO implements ICompraDAO{
     private Connection conexion;
@@ -28,12 +25,16 @@ public class CompraDAO implements ICompraDAO{
             conexion = Conexion.getConexion();
             String sql = "INSERT INTO compra (orden_compra,condiciones,fecha_emision,orden_trabajo, fecha_entrega,agente_proveedor,nombre_comprador,revisado_por,aprobado_por,estatus,notas_generales,tipo,fecha_inicio_renta,fecha_fin_renta,id_proveedor,id_usuario)" +
                     " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-            ps = conexion.prepareStatement(sql);
+            ps = conexion.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);//para que pueda retornar la llave primaria generada
             ps.setString(1, compra.getOrdenCompra());
             ps.setString(2, compra.getCondiciones());
             ps.setDate(3,java.sql.Date.valueOf(compra.getFechaEmision()));
             ps.setString(4, compra.getOrdenTrabajo());
-            ps.setDate(5, java.sql.Date.valueOf(compra.getFechaEntrega()));
+            if(compra.getTipo()==TipoCompra.COMPRA || compra.getTipo()==TipoCompra.REQUISICION){//fecha entrega no aplica en renta
+                ps.setDate(5, java.sql.Date.valueOf(compra.getFechaEntrega()));
+            }else{
+                ps.setDate(5,null);
+            }
             ps.setString(6, compra.getAgenteProveedor());
             ps.setString(7, compra.getNombreComprador());
             ps.setString(8, compra.getRevisadoPor());
@@ -91,10 +92,15 @@ public class CompraDAO implements ICompraDAO{
                     compra = new Compra();
                     compra.setIdCompra(idCompra);
                     compra.setOrdenCompra(rs.getString("orden_compra"));
+                    compra.setOrdenTrabajo(rs.getString("orden_trabajo"));
                     compra.setCondiciones(rs.getString("Condiciones"));
                     compra.setFechaEmision(rs.getDate("fecha_emision").toLocalDate());
                     compra.setOrdenTrabajo(rs.getString("orden_trabajo"));
-                    compra.setFechaEntrega(rs.getDate("fecha_entrega").toLocalDate());
+                    if(rs.getString("fecha_entrega")==null){//cuando es tipo renta no hay fehca entrega
+                        compra.setFechaEntrega(null);
+                    }else{
+                        compra.setFechaEntrega(rs.getDate("fecha_entrega").toLocalDate());
+                    }
                     compra.setAgenteProveedor(rs.getString("agente_proveedor"));
                     compra.setNombreComprador(rs.getString("nombre_comprador"));
                     compra.setRevisadoPor(rs.getString("revisado_por"));
@@ -113,7 +119,7 @@ public class CompraDAO implements ICompraDAO{
                     compra.setProductos(new ArrayList<>());
                     compraMap.put(idCompra, compra);
                 }//cierre del if
-                //Agregar el producto asociado a esta compra
+                //agregar el producto asociado a la compra
                 CompraProducto compraProducto = new CompraProducto();
                 compraProducto.setPartida(rs.getInt("partida"));
                 compraProducto.setCantidad(rs.getString("cantidad"));
@@ -122,16 +128,15 @@ public class CompraDAO implements ICompraDAO{
                 compraProducto.setDescripcionProducto(rs.getString("descripcion_producto"));
 
                 compra.getProductos().add(compraProducto);
-                //System.out.println(compra);
             }//cierre WHILE
-            listaCompras.addAll(compraMap.values());//se convierte el mapa a una lista de compras
+            compraMap.values().forEach(c -> c.getProductos().sort(Comparator.comparingInt(CompraProducto::getPartida)));//se convierte el mapa a una lista de compras y la ordena
+            listaCompras.addAll(compraMap.values());
 
         }catch (SQLException e){
             JOptionPane.showMessageDialog(null, "Error al mostrar la compras \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally {
             Conexion.cerrar(conexion, ps, rs);
         }//cierre finally
-        //System.out.println(listaCompras.size());
         return listaCompras;
     }//listar
 
@@ -233,7 +238,11 @@ public class CompraDAO implements ICompraDAO{
             ps.setString(2, compra.getCondiciones());
             ps.setDate(3, java.sql.Date.valueOf(compra.getFechaEmision()));
             ps.setString(4, compra.getOrdenTrabajo());
-            ps.setDate(5, java.sql.Date.valueOf(compra.getFechaEntrega()));
+            if(compra.getTipo().equals(TipoCompra.REQUISICION) || compra.getTipo().equals(TipoCompra.COMPRA)){
+                ps.setDate(5, java.sql.Date.valueOf(compra.getFechaEntrega()));
+            }else{
+                ps.setDate(5, null);
+            }
             ps.setString(6, compra.getAgenteProveedor());
             ps.setString(7, compra.getNombreComprador());
             ps.setString(8, compra.getRevisadoPor());
@@ -241,12 +250,12 @@ public class CompraDAO implements ICompraDAO{
             ps.setString(10, compra.getEstatus().name());
             ps.setString(11, compra.getNotasGenerales());
             ps.setString(12, compra.getTipo().name());
-            if (compra.getTipo() == TipoCompra.RENTA) {// Si tipo renta se actuliza
+            if (compra.getTipo() == TipoCompra.RENTA) {//si es tipo renta se actuliza
                 ps.setDate(13, java.sql.Date.valueOf(compra.getFechaInicioRenta()));
                 ps.setDate(14, java.sql.Date.valueOf(compra.getFechaFinRenta()));
             } else {//sino se manda null
-                ps.setNull(13, java.sql.Types.DATE);
-                ps.setNull(14, java.sql.Types.DATE);
+                ps.setDate(13, null);
+                ps.setDate(14, null);
             }
             ps.setInt(15, compra.getIdProveedor());
             ps.setInt(16, compra.getIdUsuario());
@@ -282,6 +291,151 @@ public class CompraDAO implements ICompraDAO{
 
     @Override
     public Compra buscarCompraPorId(int idCompra) {
-        return null;
-    }
+        Compra compra = null;
+        try {
+            conexion = Conexion.getConexion();
+            String sql = "SELECT c.*, p.nombre AS nombreProveedor, cp.partida, cp.cantidad, cp.precio_unitario, cp.total, prod.descripcion AS descripcion_producto " +
+                    "FROM compra c LEFT JOIN compra_producto cp ON c.id_compra = cp.id_compra " +
+                    "LEFT JOIN producto prod ON cp.id_producto = prod.id_producto " +
+                    "LEFT JOIN proveedor p ON c.id_proveedor = p.id_proveedor " +
+                    "WHERE c.id_compra = ?";
+
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1, idCompra);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                if (compra == null) {
+                    compra = new Compra();
+                    compra.setIdCompra(idCompra);
+                    compra.setOrdenCompra(rs.getString("orden_compra"));
+                    compra.setOrdenTrabajo(rs.getString("orden_trabajo"));
+                    compra.setCondiciones(rs.getString("Condiciones"));
+                    compra.setFechaEmision(rs.getDate("fecha_emision").toLocalDate());
+                    if (rs.getString("fecha_entrega") == null) { // Maneja si la fecha_entrega es null
+                        compra.setFechaEntrega(null);
+                    } else {
+                        compra.setFechaEntrega(rs.getDate("fecha_entrega").toLocalDate());
+                    }
+                    compra.setAgenteProveedor(rs.getString("agente_proveedor"));
+                    compra.setNombreComprador(rs.getString("nombre_comprador"));
+                    compra.setRevisadoPor(rs.getString("revisado_por"));
+                    compra.setAprobadoPor(rs.getString("aprobado_por"));
+                    compra.setEstatus(TipoEstatus.valueOf(rs.getString("estatus").toUpperCase()));
+                    compra.setNotasGenerales(rs.getString("notas_generales"));
+                    compra.setTipo(TipoCompra.valueOf(rs.getString("tipo").toUpperCase()));
+
+                    if (rs.getString("tipo").equalsIgnoreCase("renta")) {
+                        compra.setFechaInicioRenta(rs.getDate("fecha_inicio_renta").toLocalDate());
+                        compra.setFechaFinRenta(rs.getDate("fecha_fin_renta").toLocalDate());
+                    }
+                    compra.setIdProveedor(rs.getInt("id_proveedor"));
+                    compra.setIdUsuario(rs.getInt("id_usuario"));
+
+                    compra.setProductos(new ArrayList<>());
+                }
+                CompraProducto compraProducto = new CompraProducto();
+                compraProducto.setPartida(rs.getInt("partida"));
+                compraProducto.setCantidad(rs.getString("cantidad"));
+                compraProducto.setPrecioUnitario(rs.getDouble("precio_unitario"));
+                compraProducto.setTotal(rs.getDouble("total"));
+                compraProducto.setDescripcionProducto(rs.getString("descripcion_producto"));
+
+                compra.getProductos().add(compraProducto);
+            }
+            //ordena los productos por partida
+            if (compra != null) {
+                compra.getProductos().sort(Comparator.comparingInt(CompraProducto::getPartida));
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al buscar la compra \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }
+
+        return compra;
+    }//buscar por id
+
+    @Override
+    public List<Compra> buscarCompras(String termino) {
+        List<Compra> listaCompras = new ArrayList<>();
+        Map<Integer, Compra> compraMap = new HashMap<>();
+        try {
+            conexion = Conexion.getConexion();
+            String sql = "SELECT c.*, p.nombre AS nombreProveedor, cp.partida, cp.cantidad, cp.precio_unitario, cp.total, prod.descripcion AS descripcion_producto " +
+                    "FROM compra c " +
+                    "JOIN compra_producto cp ON c.id_compra = cp.id_compra " +
+                    "JOIN producto prod ON cp.id_producto = prod.id_producto " +
+                    "JOIN proveedor p ON c.id_proveedor = p.id_proveedor " +
+                    "WHERE c.orden_compra LIKE ? " +
+                    "OR c.orden_trabajo LIKE ? " +
+                    "OR c.condiciones LIKE ? " +
+                    "OR c.notas_generales LIKE ? " +
+                    "OR p.nombre LIKE ? " +
+                    "OR cp.cantidad LIKE ? " +
+                    "OR c.agente_proveedor LIKE ? " +
+                    "OR prod.descripcion LIKE ? " +
+                    "ORDER BY c.id_compra";
+            ps = conexion.prepareStatement(sql);
+            String busqueda = "%" + termino + "%";//busqueda parcial
+            for (int i = 1; i <= 8; i++) {//busca en todas las columnas
+                ps.setString(i, busqueda);
+            }
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int idCompra = rs.getInt("id_compra");
+                Compra compra = compraMap.get(idCompra);
+                if (compra == null) {
+                    compra = new Compra();
+                    compra.setIdCompra(idCompra);
+                    compra.setOrdenCompra(rs.getString("orden_compra"));
+                    compra.setOrdenTrabajo(rs.getString("orden_trabajo"));
+                    compra.setCondiciones(rs.getString("Condiciones"));
+                    compra.setFechaEmision(rs.getDate("fecha_emision").toLocalDate());
+                    compra.setOrdenTrabajo(rs.getString("orden_trabajo"));
+                    if(rs.getString("fecha_entrega")==null){//cuando es tipo renta no hay fehca entrega
+                        compra.setFechaEntrega(null);
+                    }else{
+                        compra.setFechaEntrega(rs.getDate("fecha_entrega").toLocalDate());
+                    }
+                    compra.setAgenteProveedor(rs.getString("agente_proveedor"));
+                    compra.setNombreComprador(rs.getString("nombre_comprador"));
+                    compra.setRevisadoPor(rs.getString("revisado_por"));
+                    compra.setAprobadoPor(rs.getString("aprobado_por"));
+                    compra.setEstatus(TipoEstatus.valueOf(rs.getString("estatus").toUpperCase()));
+                    compra.setNotasGenerales(rs.getString("notas_generales"));
+                    compra.setTipo(TipoCompra.valueOf(rs.getString("tipo").toUpperCase()));
+
+                    if (rs.getString("tipo").equalsIgnoreCase("renta")) {
+                        compra.setFechaInicioRenta(rs.getDate("fecha_inicio_renta").toLocalDate());
+                        compra.setFechaFinRenta(rs.getDate("fecha_fin_renta").toLocalDate());
+                    }
+                    compra.setIdProveedor(rs.getInt("id_proveedor"));
+                    compra.setIdUsuario(rs.getInt("id_usuario"));
+
+                    compra.setProductos(new ArrayList<>());
+                    compraMap.put(idCompra, compra);
+                }//cierre del if
+                //agregar el producto asociado a la compra
+                CompraProducto compraProducto = new CompraProducto();
+                compraProducto.setPartida(rs.getInt("partida"));
+                compraProducto.setCantidad(rs.getString("cantidad"));
+                compraProducto.setPrecioUnitario(rs.getDouble("precio_unitario"));
+                compraProducto.setTotal(rs.getDouble("total"));
+                compraProducto.setDescripcionProducto(rs.getString("descripcion_producto"));
+
+                compra.getProductos().add(compraProducto);
+            }//while
+            compraMap.values().forEach(c -> c.getProductos().sort(Comparator.comparingInt(CompraProducto::getPartida)));//se convierte el mapa a una lista de compras y la ordena
+            listaCompras.addAll(compraMap.values());
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al buscar compras: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }
+        return listaCompras;
+    }//buscar compras
+
 }
