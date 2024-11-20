@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.eigsacompras.interfaz.DialogComprasModificar">
+  <grid id="cbd77" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="92" y="54" width="788" height="551"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="44e2d" binding="JP_MenuyDatosPrincipales" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="290f5" layout-manager="GridLayoutManager" row-count="5" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="15" left="15" bottom="15" right="15"/>
+            <constraints border-constraint="South"/>
+            <properties>
+              <background color="-1249039"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="20b54" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Orden de compra:"/>
+                </properties>
+              </component>
+              <component id="8423a" class="javax.swing.JTextField" binding="JTF_OrdenCompra">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15"/>
+                </properties>
+              </component>
+              <component id="345ff" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Orden de trabajo:"/>
+                </properties>
+              </component>
+              <component id="55720" class="javax.swing.JTextField" binding="JTF_OrdenTrabajo">
+                <constraints>
+                  <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15"/>
+                </properties>
+              </component>
+              <component id="7c071" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Proveedor:"/>
+                </properties>
+              </component>
+              <component id="6f5b3" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Agente:"/>
+                </properties>
+              </component>
+              <component id="dd803" class="javax.swing.JTextField" binding="JTF_Agente">
+                <constraints>
+                  <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15"/>
+                </properties>
+              </component>
+              <component id="241d9" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Fecha de emisión:"/>
+                </properties>
+              </component>
+              <component id="7eed1" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Fecha de entrega:"/>
+                </properties>
+              </component>
+              <component id="5f391" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Condiciones:"/>
+                </properties>
+              </component>
+              <component id="aa150" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Comprador:"/>
+                </properties>
+              </component>
+              <component id="e0389" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Notas generales:"/>
+                </properties>
+              </component>
+              <component id="11044" class="javax.swing.JTextField" binding="JTF_FechaEmision">
+                <constraints>
+                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15"/>
+                  <text value=""/>
+                </properties>
+              </component>
+              <component id="93788" class="javax.swing.JTextField" binding="JTF_FechaEntrega">
+                <constraints>
+                  <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15"/>
+                  <text value=""/>
+                </properties>
+              </component>
+              <component id="80676" class="javax.swing.JTextField" binding="JTF_Condiciones">
+                <constraints>
+                  <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15"/>
+                </properties>
+              </component>
+              <scrollpane id="3a535">
+                <constraints>
+                  <grid row="4" column="1" row-span="1" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-1249039"/>
+                </properties>
+                <border type="empty"/>
+                <children>
+                  <component id="cd98f" class="javax.swing.JTextArea" binding="JTA_NotasGenerales">
+                    <constraints/>
+                    <properties>
+                      <font name="Roboto Light" size="15"/>
+                      <lineWrap value="false"/>
+                      <rows value="3"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+              <component id="fe9cf" class="javax.swing.JTextField" binding="JTF_Comprador">
+                <constraints>
+                  <grid row="3" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15"/>
+                </properties>
+              </component>
+              <hspacer id="9ead3">
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="54d0a">
+                <constraints>
+                  <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="23313">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="ffda">
+                <constraints>
+                  <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <component id="e20f5" class="javax.swing.JComboBox" binding="JCB_Proveedor">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15" style="0"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="919f4" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="7" left="0" bottom="7" right="0"/>
+            <constraints border-constraint="Center"/>
+            <properties>
+              <background color="-14933645"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="e55cf" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="16" style="1"/>
+                  <foreground color="-1"/>
+                  <text value="Modificar orden"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </grid>
+      <grid id="115ff" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="South"/>
+        <properties>
+          <background color="-1249039"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <grid id="1cfa1" layout-manager="GridLayoutManager" row-count="3" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="15" left="15" bottom="15" right="15"/>
+            <constraints border-constraint="North"/>
+            <properties>
+              <background color="-1249039"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="8c8ea" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Aprovado por:"/>
+                </properties>
+              </component>
+              <component id="36252" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Revisado por:"/>
+                </properties>
+              </component>
+              <component id="ae089" class="javax.swing.JTextField" binding="JTF_Revisado">
+                <constraints>
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15"/>
+                </properties>
+              </component>
+              <component id="1db1d" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Tipo:"/>
+                </properties>
+              </component>
+              <component id="cc82" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Estatus:"/>
+                </properties>
+              </component>
+              <component id="3db45" class="javax.swing.JComboBox" binding="JCB_Estatus">
+                <constraints>
+                  <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15"/>
+                </properties>
+              </component>
+              <component id="4c6f3" class="javax.swing.JComboBox" binding="JCB_Tipo">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15" style="0"/>
+                </properties>
+              </component>
+              <component id="6b65e" class="javax.swing.JTextField" binding="JTF_Aprovado">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15"/>
+                </properties>
+              </component>
+              <component id="bf36f" class="javax.swing.JLabel" binding="JL_FechaInicioRenta">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Fecha inicio renta:"/>
+                </properties>
+              </component>
+              <component id="a0128" class="javax.swing.JTextField" binding="JTF_FechaInicioRenta">
+                <constraints>
+                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15"/>
+                  <text value=""/>
+                </properties>
+              </component>
+              <component id="1efdd" class="javax.swing.JTextField" binding="JTF_FechaFinRenta">
+                <constraints>
+                  <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-1"/>
+                  <font name="Roboto Light" size="15"/>
+                  <text value=""/>
+                </properties>
+              </component>
+              <component id="8d3bd" class="javax.swing.JLabel" binding="JL_FechaFinRenta">
+                <constraints>
+                  <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="15" style="1"/>
+                  <foreground color="-16777216"/>
+                  <text value="Fecha fin renta:"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="3ae94" layout-manager="GridLayoutManager" row-count="1" column-count="9" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="10" left="20" bottom="10" right="20"/>
+            <constraints border-constraint="Center"/>
+            <properties>
+              <background color="-1249039"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="20e5" class="javax.swing.JButton" binding="JB_Guardar">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-13330213"/>
+                  <font name="Roboto Light" size="14"/>
+                  <foreground color="-16777216"/>
+                  <text value="Actualizar"/>
+                </properties>
+              </component>
+              <component id="33859" class="javax.swing.JButton" binding="JB_Cerrar">
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-6548214"/>
+                  <font name="Roboto Light" size="14"/>
+                  <foreground color="-1"/>
+                  <hideActionText value="false"/>
+                  <text value=" Cerrar "/>
+                </properties>
+              </component>
+              <component id="e40d0" class="javax.swing.JButton" binding="JB_Imprimir">
+                <constraints>
+                  <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-13330213"/>
+                  <font name="Roboto Light" size="14"/>
+                  <foreground color="-16777216"/>
+                  <text value="Imprimir"/>
+                </properties>
+              </component>
+              <hspacer id="27b3f">
+                <constraints>
+                  <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="37ad9">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="5453e">
+                <constraints>
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="bcd0b">
+                <constraints>
+                  <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="5ea2e">
+                <constraints>
+                  <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="e7bef">
+                <constraints>
+                  <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+            </children>
+          </grid>
+        </children>
+      </grid>
+      <grid id="41110" binding="JP_TablayBotones" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="46ec0" layout-manager="GridLayoutManager" row-count="1" column-count="10" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="5" left="25" bottom="5" right="25"/>
+            <constraints border-constraint="South"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="83009" class="javax.swing.JButton" binding="JB_AgregarProducto">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-3684150"/>
+                  <font name="Roboto Light" size="12"/>
+                  <text value="Agregar producto"/>
+                </properties>
+              </component>
+              <component id="89675" class="javax.swing.JButton" binding="JB_eliminarProducto">
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <background color="-3684150"/>
+                  <font name="Roboto Light" size="12"/>
+                  <text value="Eliminar"/>
+                </properties>
+              </component>
+              <component id="a0d27" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font name="Roboto Light" size="12" style="1"/>
+                  <text value="TOTAL:"/>
+                </properties>
+              </component>
+              <component id="86e29" class="javax.swing.JTextField" binding="JTF_Total">
+                <constraints>
+                  <grid row="0" column="9" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <background color="-13330213"/>
+                  <editable value="false"/>
+                  <enabled value="true"/>
+                  <font name="Roboto Light" size="14" style="1"/>
+                  <foreground color="-1"/>
+                </properties>
+              </component>
+              <hspacer id="e1fe4">
+                <constraints>
+                  <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="a1c3d">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="120bb">
+                <constraints>
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="33215">
+                <constraints>
+                  <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="5e46b">
+                <constraints>
+                  <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <hspacer id="10fc2">
+                <constraints>
+                  <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+            </children>
+          </grid>
+          <grid id="e845b" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints border-constraint="Center"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <scrollpane id="a5ddc">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="cc064" class="javax.swing.JTable" binding="JT_Tabla">
+                    <constraints/>
+                    <properties>
+                      <background color="-1249039"/>
+                    </properties>
+                  </component>
+                </children>
+              </scrollpane>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

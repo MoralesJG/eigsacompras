@@ -15,4 +15,5 @@ public interface ICompraDAO {
     boolean actualizarCompra(Compra compra);
     boolean eliminarCompra(int idCompra);
     Compra buscarCompraPorId(int idCompra);
+    List<Compra> buscarCompras(String termino);
 }
