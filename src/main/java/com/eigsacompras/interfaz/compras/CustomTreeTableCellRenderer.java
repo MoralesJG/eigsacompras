@@ -1,4 +1,4 @@
-package com.eigsacompras.interfaz;
+package com.eigsacompras.interfaz.compras;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

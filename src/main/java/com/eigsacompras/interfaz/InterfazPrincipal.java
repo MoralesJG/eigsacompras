@@ -1,10 +1,14 @@
 package com.eigsacompras.interfaz;
 
 import com.eigsacompras.controlador.CompraControlador;
+import com.eigsacompras.controlador.ProveedorControlador;
+import com.eigsacompras.interfaz.compras.DialogComprasAgregar_Modificar;
+import com.eigsacompras.interfaz.compras.ModeloTablaArbolCompras;
+import com.eigsacompras.interfaz.proveedores.DialogProveedoresAgregar_Modificar;
+import com.eigsacompras.interfaz.proveedores.ModeloTablaArbolProveedores;
 import com.eigsacompras.modelo.Compra;
+import com.eigsacompras.modelo.Proveedor;
 import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
-
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -46,16 +50,21 @@ public class InterfazPrincipal extends JFrame{
     private JButton JB_comprasAgregar;
     private JButton JB_comprasModificar;
     private JButton JB_comprasEliminar;
-    private JTextField JTF_Buscar;
+    private JTextField JTF_BuscarCompras;
     private JPanel JP_TablaInicio;
     private JPanel JP_TablaCompras;
+    private JPanel JP_TablaProveedores;
+    private JTextField JTF_BuscarProveedores;
+    private JButton JB_ProveedorAgregar;
+    private JButton JB_ProveedorModificar;
+    private JButton JB_ProveedorEliminar;
     private CompraControlador compraControlador;
     private CardLayout cardLayout;
     private JScrollPane scroll;
     private DefaultTableModel modeloTablaInicio, modeloTablaCompras;
-    private JXTreeTable tablaArbol;
-    private Map<String,Integer> mapaCompras;
-    private Compra compras;
+    private JXTreeTable tablaArbolCompras, tablaArbolProveedor;
+    private Map<String,Integer> mapaCompras, mapaProveedores;
+    private ProveedorControlador proveedorControlador;
 
 
     public InterfazPrincipal(){
@@ -69,6 +78,10 @@ public class InterfazPrincipal extends JFrame{
         inicializarComponentesCompras();
         tablaCompras();
         inicializarEventosCompras();
+        //panel proveedores
+        inicializarComponentesProveedores();
+        tablaProveedores();
+        inicializarEventosProveedores();
 
         inicializarEventosPrincipales();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -254,9 +267,9 @@ public class InterfazPrincipal extends JFrame{
         JB_comprasEliminar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         //buscador
-        JTF_Buscar.setText("Buscar en compras por OT, OC, condiciones, notas, proveedor, descripción.");
-        JTF_Buscar.setForeground(Color.GRAY);
-        JTF_Buscar.setBorder(new CompoundBorder(JTF_Buscar.getBorder(), new EmptyBorder(5, 15, 5, 10))); // márgenes internos
+        JTF_BuscarCompras.setText("Buscar en compras por OT, OC, condiciones, notas, proveedor, descripción.");
+        JTF_BuscarCompras.setForeground(Color.GRAY);
+        JTF_BuscarCompras.setBorder(new CompoundBorder(JTF_BuscarCompras.getBorder(), new EmptyBorder(5, 15, 5, 10))); // márgenes internos
 
     }//compras
 
@@ -269,7 +282,7 @@ public class InterfazPrincipal extends JFrame{
         for(Compra compra:listaCompra){//para almacenar el id de la compra y usarla para el boton eliminar
             mapaCompras.put(compra.getOrdenCompra(),compra.getIdCompra());
         }//for
-        tablaArbol = new JXTreeTable(tablaArbolModelo){
+        tablaArbolCompras = new JXTreeTable(tablaArbolModelo){
             @Override
             public JToolTip createToolTip() {
                 JToolTip toolTip = super.createToolTip();
@@ -279,14 +292,14 @@ public class InterfazPrincipal extends JFrame{
             }//personalizar tool tip
         };
 
-        tablaArbol.setRowHeight(47);
-        tablaArbol.setFont(new Font("Reboto Light", Font.PLAIN, 16));
-        tablaArbol.getTableHeader().setFont(new Font("Reboto Light", Font.BOLD, 18));
-        tablaArbol.getTableHeader().setBackground(new Color(236, 240, 241));
-        tablaArbol.setBackground(new Color(236, 240, 241));
-        tablaArbol.setLeafIcon(null);//icono de "archivo" no se muestra
+        tablaArbolCompras.setRowHeight(47);
+        tablaArbolCompras.setFont(new Font("Reboto Light", Font.PLAIN, 16));
+        tablaArbolCompras.getTableHeader().setFont(new Font("Reboto Light", Font.BOLD, 18));
+        tablaArbolCompras.getTableHeader().setBackground(new Color(236, 240, 241));
+        tablaArbolCompras.setBackground(new Color(236, 240, 241));
+        tablaArbolCompras.setLeafIcon(null);//icono de "archivo" no se muestra
 
-        JScrollPane scrollPane = new JScrollPane(tablaArbol);
+        JScrollPane scrollPane = new JScrollPane(tablaArbolCompras);
         JP_TablaCompras.add(scrollPane);
         //para actualizar la interfaz
         JP_TablaCompras.revalidate();
@@ -331,47 +344,47 @@ public class InterfazPrincipal extends JFrame{
             }
         });
 
-        JTF_Buscar.addFocusListener(new FocusAdapter() {
+        JTF_BuscarCompras.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if(JTF_Buscar.getText().equals("Buscar en compras por OT, OC, condiciones, notas, proveedor, descripción.")){
-                    JTF_Buscar.setText("");
-                    JTF_Buscar.setForeground(Color.BLACK);
+                if(JTF_BuscarCompras.getText().equals("Buscar en compras por OT, OC, condiciones, notas, proveedor, descripción.")){
+                    JTF_BuscarCompras.setText("");
+                    JTF_BuscarCompras.setForeground(Color.BLACK);
                 }
             }
             @Override
             public void focusLost(FocusEvent e) {
-                if(JTF_Buscar.getText().isEmpty()){
-                    JTF_Buscar.setText("Buscar en compras por OT, OC, condiciones, notas, proveedor, descripción.");
-                    JTF_Buscar.setForeground(Color.GRAY);
+                if(JTF_BuscarCompras.getText().isEmpty()){
+                    JTF_BuscarCompras.setText("Buscar en compras por OT, OC, condiciones, notas, proveedor, descripción.");
+                    JTF_BuscarCompras.setForeground(Color.GRAY);
                 }
             }
         });
 
-        JTF_Buscar.addKeyListener(new KeyAdapter() {
+        JTF_BuscarCompras.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode()==KeyEvent.VK_ESCAPE){
-                    JTF_Buscar.setFocusable(false);
-                    JTF_Buscar.setFocusable(true);
+                    JTF_BuscarCompras.setFocusable(false);
+                    JTF_BuscarCompras.setFocusable(true);
                 }
             }
         });
 
-        tablaArbol.addMouseMotionListener(new MouseMotionAdapter() {
+        tablaArbolCompras.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
 
-                int row = tablaArbol.rowAtPoint(e.getPoint());
-                int column = tablaArbol.columnAtPoint(e.getPoint());
+                int row = tablaArbolCompras.rowAtPoint(e.getPoint());
+                int column = tablaArbolCompras.columnAtPoint(e.getPoint());
 
                 if (row > -1 && column > -1) {
-                    Object value = tablaArbol.getValueAt(row, column);
+                    Object value = tablaArbolCompras.getValueAt(row, column);
 
                     if (value != null && !value.toString().trim().isEmpty()) {
-                        tablaArbol.setToolTipText(value.toString());
+                        tablaArbolCompras.setToolTipText(value.toString());
                     } else {
-                        tablaArbol.setToolTipText(null);
+                        tablaArbolCompras.setToolTipText(null);
                     }
                 }
             }
@@ -381,17 +394,18 @@ public class InterfazPrincipal extends JFrame{
         JB_comprasAgregar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogComprasAgregar comprasAgregar = new DialogComprasAgregar();
+                DialogComprasAgregar_Modificar comprasAgregar = new DialogComprasAgregar_Modificar(0);//se manda 0 ya que pide el idCompra en caso de que sea modificar
                 comprasAgregar.setVisible(true);
+                tablaCompras();//al cerrarse la ventana se actualiza la tabla para mostrar los cambios
             }
         });//Boton de agregar
 
         JB_comprasEliminar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int seleccionado = tablaArbol.getSelectedRow();
+                int seleccionado = tablaArbolCompras.getSelectedRow();
                 if(seleccionado!=-1){
-                    String ordenCompra = tablaArbol.getStringAt(seleccionado,1);//para acceder al id en el hash map
+                    String ordenCompra = tablaArbolCompras.getStringAt(seleccionado,1);//para acceder al id en el hash map
                     compraControlador.eliminarCompra(mapaCompras.get(ordenCompra));//se elimina en la base de datos
                     //actualizar la tabla volviendola a mostrar
                     tablaCompras();
@@ -403,9 +417,9 @@ public class InterfazPrincipal extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {//para cuando se selecciona un subnodo de la tabla y se mande un mensaje de adventancia
-                    if(tablaArbol.getSelectedRow()!=-1){
-                        String ordenCompra = tablaArbol.getStringAt(tablaArbol.getSelectedRow(),1);//para acceder al id en el hash map
-                        DialogComprasModificar modificar = new DialogComprasModificar(mapaCompras.get(ordenCompra));
+                    if(tablaArbolCompras.getSelectedRow()!=-1){
+                        String ordenCompra = tablaArbolCompras.getStringAt(tablaArbolCompras.getSelectedRow(),1);//para acceder al id en el hash map
+                        DialogComprasAgregar_Modificar modificar = new DialogComprasAgregar_Modificar(mapaCompras.get(ordenCompra));
                         modificar.setVisible(true);
                         tablaCompras();//al cerrarse la ventana se actualiza la tabla para mostrar los cambios
                     }else{
@@ -417,24 +431,219 @@ public class InterfazPrincipal extends JFrame{
 
             }
         });
-        JTF_Buscar.addKeyListener(new KeyAdapter() {
+        JTF_BuscarCompras.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                String termino = JTF_Buscar.getText();
+                String termino = JTF_BuscarCompras.getText();
                 List<Compra> resultados = compraControlador.buscarCompra(termino);
-                actualizarVistaTabla(resultados);
+                actualizarVistaTablaCompra(resultados);
             }
         });
     }//eventos compras
 
-    public void actualizarVistaTabla(List<Compra> listaFiltrada){
+    public void actualizarVistaTablaCompra(List<Compra> listaFiltrada){
         ModeloTablaArbolCompras modeloTabla = new ModeloTablaArbolCompras(listaFiltrada);
-        tablaArbol.setTreeTableModel(modeloTabla);
-        tablaArbol.revalidate();
-        tablaArbol.repaint();
+        tablaArbolCompras.setTreeTableModel(modeloTabla);
+        tablaArbolCompras.revalidate();
+        tablaArbolCompras.repaint();
     }//vistaTabla (llamado por el metodo inicializarEventosCompras)
 
+    //PANEL PROVEEDORES
 
+    public void inicializarComponentesProveedores(){
+        //botones
+        JB_ProveedorAgregar.setFocusPainted(false);
+        JB_ProveedorAgregar.setBorderPainted(false);
+        JB_ProveedorAgregar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JB_ProveedorModificar.setFocusPainted(false);
+        JB_ProveedorModificar.setBorderPainted(false);
+        JB_ProveedorModificar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JB_ProveedorEliminar.setFocusPainted(false);
+        JB_ProveedorEliminar.setBorderPainted(false);
+        JB_ProveedorEliminar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        //buscador
+        JTF_BuscarProveedores.setText("Buscar en proveedores por nombre, correo, ubicación, teléfono....");
+        JTF_BuscarProveedores.setForeground(Color.GRAY);
+        JTF_BuscarProveedores.setBorder(new CompoundBorder(JTF_BuscarProveedores.getBorder(), new EmptyBorder(5, 15, 5, 10))); // márgenes internos
+
+    }//inicializar componentes proveedores
+
+    public void tablaProveedores(){
+        JP_TablaProveedores.removeAll();//elimina todo lo que haya en ese panel
+        proveedorControlador = new ProveedorControlador();
+        List<Proveedor> listaProveedor = proveedorControlador.listarProveedor();
+        mapaProveedores = new HashMap<>();
+        ModeloTablaArbolProveedores tablaArbolModelo = new ModeloTablaArbolProveedores(listaProveedor);//se crea un tabla árbol para mostrar los productos
+        for(Proveedor proveedor:listaProveedor){//para almacenar el id del proveedor y usarla para el boton eliminar
+            mapaProveedores.put(proveedor.getNombre(),proveedor.getIdProveedor());
+        }//for
+        tablaArbolProveedor = new JXTreeTable(tablaArbolModelo){
+            @Override
+            public JToolTip createToolTip() {
+                JToolTip toolTip = super.createToolTip();
+                toolTip.setBackground(new Color(236, 240, 241));
+                toolTip.setFont(new Font("Reboto Light",Font.PLAIN,13));
+                return toolTip;
+            }//personalizar tool tip
+        };
+
+        tablaArbolProveedor.setRowHeight(47);
+        tablaArbolProveedor.setFont(new Font("Reboto Light", Font.PLAIN, 16));
+        tablaArbolProveedor.getTableHeader().setFont(new Font("Reboto Light", Font.BOLD, 18));
+        tablaArbolProveedor.getTableHeader().setBackground(new Color(236, 240, 241));
+        tablaArbolProveedor.setBackground(new Color(236, 240, 241));
+        tablaArbolProveedor.setLeafIcon(null);//icono de "archivo" no se muestra
+
+        JScrollPane scrollPane = new JScrollPane(tablaArbolProveedor);
+        JP_TablaProveedores.add(scrollPane);
+        //para actualizar la interfaz
+        JP_TablaProveedores.revalidate();
+        JP_TablaProveedores.repaint();
+    }//tabla proveedores
+
+    public void inicializarEventosProveedores(){
+        JB_ProveedorAgregar.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {//al precionar el boton
+                JB_ProveedorAgregar.setForeground(new Color(0,0,0,220));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {//cuando se deja de presionar el boton
+                JB_ProveedorAgregar.setForeground(Color.BLACK);
+            }
+        });
+
+        JB_ProveedorModificar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {//al presionar el boton
+                JB_ProveedorModificar.setForeground(new Color(0,0,0,220));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {//cuando se deja de presionar el boton
+                JB_ProveedorModificar.setForeground(Color.BLACK);
+            }
+        });
+
+        JB_ProveedorEliminar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {//al presionar
+                JB_ProveedorEliminar.setForeground(new Color(0,0,0,220));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {//al dejar de presionar
+                JB_ProveedorEliminar.setForeground(Color.WHITE);
+            }
+        });
+
+        JTF_BuscarProveedores.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {//al dar click en buscar se quita el texto de apoyo
+                if(JTF_BuscarProveedores.getText().equals("Buscar en proveedores por nombre, correo, ubicación, teléfono....")){
+                    JTF_BuscarProveedores.setText("");
+                    JTF_BuscarProveedores.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {//cuando buscar está vacio se agregae este texto
+                if(JTF_BuscarProveedores.getText().isEmpty()){
+                    JTF_BuscarProveedores.setText("Buscar en proveedores por nombre, correo, ubicación, teléfono....");
+                    JTF_BuscarProveedores.setForeground(Color.GRAY);
+                }
+            }
+        });
+
+        JTF_BuscarProveedores.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {//para quitar el foto en caso de que se de ESC
+                if(e.getKeyCode()==KeyEvent.VK_ESCAPE){
+                    JTF_BuscarProveedores.setFocusable(false);
+                    JTF_BuscarProveedores.setFocusable(true);
+                }
+            }
+        });
+
+        tablaArbolProveedor.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {//para el toolTip de la tabla
+
+                int row = tablaArbolProveedor.rowAtPoint(e.getPoint());
+                int column = tablaArbolProveedor.columnAtPoint(e.getPoint());
+
+                if (row > -1 && column > -1) {
+                    Object value = tablaArbolProveedor.getValueAt(row, column);
+
+                    if (value != null && !value.toString().trim().isEmpty()) {
+                        tablaArbolProveedor.setToolTipText(value.toString());
+                    } else {
+                        tablaArbolProveedor.setToolTipText(null);
+                    }
+                }
+            }
+
+        });//tabla
+
+        JB_ProveedorAgregar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int idProveedor = 0;
+                DialogProveedoresAgregar_Modificar proveedoresAgregar = new DialogProveedoresAgregar_Modificar(idProveedor);
+                proveedoresAgregar.setVisible(true);
+                tablaProveedores();//actualizar la tabla después de agregar
+            }
+        });//Boton de agregar
+
+        JB_ProveedorEliminar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int seleccionado = tablaArbolProveedor.getSelectedRow();
+                if(seleccionado!=-1){
+                    String nombreProveedor = tablaArbolProveedor.getStringAt(seleccionado,1);//para acceder al id en el hash map
+                    proveedorControlador.eliminarProveedor(mapaProveedores.get(nombreProveedor));//se elimina en la base de datos
+                    //actualizar la tabla volviendola a mostrar
+                    tablaProveedores();
+                }//if
+            }
+        });//boton de eliminar
+
+        JB_ProveedorModificar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {//para cuando se selecciona un subnodo de la tabla y se mande un mensaje de advertencia
+                    if(tablaArbolProveedor.getSelectedRow()!=-1){
+                        String nombreProveedor = tablaArbolProveedor.getStringAt(tablaArbolProveedor.getSelectedRow(),1);//para acceder al id en el hash map
+                        DialogProveedoresAgregar_Modificar modificar = new DialogProveedoresAgregar_Modificar(mapaProveedores.get(nombreProveedor));
+                        modificar.setVisible(true);
+                        tablaProveedores();//al cerrarse la ventana se actualiza la tabla para mostrar los cambios
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Selecciona primero un elemento de la lista", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Selecciona únicamente elementos principales", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                }
+
+            }
+        });
+        JTF_BuscarProveedores.addKeyListener(new KeyAdapter() {//para filtrar las busquedas
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String termino = JTF_BuscarProveedores.getText();
+                List<Proveedor> resultados = proveedorControlador.buscarProveedores(termino);
+                actualizarVistaTablaProveedores(resultados);
+            }
+        });
+    }//eventos proveedores
+
+    public void actualizarVistaTablaProveedores(List<Proveedor> listaFiltrada){
+        ModeloTablaArbolProveedores modeloTabla = new ModeloTablaArbolProveedores(listaFiltrada);
+        tablaArbolProveedor.setTreeTableModel(modeloTabla);
+        tablaArbolProveedor.revalidate();
+        tablaArbolProveedor.repaint();
+    }//vistaTabla (llamado por el metodo inicializarEventosProveedores )
 
     public static void main(String[] args) {
         //crea la instancia de InterfazPrincipal

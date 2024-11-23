@@ -74,14 +74,10 @@ public class CompraDAO implements ICompraDAO{
         try {
             conexion = Conexion.getConexion();
             String sql = "SELECT c.*, p.nombre AS nombreProveedor, cp.partida, cp.cantidad, cp.precio_unitario, cp.total, prod.descripcion AS descripcion_producto " +
-                    "FROM compra c LEFT JOIN compra_producto cp ON c.id_compra = cp.id_compra " +
-                    "LEFT JOIN producto prod ON cp.id_producto = prod.id_producto " +
-                    "LEFT JOIN proveedor p ON c.id_proveedor = p.id_proveedor " +
-                    "UNION "+
-                    "SELECT c.*, p.nombre AS nombreProveedor, cp.partida, cp.cantidad, cp.precio_unitario, cp.total, prod.descripcion AS descripcion_producto " +
-                    "FROM compra c RIGHT JOIN compra_producto cp ON c.id_compra = cp.id_compra " +
-                    "RIGHT JOIN producto prod ON cp.id_producto = prod.id_producto " +
-                    "RIGHT JOIN proveedor p ON c.id_proveedor = p.id_proveedor";
+                    "FROM compra c JOIN compra_producto cp ON c.id_compra = cp.id_compra " +
+                    "JOIN producto prod ON cp.id_producto = prod.id_producto " +
+                    "JOIN proveedor p ON c.id_proveedor = p.id_proveedor " +
+                    "ORDER BY c.id_compra, cp.partida";
 
             ps = conexion.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -129,8 +125,8 @@ public class CompraDAO implements ICompraDAO{
 
                 compra.getProductos().add(compraProducto);
             }//cierre WHILE
-            compraMap.values().forEach(c -> c.getProductos().sort(Comparator.comparingInt(CompraProducto::getPartida)));//se convierte el mapa a una lista de compras y la ordena
             listaCompras.addAll(compraMap.values());
+            listaCompras.sort(Comparator.comparing(Compra::getOrdenCompra));//ordena la lista ya que sin esto al mostrarse en la interfaz aparece mal ordenada
 
         }catch (SQLException e){
             JOptionPane.showMessageDialog(null, "Error al mostrar la compras \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

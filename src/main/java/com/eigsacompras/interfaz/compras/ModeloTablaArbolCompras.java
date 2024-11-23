@@ -1,4 +1,4 @@
-package com.eigsacompras.interfaz;
+package com.eigsacompras.interfaz.compras;
 
 import com.eigsacompras.modelo.Compra;
 import com.eigsacompras.modelo.CompraProducto;

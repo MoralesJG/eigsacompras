@@ -83,23 +83,27 @@ public class CompraControlador {
         if (validarCompra(ordenCompra, condiciones, fechaEmision, ordenTrabajo, fechaEntrega, agenteProveedor, nombreComprador, revisadoPor, aprobadoPor, estatus, notasGenerales, tipo, fechaInicioRenta, fechaFinRenta, idProveedor, idUsuario)) {
 
             Compra compra = new Compra(idCompra, condiciones, ordenCompra, ordenTrabajo, fechaEmision, fechaEntrega, nombreComprador, agenteProveedor, revisadoPor, notasGenerales, aprobadoPor, estatus, fechaInicioRenta, idProveedor, fechaFinRenta, tipo, idUsuario);
-            if (compraDAO.actualizarCompra(compra)) {
-                //eliminar compraProducto
-                new CompraProductoDAO().eliminarCompraProducto(idCompra);
-                //agregar compraProductos
-                for (CompraProducto producto : compraProductos) {
-                    producto.setIdCompra(idCompra);
-                    new CompraProductoDAO().agregarCompraProducto(producto);
-                }//for
-                //se eliminan todos los productos asociados a la compra ya que si se modifica la compra y se quieren agregar otros productos si solo se actualiza no se podrá agregar lo nuevos productos a la compra...
-                //...por lo que para asegurar que se actualice correctamente incluyendo los nuevos productos que se quieren agregar es necesario eliminar todo y agregar todo lo nuevo
-                JOptionPane.showMessageDialog(null, "Todo actualizado correctamente.", "Actualizado", JOptionPane.INFORMATION_MESSAGE);
-                return true;
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al actualizar la compra. Por favor, inténtelo nuevamente.", "No actualizado", JOptionPane.ERROR_MESSAGE);
+            if (!compraProductos.isEmpty()) {//revisar que haya productos en la lista
+                if (compraDAO.actualizarCompra(compra)) {
+                    //eliminar compraProducto
+                    new CompraProductoDAO().eliminarCompraProducto(idCompra);
+                    //agregar compraProductos
+                    for (CompraProducto producto : compraProductos) {
+                        producto.setIdCompra(idCompra);
+                        new CompraProductoDAO().agregarCompraProducto(producto);
+                    }//for
+                    //se eliminan todos los productos asociados a la compra ya que si se modifica la compra y se quieren agregar otros productos si solo se actualiza no se podrá agregar lo nuevos productos a la compra...
+                    //...por lo que para asegurar que se actualice correctamente incluyendo los nuevos productos que se quieren agregar es necesario eliminar todo y agregar todo lo nuevo
+                    JOptionPane.showMessageDialog(null, "Todo actualizado correctamente.", "Actualizado", JOptionPane.INFORMATION_MESSAGE);
+                    return true;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error al actualizar la compra. Por favor, inténtelo nuevamente.", "No actualizado", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }//if compraDAO
+            }else{
+                JOptionPane.showMessageDialog(null, "Agregue al menos 1 producto.", "Sin productos", JOptionPane.ERROR_MESSAGE);
                 return false;
-            }//if compraDAO
-
+            }//if que valida si hay compraproductos
         } else {
             JOptionPane.showMessageDialog(null, "Hay uno o más campos vacíos, Revíselos", "Campo vacío", JOptionPane.WARNING_MESSAGE);
             return false;

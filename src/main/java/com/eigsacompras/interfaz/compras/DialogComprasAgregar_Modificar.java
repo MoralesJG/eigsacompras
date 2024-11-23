@@ -1,4 +1,4 @@
-package com.eigsacompras.interfaz;
+package com.eigsacompras.interfaz.compras;
 
 import com.eigsacompras.controlador.CompraControlador;
 import com.eigsacompras.controlador.ProveedorControlador;
@@ -19,43 +19,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DialogComprasModificar extends JDialog {
-    private JPanel contentPane;
-    private JTextField JTF_OrdenCompra;
-    private JTextField JTF_OrdenTrabajo;
-    private JComboBox JCB_Tipo;
-    private JTextArea JTA_NotasGenerales;
-    private JPanel JP_TablayBotones;
-    private JTable JT_Tabla;
-    private JButton JB_AgregarProducto;
-    private JButton JB_eliminarProducto;
-    private JTextField JTF_Total;
-    private JButton JB_Guardar;
-    private JButton JB_Cerrar;
-    private JButton JB_Imprimir;
-    private JTextField JTF_FechaEmision;
-    private JTextField JTF_Condiciones;
-    private JTextField JTF_Agente;
-    private JTextField JTF_FechaEntrega;
-    private JTextField JTF_Comprador;
-    private JTextField JTF_Revisado;
-    private JTextField JTF_Aprovado;
-    private JComboBox JCB_Estatus;
-    private JTextField JTF_FechaInicioRenta;
-    private JTextField JTF_FechaFinRenta;
-    private JLabel JL_FechaInicioRenta;
-    private JLabel JL_FechaFinRenta;
-    private JComboBox JCB_Proveedor;
-    private JPanel JP_MenuyDatosPrincipales;
+
+public class DialogComprasAgregar_Modificar extends JDialog {
+    private JTextField JTF_Total,JTF_FechaEmision,JTF_Condiciones,JTF_Agente,JTF_FechaEntrega,JTF_Comprador,JTF_Revisado,JTF_Aprovado,JTF_FechaInicioRenta,JTF_FechaFinRenta;
+    private JButton JB_AgregarProducto,JB_eliminarProducto,JB_Guardar,JB_Cancelar,JB_Imprimir;
+    private JPanel contentPane,JP_MenuyDatosPrincipales,JP_TablayBotones;
+    private JComboBox JCB_Tipo,JCB_Proveedor,JCB_Estatus;
+    private JTextField JTF_OrdenCompra,JTF_OrdenTrabajo;
+    private JLabel JL_FechaInicioRenta,JL_FechaFinRenta;
     private DefaultTableModel modeloTabla;
+    private JTextArea JTA_NotasGenerales;
     private JScrollPane scroll;
-    private CompraControlador compraControlador;
-    private ProveedorControlador proveedorControlador;
-    private CompraProducto compraProductos;
+    private JTable JT_Tabla;
     private Map<String,Integer> proveedorMapa = new HashMap<>();
+    private CompraProducto compraProductos;
     private int idCompra;
 
-    public DialogComprasModificar(int idCompra) {//se necesita el id para rellenar los campos en la interfaz
+    public DialogComprasAgregar_Modificar(int idCompra) {
         this.idCompra = idCompra;
         setResizable(true);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -69,8 +49,8 @@ public class DialogComprasModificar extends JDialog {
         configuracionIncial();
         inicializarTabla();
         inicalizarEventos();
-        mostrarDatosModificar();
-
+        if(idCompra!=0)
+            mostrarDatosModificar();
     }
 
     public void configuracionIncial(){
@@ -84,9 +64,9 @@ public class DialogComprasModificar extends JDialog {
         JB_Guardar.setFocusPainted(false);
         JB_Guardar.setBorderPainted(false);
         JB_Guardar.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        JB_Cerrar.setFocusPainted(false);
-        JB_Cerrar.setBorderPainted(false);
-        JB_Cerrar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JB_Cancelar.setFocusPainted(false);
+        JB_Cancelar.setBorderPainted(false);
+        JB_Cancelar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         JB_Imprimir.setFocusPainted(false);
         JB_Imprimir.setBorderPainted(false);
         JB_Imprimir.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -211,18 +191,18 @@ public class DialogComprasModificar extends JDialog {
             }//boton de agregar producto
         });
 
-        JB_Cerrar.addMouseListener(new MouseAdapter() {
+        JB_Cancelar.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                JB_Cerrar.setForeground(new Color(0,0,0,220));
+                JB_Cancelar.setForeground(new Color(0,0,0,220));
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                JB_Cerrar.setForeground(Color.WHITE);
+                JB_Cancelar.setForeground(Color.WHITE);
             }
         });
-        JB_Cerrar.addActionListener(new ActionListener() {
+        JB_Cancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -265,24 +245,47 @@ public class DialogComprasModificar extends JDialog {
                 try {//este try porque si se intenta agregar una fecha vacia da error y no se valida en el CompraControlador
                     List<CompraProducto> compraProductos = datosTabla();
                     int idProveedor = proveedorMapa.get(JCB_Proveedor.getSelectedItem());
-                    if(JCB_Tipo.getSelectedItem().equals(TipoCompra.COMPRA) || JCB_Tipo.getSelectedItem().equals(TipoCompra.REQUISICION)){
-                        if(new CompraControlador().actualizarCompra(JTF_OrdenCompra.getText(),JTF_Condiciones.getText(),LocalDate.parse(JTF_FechaEmision.getText()),JTF_OrdenTrabajo.getText(),
-                                LocalDate.parse(JTF_FechaEntrega.getText()),JTF_Agente.getText(),JTF_Comprador.getText(),JTF_Revisado.getText(),JTF_Aprovado.getText(),
-                                TipoEstatus.valueOf(String.valueOf(JCB_Estatus.getSelectedItem())),JTA_NotasGenerales.getText(),TipoCompra.valueOf(String.valueOf(JCB_Tipo.getSelectedItem())),null,
-                                null,idProveedor,1,idCompra,compraProductos)){//este if para que limpie la interfaz solo cuando se agrega una conmpra
-                            dispose();
-                        }//if
-                    }else if(JCB_Tipo.getSelectedItem().equals(TipoCompra.RENTA)){
-                        if(new CompraControlador().actualizarCompra(JTF_OrdenCompra.getText(),JTF_Condiciones.getText(),LocalDate.parse(JTF_FechaEmision.getText()),JTF_OrdenTrabajo.getText(),
-                                null,JTF_Agente.getText(),JTF_Comprador.getText(),JTF_Revisado.getText(),JTF_Aprovado.getText(),
-                                TipoEstatus.valueOf(String.valueOf(JCB_Estatus.getSelectedItem())),JTA_NotasGenerales.getText(),TipoCompra.valueOf(String.valueOf(JCB_Tipo.getSelectedItem())),
-                                LocalDate.parse(JTF_FechaInicioRenta.getText()),LocalDate.parse(JTF_FechaFinRenta.getText()),
-                                idProveedor,1,idCompra,compraProductos)){//este if para que limpie la interfaz solo cuando se agrega una conmpra
-                            dispose();
-                        }//if
-                    }//elif
+                    if(idCompra==0) {//valida si será agregar o modificar. si da TRUE entonces será para agregar
+
+                        if (JCB_Tipo.getSelectedItem().equals(TipoCompra.COMPRA) || JCB_Tipo.getSelectedItem().equals(TipoCompra.REQUISICION)) {
+
+                            if (new CompraControlador().agregarCompras(JTF_OrdenCompra.getText(), JTF_Condiciones.getText(), LocalDate.parse(JTF_FechaEmision.getText()), JTF_OrdenTrabajo.getText(),
+                                    LocalDate.parse(JTF_FechaEntrega.getText()), JTF_Agente.getText(), JTF_Comprador.getText(), JTF_Revisado.getText(), JTF_Aprovado.getText(),
+                                    TipoEstatus.valueOf(String.valueOf(JCB_Estatus.getSelectedItem())), JTA_NotasGenerales.getText(), TipoCompra.valueOf(String.valueOf(JCB_Tipo.getSelectedItem())), null,
+                                    null, idProveedor, 1, compraProductos)) {//este if para que limpie la interfaz solo cuando se agrega una Compra
+                                limpiarInterfaz();//esto hace el if si es true
+                            }//if compraControlador
+
+                        } else if (JCB_Tipo.getSelectedItem().equals(TipoCompra.RENTA)) {
+                            if (new CompraControlador().agregarCompras(JTF_OrdenCompra.getText(), JTF_Condiciones.getText(), LocalDate.parse(JTF_FechaEmision.getText()), JTF_OrdenTrabajo.getText(),
+                                    null, JTF_Agente.getText(), JTF_Comprador.getText(), JTF_Revisado.getText(), JTF_Aprovado.getText(),
+                                    TipoEstatus.valueOf(String.valueOf(JCB_Estatus.getSelectedItem())), JTA_NotasGenerales.getText(), TipoCompra.valueOf(String.valueOf(JCB_Tipo.getSelectedItem())),
+                                    LocalDate.parse(JTF_FechaInicioRenta.getText()), LocalDate.parse(JTF_FechaFinRenta.getText()),
+                                    idProveedor, 1, compraProductos)) {//este if para que limpie la interfaz solo cuando se agrega una Compra
+                                limpiarInterfaz();//esto hace el if si es true
+                            }
+                        }//elif
+                    }else{//si da FALSE entonces se va a modificar la compra
+                        JB_Guardar.setText("Modificar");
+                        if(JCB_Tipo.getSelectedItem().equals(TipoCompra.COMPRA) || JCB_Tipo.getSelectedItem().equals(TipoCompra.REQUISICION)){
+                            if(new CompraControlador().actualizarCompra(JTF_OrdenCompra.getText(),JTF_Condiciones.getText(),LocalDate.parse(JTF_FechaEmision.getText()),JTF_OrdenTrabajo.getText(),
+                                    LocalDate.parse(JTF_FechaEntrega.getText()),JTF_Agente.getText(),JTF_Comprador.getText(),JTF_Revisado.getText(),JTF_Aprovado.getText(),
+                                    TipoEstatus.valueOf(String.valueOf(JCB_Estatus.getSelectedItem())),JTA_NotasGenerales.getText(),TipoCompra.valueOf(String.valueOf(JCB_Tipo.getSelectedItem())),null,
+                                    null,idProveedor,1,idCompra,compraProductos)){//este if para que limpie la interfaz solo cuando se agrega una compra
+                                dispose();
+                            }//if
+                        }else if(JCB_Tipo.getSelectedItem().equals(TipoCompra.RENTA)){
+                            if(new CompraControlador().actualizarCompra(JTF_OrdenCompra.getText(),JTF_Condiciones.getText(),LocalDate.parse(JTF_FechaEmision.getText()),JTF_OrdenTrabajo.getText(),
+                                    null,JTF_Agente.getText(),JTF_Comprador.getText(),JTF_Revisado.getText(),JTF_Aprovado.getText(),
+                                    TipoEstatus.valueOf(String.valueOf(JCB_Estatus.getSelectedItem())),JTA_NotasGenerales.getText(),TipoCompra.valueOf(String.valueOf(JCB_Tipo.getSelectedItem())),
+                                    LocalDate.parse(JTF_FechaInicioRenta.getText()),LocalDate.parse(JTF_FechaFinRenta.getText()),
+                                    idProveedor,1,idCompra,compraProductos)){//este if para que limpie la interfaz solo cuando se agrega una compra
+                                dispose();
+                            }//if
+                        }//elif
+                    }//cierre if que valida si es agregar/modificar
                 } catch (Exception ex) {
-                    throw new RuntimeException(ex);
+                    JOptionPane.showMessageDialog(null, "Hay uno o más campos vacíos, Revíselos", "Campo vacío", JOptionPane.WARNING_MESSAGE);
                 }//try
             }
         });//boton guardar compra

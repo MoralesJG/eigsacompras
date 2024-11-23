@@ -1,23 +1,23 @@
-package com.eigsacompras.interfaz;
+package com.eigsacompras.interfaz.compras;
 
 import com.eigsacompras.controlador.ProductoControlador;
-import com.eigsacompras.modelo.Producto;
-import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxUI;
-import java.awt.*;
-import java.awt.event.*;
+import com.eigsacompras.modelo.Producto;
 import java.util.HashMap;
+import java.awt.event.*;
+import javax.swing.*;
 import java.util.Map;
+import java.awt.*;
 
 public class DialogAgregarProducto extends JDialog {
-    private JPanel contentPane;
+    private JTextField JTF_Cantidad, JTF_Precio;
     private JButton JB_Aceptar, JB_Cancelar;
     private JComboBox JCB_Descripcion;
-    private JTextField JTF_Cantidad, JTF_Precio;
-    private int cantidad;
-    private Double precio;
-    private String descripcion;
+    private JPanel contentPane;
     private Map<String,Integer> mapaProducto = new HashMap<>();
+    private String descripcion;
+    private Double precio;
+    private int cantidad;
 
     public DialogAgregarProducto() {
         setUndecorated(true);
@@ -63,7 +63,7 @@ public class DialogAgregarProducto extends JDialog {
         JCB_Descripcion.addItem("\n                                Seleccionar");//para que aparezca centrado
 
         for(Producto producto: new ProductoControlador().listarProducto()){
-            mapaProducto.put(producto.getDescripcion(),producto.getIdProducto());//para acceder al id en DialogComprasAgregar
+            mapaProducto.put(producto.getDescripcion(),producto.getIdProducto());//para acceder al id en DialogProveedorAgregar
             JCB_Descripcion.addItem(producto.getDescripcion());
         }
 
@@ -158,6 +158,7 @@ public class DialogAgregarProducto extends JDialog {
     public Double getPrecio() {
         return precio;
     }
+
     public int getCantidad() {
         return cantidad;
     }
