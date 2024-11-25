@@ -1,33 +1,30 @@
-package com.eigsacompras.interfaz.proveedores;
+package com.eigsacompras.interfaz.productos;
 
-import com.eigsacompras.controlador.ProveedorControlador;
-import com.eigsacompras.enums.TipoDisponibilidad;
-import com.eigsacompras.modelo.ProductoProveedor;
-import com.eigsacompras.modelo.Proveedor;
-import javax.swing.*;
-import javax.swing.plaf.basic.BasicComboBoxUI;
+import com.eigsacompras.controlador.ProductoControlador;
 import javax.swing.table.DefaultTableCellRenderer;
+import com.eigsacompras.modelo.ProductoProveedor;
+import com.eigsacompras.enums.TipoDisponibilidad;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.awt.event.*;
+import com.eigsacompras.modelo.Producto;
 import java.util.ArrayList;
+import java.awt.event.*;
 import java.util.List;
+import javax.swing.*;
+import java.awt.*;
 
-public class DialogProveedoresAgregar_Modificar extends JDialog {
-    private JButton JB_Guardar,JB_Cancelar,JB_AgregarProducto,JB_EliminarProducto;
+public class DialogProductosAgregar_Modificar extends JDialog {
+    private JButton JB_Guardar,JB_Cancelar,JB_AgregarProveedor,JB_EliminarProducto;
     private JPanel contentPane,JP_DatosPrincipales,JP_TablayBotones;
-    private JTextField JTF_Nombre,JTF_Correo,JTF_Telefono;
     private DefaultTableModel modeloTabla;
-    private JComboBox JCB_Disponilidad;
-    private JTextArea JTA_Ubicacion;
+    private JTextArea JTA_Descripcion;
     private JScrollPane scroll;
-    private JTable JT_Tabla;
     private JLabel JTF_Titulo;
+    private JTable JT_Tabla;
     private ProductoProveedor productoProveedor;
-    private int idProveedor;
+    private int idProducto;
 
-    public DialogProveedoresAgregar_Modificar(int idProveedor) {
-        this.idProveedor=idProveedor;
+    public DialogProductosAgregar_Modificar(int idProducto) {
+        this.idProducto=idProducto;
         setResizable(true);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int maxHeight = (int) (screenSize.height * 0.93);//usa el 93% de la altura total de la pantalla
@@ -40,16 +37,15 @@ public class DialogProveedoresAgregar_Modificar extends JDialog {
         configuracionIncial();
         inicializarTabla();
         inicalizarEventos();
-        if(idProveedor!=0)
+        if(idProducto!=0)
             mostrarDatosModificar();//si hay un número en idProveedor se convierte en modificar la interfaz
-
     }
 
     public void configuracionIncial(){
         //botones
-        JB_AgregarProducto.setFocusPainted(false);
-        JB_AgregarProducto.setBorderPainted(false);
-        JB_AgregarProducto.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JB_AgregarProveedor.setFocusPainted(false);
+        JB_AgregarProveedor.setBorderPainted(false);
+        JB_AgregarProveedor.setCursor(new Cursor(Cursor.HAND_CURSOR));
         JB_EliminarProducto.setFocusPainted(false);
         JB_EliminarProducto.setBorderPainted(false);
         JB_EliminarProducto.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -60,25 +56,8 @@ public class DialogProveedoresAgregar_Modificar extends JDialog {
         JB_Cancelar.setBorderPainted(false);
         JB_Cancelar.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        //text field's
-        JTF_Nombre.setBorder(BorderFactory.createEmptyBorder(0,5,0,5));
-        JTF_Correo.setBorder(BorderFactory.createEmptyBorder(0,5,0,5));
-        JTF_Telefono.setBorder(BorderFactory.createEmptyBorder(0,5,0,5));
-        JTA_Ubicacion.setLineWrap(true);
-        JTA_Ubicacion.setWrapStyleWord(true);
-
-        //JComboBox
-        JCB_Disponilidad.addItem("DISPONIBLE");
-        JCB_Disponilidad.addItem("NO DISPONIBLE");
-        JCB_Disponilidad.setUI(new BasicComboBoxUI() {
-            @Override
-            protected JButton createArrowButton() {
-                JButton button = super.createArrowButton();
-                button.setBorder(BorderFactory.createEmptyBorder());
-                return button;
-            }
-        });//necesario para quitar el borde del ComboBox
-        JCB_Disponilidad.setFont(new Font("Roboto Light",Font.PLAIN,13));
+        JTA_Descripcion.setLineWrap(true);
+        JTA_Descripcion.setWrapStyleWord(true);
     }//configuraciones inicales
 
     public void inicializarTabla(){
@@ -97,9 +76,9 @@ public class DialogProveedoresAgregar_Modificar extends JDialog {
 
         modeloTabla.setRowCount(0);
         modeloTabla.setColumnCount(0);
-        modeloTabla.addColumn("Descripción");
-        modeloTabla.addColumn("Precio");
-        //las filas se agregan en el metodo inicializarEventos en el JB_AgregarProducto
+        modeloTabla.addColumn("Proveedor");
+        modeloTabla.addColumn("Precio unitario");
+        //las filas se agregan en el metodo inicializarEventos en el JB_AgregarProveedor
 
         //centrar las filas
         DefaultTableCellRenderer centrado = new DefaultTableCellRenderer();
@@ -110,17 +89,17 @@ public class DialogProveedoresAgregar_Modificar extends JDialog {
     }//tabla
 
     public void inicalizarEventos(){
-        JB_AgregarProducto.addActionListener(new ActionListener() {
+        JB_AgregarProveedor.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogAgregarProducto agregarProducto = new DialogAgregarProducto();
-                agregarProducto.setVisible(true);
+                DialogAgregarProveedor agregarProveedor = new DialogAgregarProveedor();
+                agregarProveedor.setVisible(true);
                 //agrega filas en la tabla
-                if(agregarProducto.getDescripcion()!=null){
-                    Object [] filas = {agregarProducto.getDescripcion(),"$"+agregarProducto.getPrecio()};
+                if(agregarProveedor.getProveedor()!=null){
+                    Object [] filas = {agregarProveedor.getProveedor(),"$"+agregarProveedor.getPrecio()};
                     modeloTabla.addRow(filas);
                 }
-            }//boton de agregar producto
+            }//boton de agregar proveedor
         });
 
         JB_Cancelar.addMouseListener(new MouseAdapter() {
@@ -173,12 +152,12 @@ public class DialogProveedoresAgregar_Modificar extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 List<ProductoProveedor> productoProveedores = datosTabla();
-                if(idProveedor==0){//si no hay id se agrega un nuevo proveedor
-                    if(new ProveedorControlador().agregarProveedor(JTF_Nombre.getText(),JTF_Correo.getText(),JTF_Telefono.getText(), JTA_Ubicacion.getText(),productoProveedores)){//este if para que limpie la interfaz solo cuando se agrega una Compra
+                if(idProducto==0){//si no hay id se agrega un nuevo producto
+                    if(new ProductoControlador().agregarProducto(JTA_Descripcion.getText(),productoProveedores)){//este if para que limpie la interfaz solo cuando se agrega una Compra
                         limpiarInterfaz();//esto hace el if si todo se agrega correctamente
                     }//if compraControlador
                 }else{
-                    if(new ProveedorControlador().actualizarProveedor(JTF_Nombre.getText(),JTF_Correo.getText(),JTF_Telefono.getText(), JTA_Ubicacion.getText(),idProveedor,productoProveedores)){
+                    if(new ProductoControlador().actualizarProducto(JTA_Descripcion.getText(),idProducto,productoProveedores)){
                         dispose();//si se actualiza correctamente se cierra la ventana
                     }//if
                 }//if idProveedor
@@ -192,19 +171,15 @@ public class DialogProveedoresAgregar_Modificar extends JDialog {
         int columnas = JT_Tabla.getColumnCount();
         for(int i=0;i<filas;i++){
             productoProveedor = new ProductoProveedor();
-            productoProveedor.setIdProveedor(idProveedor);
-            if(JCB_Disponilidad.getSelectedItem().equals("DISPONIBLE")){
-                productoProveedor.setDisponibilidad(TipoDisponibilidad.DISPONIBLE);
-            }else{
-                productoProveedor.setDisponibilidad(TipoDisponibilidad.NO_DISPONIBLE);
-            }
+            productoProveedor.setIdProducto(idProducto);
+            productoProveedor.setDisponibilidad(TipoDisponibilidad.DISPONIBLE);//se manda disponible por defecto
             for(int x=0;x<columnas;x++){
                 switch (JT_Tabla.getColumnName(x)){
-                    case "Descripción":
-                        String descripcion = String.valueOf(JT_Tabla.getValueAt(i,x));
-                        productoProveedor.setIdProducto(new DialogAgregarProducto().getMapaProducto().get(descripcion));//para obtener el id
+                    case "Proveedor":
+                        String proveedor = String.valueOf(JT_Tabla.getValueAt(i,x));
+                        productoProveedor.setIdProveedor(new DialogAgregarProveedor().getMapaProveedor().get(proveedor));//para obtener el id
                         break;
-                    case "Precio":
+                    case "Precio unitario":
                         Double precio = Double.valueOf(String.valueOf(JT_Tabla.getValueAt(i,x)).replace("$",""));
                         productoProveedor.setPrecioOfrecido(precio);
                         break;
@@ -214,35 +189,25 @@ public class DialogProveedoresAgregar_Modificar extends JDialog {
         }//for filas
 
         return listProductosProveedores;
-    }
+    }//datos tabla
 
     public void mostrarDatosModificar(){
         JB_Guardar.setText("Modificar");
-        JTF_Titulo.setText("Modificar proveedor");
-        Proveedor proveedor;
-        proveedor = new ProveedorControlador().listarProveedorPorId(idProveedor);
-        JTF_Nombre.setText(proveedor.getNombre());
-        JTF_Correo.setText(proveedor.getCorreo());
-        JTF_Telefono.setText(proveedor.getTelefono());
-        JTA_Ubicacion.setText(proveedor.getUbicacion());
-        //tabla de productos
-        for(ProductoProveedor producto: proveedor.getProductos()){
-            if(producto.getDisponibilidad().equals(TipoDisponibilidad.DISPONIBLE)){
-                JCB_Disponilidad.setSelectedItem("DISPONIBLE");
-            }else{
-                JCB_Disponilidad.setSelectedItem("NO DISPONIBLE");
-            }
-            Object [] fila = {producto.getProducto().getDescripcion(),"$"+producto.getPrecioOfrecido()};
+        JTF_Titulo.setText("Modificar producto");
+        Producto producto;
+        producto = new ProductoControlador().listarProductoPorId(idProducto);
+        JTA_Descripcion.setText(producto.getDescripcion());
+        //tabla de proveedor
+        for(ProductoProveedor productoProveedor: producto.getProveedores()){
+
+            Object [] fila = {productoProveedor.getProveedor().getNombre(),"$"+productoProveedor.getPrecioOfrecido()};
             modeloTabla.addRow(fila);
         }//for
 
     }//mostrarDatos
 
     public void limpiarInterfaz(){
-        JTF_Nombre.setText("");
-        JTF_Correo.setText("");
-        JTF_Telefono.setText("");
-        JTA_Ubicacion.setText("");
+        JTA_Descripcion.setText("");
         modeloTabla.setRowCount(0);
     }//limpiar interfaz
 }

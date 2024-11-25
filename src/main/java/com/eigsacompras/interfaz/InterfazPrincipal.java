@@ -1,12 +1,16 @@
 package com.eigsacompras.interfaz;
 
 import com.eigsacompras.controlador.CompraControlador;
+import com.eigsacompras.controlador.ProductoControlador;
 import com.eigsacompras.controlador.ProveedorControlador;
 import com.eigsacompras.interfaz.compras.DialogComprasAgregar_Modificar;
 import com.eigsacompras.interfaz.compras.ModeloTablaArbolCompras;
+import com.eigsacompras.interfaz.productos.DialogProductosAgregar_Modificar;
+import com.eigsacompras.interfaz.productos.ModeloTablaArbolProductos;
 import com.eigsacompras.interfaz.proveedores.DialogProveedoresAgregar_Modificar;
 import com.eigsacompras.interfaz.proveedores.ModeloTablaArbolProveedores;
 import com.eigsacompras.modelo.Compra;
+import com.eigsacompras.modelo.Producto;
 import com.eigsacompras.modelo.Proveedor;
 import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
@@ -58,13 +62,19 @@ public class InterfazPrincipal extends JFrame{
     private JButton JB_ProveedorAgregar;
     private JButton JB_ProveedorModificar;
     private JButton JB_ProveedorEliminar;
+    private JTextField JTF_BuscarProductos;
+    private JButton JB_ProductoAgregar;
+    private JButton JB_ProductoModificar;
+    private JButton JB_ProductoEliminar;
+    private JPanel JP_TablaProductos;
     private CompraControlador compraControlador;
     private CardLayout cardLayout;
     private JScrollPane scroll;
     private DefaultTableModel modeloTablaInicio, modeloTablaCompras;
-    private JXTreeTable tablaArbolCompras, tablaArbolProveedor;
-    private Map<String,Integer> mapaCompras, mapaProveedores;
+    private JXTreeTable tablaArbolCompras, tablaArbolProveedor, tablaArbolProducto;
+    private Map<String,Integer> mapaCompras, mapaProveedores, mapaProductos;
     private ProveedorControlador proveedorControlador;
+    private ProductoControlador productoControlador;
 
 
     public InterfazPrincipal(){
@@ -74,14 +84,18 @@ public class InterfazPrincipal extends JFrame{
         inicializarComponentesInicio();
         tablaInicio();
         panelResumenInicio();
-        //panel compras
+        //panel Compras
         inicializarComponentesCompras();
         tablaCompras();
         inicializarEventosCompras();
-        //panel proveedores
+        //panel Proveedores
         inicializarComponentesProveedores();
         tablaProveedores();
         inicializarEventosProveedores();
+        //panel Productos
+        inicializarComponentesProductos();
+        tablaProductos();
+        inicializarEventosProductos();
 
         inicializarEventosPrincipales();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -644,6 +658,203 @@ public class InterfazPrincipal extends JFrame{
         tablaArbolProveedor.revalidate();
         tablaArbolProveedor.repaint();
     }//vistaTabla (llamado por el metodo inicializarEventosProveedores )
+
+    //PANEL PRODUCTOS
+
+    public void inicializarComponentesProductos(){
+        //botones
+        JB_ProductoAgregar.setFocusPainted(false);
+        JB_ProductoAgregar.setBorderPainted(false);
+        JB_ProductoAgregar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JB_ProductoModificar.setFocusPainted(false);
+        JB_ProductoModificar.setBorderPainted(false);
+        JB_ProductoModificar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JB_ProductoEliminar.setFocusPainted(false);
+        JB_ProductoEliminar.setBorderPainted(false);
+        JB_ProductoEliminar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        //buscador
+        JTF_BuscarProductos.setText("Buscar en productos por descripción, nombre proveedor.");
+        JTF_BuscarProductos.setForeground(Color.GRAY);
+        JTF_BuscarProductos.setBorder(new CompoundBorder(JTF_BuscarProductos.getBorder(), new EmptyBorder(5, 15, 5, 10))); // márgenes internos
+
+    }//inicializar componentes productos
+
+    public void tablaProductos(){
+        JP_TablaProductos.removeAll();//elimina todo lo que haya en ese panel
+        productoControlador = new ProductoControlador();
+        List<Producto> listaProducto = productoControlador.listarProducto();
+        mapaProductos = new HashMap<>();
+        ModeloTablaArbolProductos tablaArbolModelo = new ModeloTablaArbolProductos(listaProducto);//se crea un tabla árbol para mostrar los productos
+        for(Producto producto:listaProducto){//para almacenar el id del producto y usarla para el boton eliminar
+            mapaProductos.put(producto.getDescripcion(),producto.getIdProducto());
+        }//for
+        tablaArbolProducto = new JXTreeTable(tablaArbolModelo){
+            @Override
+            public JToolTip createToolTip() {
+                JToolTip toolTip = super.createToolTip();
+                toolTip.setBackground(new Color(236, 240, 241));
+                toolTip.setFont(new Font("Reboto Light",Font.PLAIN,13));
+                return toolTip;
+            }//personalizar tool tip
+        };
+
+        tablaArbolProducto.setRowHeight(47);
+        tablaArbolProducto.setFont(new Font("Reboto Light", Font.PLAIN, 16));
+        tablaArbolProducto.getTableHeader().setFont(new Font("Reboto Light", Font.BOLD, 18));
+        tablaArbolProducto.getTableHeader().setBackground(new Color(236, 240, 241));
+        tablaArbolProducto.setBackground(new Color(236, 240, 241));
+        tablaArbolProducto.setLeafIcon(null);//icono de "archivo" no se muestra
+
+        JScrollPane scrollPane = new JScrollPane(tablaArbolProducto);
+        JP_TablaProductos.add(scrollPane);
+        //para actualizar la interfaz
+        JP_TablaProductos.revalidate();
+        JP_TablaProductos.repaint();
+    }//tabla productos
+
+    public void inicializarEventosProductos(){
+        JB_ProductoAgregar.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {//al precionar el boton
+                JB_ProductoAgregar.setForeground(new Color(0,0,0,220));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {//cuando se deja de presionar el boton
+                JB_ProductoAgregar.setForeground(Color.BLACK);
+            }
+        });
+
+        JB_ProductoModificar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {//al presionar el boton
+                JB_ProductoModificar.setForeground(new Color(0,0,0,220));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {//cuando se deja de presionar el boton
+                JB_ProductoModificar.setForeground(Color.BLACK);
+            }
+        });
+
+        JB_ProductoEliminar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {//al presionar
+                JB_ProductoEliminar.setForeground(new Color(0,0,0,220));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {//al dejar de presionar
+                JB_ProductoEliminar.setForeground(Color.WHITE);
+            }
+        });
+
+        JTF_BuscarProductos.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {//al dar click en buscar se quita el texto de apoyo
+                if(JTF_BuscarProductos.getText().equals("Buscar en productos por descripción, nombre proveedor.")){
+                    JTF_BuscarProductos.setText("");
+                    JTF_BuscarProductos.setForeground(Color.BLACK);
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {//cuando buscar está vacio se agregae este texto
+                if(JTF_BuscarProductos.getText().isEmpty()){
+                    JTF_BuscarProductos.setText("Buscar en productos por descripción, nombre proveedor.");
+                    JTF_BuscarProductos.setForeground(Color.GRAY);
+                }
+            }
+        });
+
+        JTF_BuscarProductos.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {//para quitar el foto en caso de que se de ESC
+                if(e.getKeyCode()==KeyEvent.VK_ESCAPE){
+                    JTF_BuscarProductos.setFocusable(false);
+                    JTF_BuscarProductos.setFocusable(true);
+                }
+            }
+        });
+
+        tablaArbolProducto.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {//para el toolTip de la tabla
+
+                int row = tablaArbolProducto.rowAtPoint(e.getPoint());
+                int column = tablaArbolProducto.columnAtPoint(e.getPoint());
+
+                if (row > -1 && column > -1) {
+                    Object value = tablaArbolProducto.getValueAt(row, column);
+
+                    if (value != null && !value.toString().trim().isEmpty()) {
+                        tablaArbolProducto.setToolTipText(value.toString());
+                    } else {
+                        tablaArbolProducto.setToolTipText(null);
+                    }
+                }
+            }
+
+        });//tabla
+
+        JB_ProductoAgregar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int idProducto = 0;
+                DialogProductosAgregar_Modificar productoAgregar = new DialogProductosAgregar_Modificar(idProducto);
+                productoAgregar.setVisible(true);
+                tablaProductos();//actualizar la tabla después de agregar
+            }
+        });//Boton de agregar
+
+        JB_ProductoEliminar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int seleccionado = tablaArbolProducto.getSelectedRow();
+                if(seleccionado!=-1){
+                    String nombreProducto = tablaArbolProducto.getStringAt(seleccionado,1);//para acceder al id en el hash map
+                    productoControlador.eliminarProducto(mapaProductos.get(nombreProducto));//se elimina en la base de datos
+                    //actualizar la tabla volviendola a mostrar
+                    tablaProductos();
+                }//if
+            }
+        });//boton de eliminar
+
+        JB_ProductoModificar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {//para cuando se selecciona un subnodo de la tabla y se mande un mensaje de advertencia
+                    if(tablaArbolProducto.getSelectedRow()!=-1){
+                        String nombreProducto = tablaArbolProducto.getStringAt(tablaArbolProducto.getSelectedRow(),1);//para acceder al id en el hash map
+                        DialogProductosAgregar_Modificar modificar = new DialogProductosAgregar_Modificar(mapaProductos.get(nombreProducto));
+                        modificar.setVisible(true);
+                        tablaProductos();//al cerrarse la ventana se actualiza la tabla para mostrar los cambios
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Selecciona primero un elemento de la lista", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Selecciona únicamente elementos principales", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                }
+
+            }
+        });
+        JTF_BuscarProductos.addKeyListener(new KeyAdapter() {//para filtrar las busquedas
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String termino = JTF_BuscarProductos.getText();
+                List<Producto> resultados = productoControlador.buscarProductos(termino);
+                actualizarVistaTablaProductos(resultados);
+            }
+        });
+    }//eventos productos
+
+    public void actualizarVistaTablaProductos(List<Producto> listaFiltrada){
+        ModeloTablaArbolProductos modeloTabla = new ModeloTablaArbolProductos(listaFiltrada);
+        tablaArbolProducto.setTreeTableModel(modeloTabla);
+        tablaArbolProducto.revalidate();
+        tablaArbolProducto.repaint();
+    }//vistaTabla (llamado por el metodo inicializarEventosProductos )
 
     public static void main(String[] args) {
         //crea la instancia de InterfazPrincipal

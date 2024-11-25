@@ -1,28 +1,23 @@
 package com.eigsacompras.modelo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Producto {
     private int idProducto;
     private String descripcion;
-    private double precio;
+    private List<ProductoProveedor> proveedores; //a nivel de aplicacion
 
-    public Producto(){}
+    public Producto(){
+        proveedores = new ArrayList<>();
+    }
 
-    public Producto(int idProducto, double precio, String descripcion) {
+    public Producto(int idProducto, String descripcion) {
         this.idProducto = idProducto;
-        this.precio = precio;
         this.descripcion = descripcion;
     }
-    public Producto(double precio, String descripcion) {
-        this.precio = precio;
+    public Producto(String descripcion) {
         this.descripcion = descripcion;
-    }
-
-    public double getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(double precio) {
-        this.precio = precio;
     }
 
     public String getDescripcion() {
@@ -41,12 +36,20 @@ public class Producto {
         this.idProducto = idProducto;
     }
 
+    public List<ProductoProveedor> getProveedores() {
+        return proveedores;
+    }
+
+    public void setProveedores(List<ProductoProveedor> proveedores) {
+        this.proveedores = proveedores;
+    }
+
     @Override
     public String toString() {
         return "Producto{" +
                 "idProducto=" + idProducto +
                 ", descripcion='" + descripcion + '\'' +
-                ", precio=" + precio +
+                ", proveedores=" + proveedores +
                 '}';
     }
 }

@@ -25,12 +25,18 @@ public class ProveedorControlador {
                 if (!productosProveedor.isEmpty()) {
                     try {
                         int idProveedor = proveedorDAO.agregarProveedor(proveedor);
-                        for (ProductoProveedor producto : productosProveedor) {
-                            producto.setIdProveedor(idProveedor);
-                            productoProveedorDAO.agregarProductoProveedor(producto);
+                        if (idProveedor!=-1){
+                            for (ProductoProveedor producto : productosProveedor) {
+                                producto.setIdProveedor(idProveedor);
+                                productoProveedorDAO.agregarProductoProveedor(producto);
+                            }
+                            JOptionPane.showMessageDialog(null, "Proveedor agregado correctamente.", "Agregado", JOptionPane.INFORMATION_MESSAGE);
+                            return true;
+                        }else {
+                            JOptionPane.showMessageDialog(null, "Producto no agregado.\n Si el problema persiste, contacte al desarrollador ", "No agregado", JOptionPane.ERROR_MESSAGE);
+                            return false;
                         }
-                        JOptionPane.showMessageDialog(null, "Proveedor agregado correctamente.", "Agregado", JOptionPane.INFORMATION_MESSAGE);
-                        return true;
+
                     } catch (Exception e) {
                         JOptionPane.showMessageDialog(null, "Error al agregar al proveedor. Por favor, inténtelo nuevamente. Error: " + e, "No agregado", JOptionPane.ERROR_MESSAGE);
                         return false;
@@ -62,7 +68,7 @@ public class ProveedorControlador {
             Proveedor proveedor = new Proveedor (ubicacion,correo,telefono,nombre,idProveedor);
             if (!productosProveedor.isEmpty()) {
                 if (proveedorDAO.actualizarProveedor(proveedor)) {
-                    productoProveedorDAO.eliminarProductoProveedor(idProveedor);//se eliminan los productos con el proveedor
+                    productoProveedorDAO.eliminarProductoProveedorPorIdProveedor(idProveedor);//se eliminan los productos con el proveedor
                     for (ProductoProveedor producto : productosProveedor) {//se agregan los productos nuevamente incluidos los nuevos a ese proveedor
                         productoProveedorDAO.agregarProductoProveedor(producto);
                     }
@@ -88,7 +94,7 @@ public class ProveedorControlador {
     public void eliminarProveedor(int idProveedor){
         int opc = JOptionPane.showConfirmDialog(null, "¿Está seguro de eliminar este proveedor?", "Confirmacion", JOptionPane.YES_NO_OPTION);
         if (opc == JOptionPane.YES_OPTION) {
-            if (productoProveedorDAO.eliminarProductoProveedor(idProveedor)) {
+            if (productoProveedorDAO.eliminarProductoProveedorPorIdProveedor(idProveedor)) {
                 proveedorDAO.eliminarProveedor(idProveedor);
                 JOptionPane.showMessageDialog(null, "Proveedor eliminado correctamente.", "Eliminado", JOptionPane.INFORMATION_MESSAGE);
             } else {

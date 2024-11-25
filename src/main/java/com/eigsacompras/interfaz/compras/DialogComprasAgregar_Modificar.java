@@ -31,6 +31,7 @@ public class DialogComprasAgregar_Modificar extends JDialog {
     private JTextArea JTA_NotasGenerales;
     private JScrollPane scroll;
     private JTable JT_Tabla;
+    private JLabel JTF_Titulo;
     private Map<String,Integer> proveedorMapa = new HashMap<>();
     private CompraProducto compraProductos;
     private int idCompra;
@@ -85,6 +86,8 @@ public class DialogComprasAgregar_Modificar extends JDialog {
         JTF_FechaFinRenta.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         JTF_Total.setHorizontalAlignment(JTextField.CENTER);
         JTF_Total.setText("$0.0");
+        JTA_NotasGenerales.setLineWrap(true);
+        JTA_NotasGenerales.setWrapStyleWord(true);
         JCB_Tipo.setUI(new BasicComboBoxUI() {
             @Override
             protected JButton createArrowButton() {
@@ -432,6 +435,8 @@ public class DialogComprasAgregar_Modificar extends JDialog {
     }//total
 
     public void mostrarDatosModificar(){
+        JB_Guardar.setText("Modificar");
+        JTF_Titulo.setText("Modificar orden");
         Compra compra;
         compra = new CompraControlador().listarCompraPorId(idCompra);
         JTF_OrdenCompra.setText(compra.getOrdenCompra());
