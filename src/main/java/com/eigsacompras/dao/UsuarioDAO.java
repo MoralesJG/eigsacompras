@@ -3,7 +3,6 @@ package com.eigsacompras.dao;
 import com.eigsacompras.basededatos.Conexion;
 import com.eigsacompras.enums.TipoAcceso;
 import com.eigsacompras.modelo.Usuario;
-import com.eigsacompras.utilidades.EncryptedPassword;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -12,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class UsuarioDAO implements IUsuarioDAO{
     private Connection conexion;

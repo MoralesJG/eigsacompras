@@ -3,7 +3,7 @@ package com.eigsacompras.controlador;
 import com.eigsacompras.dao.UsuarioDAO;
 import com.eigsacompras.enums.TipoAcceso;
 import com.eigsacompras.modelo.Usuario;
-import com.eigsacompras.utilidades.EncryptedPassword;
+import com.eigsacompras.utilidades.EncriptarPassword;
 
 import javax.swing.*;
 import java.util.List;
@@ -19,7 +19,7 @@ public class UsuarioControlador {
 
     public void agregarUsuario(String nombre, String correo, TipoAcceso tipo, String contrasena) {
         if (validarUsuario(nombre, correo, tipo, contrasena)) {
-            String hash = EncryptedPassword.encriptar(contrasena);//se encripta la contraseña
+            String hash = EncriptarPassword.encriptar(contrasena);//se encripta la contraseña
             Usuario usuario = new Usuario(hash, correo, nombre, tipo);
             usuarioDAO.agregarUsuario(usuario);
         } else {
@@ -63,7 +63,7 @@ public class UsuarioControlador {
     public boolean validarPassword(String correo, String password) {
         String hash = usuarioDAO.obtenerPassword(correo);
         if (hash != null) {
-            return EncryptedPassword.verificar(password, hash);
+            return EncriptarPassword.verificar(password, hash);
         }
         return false;
     }//validarContraseña

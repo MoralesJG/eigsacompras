@@ -6,7 +6,6 @@ import com.eigsacompras.enums.TipoCompra;
 import com.eigsacompras.enums.TipoEstatus;
 import com.eigsacompras.modelo.Compra;
 import com.eigsacompras.modelo.CompraProducto;
-
 import javax.swing.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -127,6 +126,26 @@ public class CompraControlador {
         return compraDAO.buscarCompras(termino);
     }//buscar compra
 
+    public List<Compra> filtrarCompra(String producto, String ordenTrabajo, String estatus, String proveedor, String desde, String hasta, boolean todo){
+        switch (validarFiltroFecha(desde, hasta, todo)){
+            case 1:
+                //lo siguiente se valida con operadores ternarios
+                return compraDAO.filtrarCompras(producto.equals("Producto") ? "" : producto,
+                        ordenTrabajo.equals("Orden de trabajo") ? "" : ordenTrabajo,
+                        estatus.equals("Estatus") ? "" : estatus,
+                        proveedor.equals("Proveedor") ? "" : proveedor,
+                        null,null,todo);
+            case 2:
+                return compraDAO.filtrarCompras(producto.equals("Producto") ? "" : producto,
+                        ordenTrabajo.equals("Orden de trabajo") ? "" : ordenTrabajo,
+                        estatus.equals("Estatus") ? "" : estatus,
+                        proveedor.equals("Proveedor") ? "" : proveedor,
+                        LocalDate.parse(desde),LocalDate.parse(hasta),todo);
+            default:
+                return null;
+        }//swtich
+    }//filtrar compra
+
     public boolean validarCompra(String ordenCompra, String condiciones, LocalDate fechaEmision, String ordenTrabajo, LocalDate fechaEntrega, String agenteProveedor, String nombreComprador, String revisadoPor, String aprobadoPor, TipoEstatus estatus, String notasGenerales, TipoCompra tipo, LocalDate fechaInicioRenta, LocalDate fechaFinRenta, int idProveedor, int idUsuario) {
         if (ordenCompra.isEmpty()) return false;
         if (condiciones.isEmpty()) return false;
@@ -158,11 +177,31 @@ public class CompraControlador {
         //evaluar la fecha de entrega SOLO si es tipo COMPRA o REQUISICION
         if (tipo.equals(TipoCompra.COMPRA) || tipo.equals(TipoCompra.REQUISICION)) {
             if (fechaEntrega.isBefore(fechaEmision)) {
-                JOptionPane.showMessageDialog(null, "¡La fecha de entrega no puede ser menor a la de emision!");
+                JOptionPane.showMessageDialog(null, "¡La fecha de entrega no puede ser menor a la de emision!","Advertencia",JOptionPane.WARNING_MESSAGE);
                 return false;
             }
         }//iff tipo trabajando
         return true;
     }//validar
+
+    public int validarFiltroFecha(String desde, String hasta, boolean todo){
+        if(todo){
+            return 1;
+        }else{
+            if(desde.equals("AAAA-MM-DD") || hasta.equals("AAAA-MM-DD")){
+                JOptionPane.showMessageDialog(null, "Seleccionar 'Sin rango' para abarcar todas las fechas o agregar un rango de fechas","Aviso",JOptionPane.INFORMATION_MESSAGE);
+                return 0;
+            }else {
+                try {
+                    LocalDate.parse(desde);
+                    LocalDate.parse(hasta);
+                    return 2;
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Fecha inválida. ¡Revisar!", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    return 0;
+                }//try catch
+            }//if else desde/hasta vacio
+        }//if else todo
+    }//validar filtro fecha
 }
 

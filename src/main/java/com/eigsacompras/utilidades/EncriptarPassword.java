@@ -4,7 +4,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 //este metodo de encriptaión es sencillo pero funciona correctamente. No se necesia una seguridad extrema ya que
 //el software no se centra en lo que son usuarios
-public class EncryptedPassword {
+public class EncriptarPassword {
     //Encriptar contraseñas
     public static String encriptar(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
