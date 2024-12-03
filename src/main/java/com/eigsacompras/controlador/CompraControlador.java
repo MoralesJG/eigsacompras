@@ -7,10 +7,8 @@ import com.eigsacompras.enums.TipoEstatus;
 import com.eigsacompras.modelo.Compra;
 import com.eigsacompras.modelo.CompraProducto;
 import javax.swing.*;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,6 +34,7 @@ public class CompraControlador {
                         producto.setIdCompra(idCompra);
                         new CompraProductoDAO().agregarCompraProducto(producto);
                     }//for
+                    new NotificacionControlador().agregarNotificacion(fechaEntrega,"Orden No. "+ordenCompra.replaceAll("\\D+",""),idCompra);//se agrega la notificación
                     JOptionPane.showMessageDialog(null, "Compra agregada correctamente.", "Agregado", JOptionPane.INFORMATION_MESSAGE);
                     return true;
                 } catch (Exception e) {
@@ -93,6 +92,12 @@ public class CompraControlador {
                     }//for
                     //se eliminan todos los productos asociados a la compra ya que si se modifica la compra y se quieren agregar otros productos si solo se actualiza no se podrá agregar lo nuevos productos a la compra...
                     //...por lo que para asegurar que se actualice correctamente incluyendo los nuevos productos que se quieren agregar es necesario eliminar todo y agregar todo lo nuevo
+                    if(estatus.equals(TipoEstatus.ENTREGADO) || estatus.equals(TipoEstatus.CANCELADO)){
+                        new NotificacionControlador().eliminarNotificacion(idCompra);//se elimina la notificacion si ya fue entregada la compra
+                    }else{
+                        new NotificacionControlador().actualizarNotificacion(fechaEntrega,"Orden No. "+ordenCompra.replaceAll("\\D+",""),idCompra);//se actualiza la notificacion
+                    }//cierre if
+
                     JOptionPane.showMessageDialog(null, "Todo actualizado correctamente.", "Actualizado", JOptionPane.INFORMATION_MESSAGE);
                     return true;
                 } else {
@@ -113,6 +118,7 @@ public class CompraControlador {
         int opc = JOptionPane.showConfirmDialog(null, "¿Está seguro de eliminar esta compra?", "Confirmacion", JOptionPane.YES_NO_OPTION);
         if (opc == JOptionPane.YES_OPTION) {
             if (new CompraProductoDAO().eliminarCompraProducto(idCompra)) {
+                new NotificacionControlador().eliminarNotificacion(idCompra);
                 compraDAO.eliminarCompra(idCompra);
                 JOptionPane.showMessageDialog(null, "Compra eliminada correctamente.", "Eliminado", JOptionPane.INFORMATION_MESSAGE);
             } else {

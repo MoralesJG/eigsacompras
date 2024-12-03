@@ -2,10 +2,8 @@ package com.eigsacompras.controlador;
 
 import com.eigsacompras.dao.NotificacionDAO;
 import com.eigsacompras.modelo.Notificacion;
-
 import javax.swing.*;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public class NotificacionControlador {
@@ -15,7 +13,7 @@ public class NotificacionControlador {
         this.notificacionDAO = new NotificacionDAO();
     }
 
-    public void agregarNotificacionControlador(LocalDate fecha, String mensaje, Integer idCompra){
+    public void agregarNotificacion(LocalDate fecha, String mensaje, Integer idCompra){
         if(validarNotificacion(fecha,mensaje,idCompra)){
             Notificacion notificacion = new Notificacion(mensaje,fecha,idCompra);
             notificacionDAO.agregarNotificacion(notificacion);
@@ -26,18 +24,24 @@ public class NotificacionControlador {
 
     public List<Notificacion> listarNotificacion(){return notificacionDAO.listarNotificacion();}//listar
 
-    public void actualizarNotificacion(LocalDate fecha, String mensaje, Integer idCompra, Integer idNotificacion){
+    public void actualizarNotificacion(LocalDate fecha, String mensaje, Integer idCompra){
         if(validarNotificacion(fecha,mensaje,idCompra)){
-            Notificacion notificacion = new Notificacion(idNotificacion,mensaje,fecha,idCompra);
+            Notificacion notificacion = new Notificacion(mensaje,fecha,idCompra);
             notificacionDAO.actualizarNotificacion(notificacion);
         }else{
             JOptionPane.showMessageDialog(null,"Hay uno o más campos vacíos, Revíselos","Campo vacío", JOptionPane.WARNING_MESSAGE);
         }
     }//actualizar
 
-    public void eliminarNotificacion(Integer idNotificacion){
-        notificacionDAO.eliminarNotificacion(idNotificacion);
+    public boolean eliminarNotificacion(Integer idCompra){
+        if(notificacionDAO.eliminarNotificacion(idCompra))
+            return true;
+        return false;
     }//eliminar
+
+    public List<Notificacion> buscarNotificaciones(String filtro){
+        return notificacionDAO.buscarNotificaciones(filtro);
+    }//buscar notificaciones
 
     public boolean validarNotificacion(LocalDate fecha, String mensaje, Integer idCompra){
         if(fecha == null) return false;

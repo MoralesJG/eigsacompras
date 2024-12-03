@@ -1,9 +1,11 @@
 package com.eigsacompras.interfaz;
 
 import com.eigsacompras.controlador.CompraControlador;
+import com.eigsacompras.controlador.NotificacionControlador;
 import com.eigsacompras.controlador.ProductoControlador;
 import com.eigsacompras.controlador.ProveedorControlador;
 import com.eigsacompras.enums.TipoEstatus;
+import com.eigsacompras.interfaz.notificaciones.NotificacionesPopup;
 import com.eigsacompras.interfaz.reportes.ModeloTablaArbolReportes;
 import com.eigsacompras.interfaz.compras.DialogComprasAgregar_Modificar;
 import com.eigsacompras.interfaz.compras.ModeloTablaArbolCompras;
@@ -12,6 +14,7 @@ import com.eigsacompras.interfaz.productos.ModeloTablaArbolProductos;
 import com.eigsacompras.interfaz.proveedores.DialogProveedoresAgregar_Modificar;
 import com.eigsacompras.interfaz.proveedores.ModeloTablaArbolProveedores;
 import com.eigsacompras.modelo.Compra;
+import com.eigsacompras.modelo.Notificacion;
 import com.eigsacompras.modelo.Producto;
 import com.eigsacompras.modelo.Proveedor;
 import com.eigsacompras.utilidades.GenerarPDF;
@@ -26,7 +29,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,8 +64,6 @@ public class InterfazPrincipal extends JFrame {
     private JTable JT_TablaInicio;
     private JLabel JL_OrdenCompra;
     private JLabel JL_FechaEntrega;
-    private JLabel JL_Message;
-    private JLabel JL_User;
     private JLabel JL_Logo;
     private JTable JT_TablaCompras;
     private JPanel JP_Menu;
@@ -91,6 +95,8 @@ public class InterfazPrincipal extends JFrame {
     private JButton JB_ReporteGenerar;
     private JButton JB_ReporteImprimir;
     private JButton JB_ReporteReiniciar;
+    private JButton JB_Notificaciones;
+    private JButton JB_Usuarios;
     private CompraControlador compraControlador;
     private CardLayout cardLayout;
     private JScrollPane scroll;
@@ -101,6 +107,8 @@ public class InterfazPrincipal extends JFrame {
     private ProductoControlador productoControlador;
     private int totalCompras;
     private List<Compra> filtro = new CompraControlador().listarCompra();
+    private NotificacionesPopup notificacionesPopup;
+    private NotificacionControlador notificacionControlador;
 
 
     public InterfazPrincipal() {
@@ -130,6 +138,7 @@ public class InterfazPrincipal extends JFrame {
         inicializarEventosPrincipales();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+        entregasProximas();//metodo que manda advertencias sobre compras proximas a entregar o desfasadas de tiempo
     }//constructor
 
     public void inicializarComponentesPrincipales() {
@@ -147,17 +156,22 @@ public class InterfazPrincipal extends JFrame {
         JP_CardLayout.add(JP_Productos, "Productos");
         JP_CardLayout.add(JP_Reportes, "Reportes");
         cardLayout.show(JP_CardLayout, "Inicio");//se muestra desde el arranque el panel Inicio
+
     }//principales
 
     public void barraMenu() {
         //iconos
         JL_Logo.setIcon(new ImageIcon(getClass().getResource("/imagenes/logo-eisga.png")));
-        JL_Message.setIcon(new ImageIcon(getClass().getResource("/imagenes/Message.png")));
-        JL_Message.setBorder(new EmptyBorder(0, 0, 0, 6));
-        JL_Message.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        JL_User.setIcon(new ImageIcon(getClass().getResource("/imagenes/User.png")));
-        JL_User.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        JL_User.setBorder(new EmptyBorder(0, 6, 0, 17));
+        JB_Notificaciones.setIcon(new ImageIcon(getClass().getResource("/imagenes/Message.png")));
+        JB_Notificaciones.setFocusPainted(false);
+        JB_Notificaciones.setBorder(null);
+        JB_Notificaciones.setContentAreaFilled(false);
+        JB_Notificaciones.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JB_Usuarios.setIcon(new ImageIcon(getClass().getResource("/imagenes/User.png")));
+        JB_Usuarios.setFocusPainted(false);
+        JB_Usuarios.setBorder(null);
+        JB_Usuarios.setContentAreaFilled(false);
+        JB_Usuarios.setCursor(new Cursor(Cursor.HAND_CURSOR));
         //botones
         comprasButton.setFocusPainted(false);
         comprasButton.setBorder(null);
@@ -226,7 +240,35 @@ public class InterfazPrincipal extends JFrame {
             }
         });//reportes
 
+        JB_Notificaciones.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                notificacionesPopup = new NotificacionesPopup();
+                notificacionesPopup.show(JB_Notificaciones, 0, JB_Notificaciones.getHeight()+13);//para mostrar el popup de notificaciones
+            }
+        });//boton de notificaciones
+
     }//eventos principales
+
+    public void entregasProximas(){
+        notificacionControlador = new NotificacionControlador();
+        List<Notificacion> notificaciones = notificacionControlador.listarNotificacion();
+        if(!notificaciones.isEmpty()){
+            LocalDate hoy = LocalDate.now();//se extrae siempre la fecha de hoy
+            for (Notificacion notificacion : notificaciones) {
+                long diasFaltantes = ChronoUnit.DAYS.between(hoy, notificacion.getFecha());//días faltantes entre la fecha de entrega y la fecha de hoy
+                if(diasFaltantes<=3 && diasFaltantes>0){
+                    JOptionPane.showMessageDialog(null,"La "+notificacion.getMensaje()+" vence en solo "+diasFaltantes+" día(s)","Información",JOptionPane.INFORMATION_MESSAGE);
+                }else if(diasFaltantes==0){
+                    JOptionPane.showMessageDialog(null,"La "+notificacion.getMensaje()+" vence hoy.\nMarcar como 'Entregado' si ya se encuentra en Almacén","Información",JOptionPane.INFORMATION_MESSAGE);
+                } else if(diasFaltantes<0) {
+                    JOptionPane.showMessageDialog(null,"La "+notificacion.getMensaje()+" venció hace "+(-diasFaltantes) +" día(s). Revisar","Advertencia",JOptionPane.WARNING_MESSAGE);
+                }//if
+            }//for
+        }
+
+
+    }
 
     //PANEL INICIO
 
@@ -1235,6 +1277,9 @@ public class InterfazPrincipal extends JFrame {
             }
         }
     }//imprimir
+
+
+
 
     public static void main(String[] args) {
         //crea la instancia de InterfazPrincipal

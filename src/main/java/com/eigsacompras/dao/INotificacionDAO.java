@@ -9,7 +9,7 @@ public interface INotificacionDAO {
     List<Notificacion> listarNotificacion();
     boolean actualizarNotificacion(Notificacion notificacion);
     boolean eliminarNotificacion(int idNotificacion);
-    boolean buscarPorIdNotificacion(int idNotificacion);
+    List<Notificacion> buscarNotificaciones(String filtro);
 
 
 }
