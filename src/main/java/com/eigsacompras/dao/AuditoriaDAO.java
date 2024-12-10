@@ -4,6 +4,7 @@ import com.eigsacompras.basededatos.Conexion;
 import com.eigsacompras.enums.TipoAccion;
 import com.eigsacompras.modelo.Auditoria;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,7 +38,7 @@ public class AuditoriaDAO implements IAuditoriaDAO{
 
             return true;
         } catch (SQLException e) {
-            System.out.println("Error al insertar "+e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al crear una auditoria", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }finally {
             Conexion.cerrar(conexion, ps, null);
@@ -65,7 +66,7 @@ public class AuditoriaDAO implements IAuditoriaDAO{
                 listaAuditoria.add(auditoria);
             }
         } catch (SQLException e) {
-            System.out.println("Error al mostrar "+e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al listar "+ e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally {
             Conexion.cerrar(conexion, ps, rs);
         }//cierre finally

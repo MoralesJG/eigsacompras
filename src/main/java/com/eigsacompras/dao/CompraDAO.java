@@ -167,7 +167,7 @@ public class CompraDAO implements ICompraDAO{
 
         try {
             conexion = Conexion.getConexion();
-            String sql = "SELECT COUNT(*) AS total FROM compra WHERE MONTH(fecha_entrega)=? AND YEAR(fecha_entrega)=?";
+            String sql = "SELECT COUNT(*) AS total FROM compra WHERE MONTH(fecha_emision)=? AND YEAR(fecha_emision)=?";
             ps = conexion.prepareStatement(sql);
             ps.setInt(1,mesActual);
             ps.setInt(2,periodoActual);

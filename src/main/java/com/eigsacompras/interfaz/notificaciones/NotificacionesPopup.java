@@ -79,7 +79,7 @@ public class NotificacionesPopup extends JPopupMenu {
                 long diasFaltantes = ChronoUnit.DAYS.between(hoy, notificacion.getFecha());//días faltantes entre la fecha de entrega y la fecha de hoy
                 String fecha = notificacion.getFecha().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL));//se le da formato a la fecha
                 String mensaje = notificacion.getFecha().isEqual(hoy) || notificacion.getFecha().isBefore(hoy)//mensaje de cuantos días faltan o está atrasado
-                        ? " atrasada por " + (-diasFaltantes) + "días"
+                        ? " atrasada por " + (-diasFaltantes) + " días"
                         : " se entrega en " + diasFaltantes + " días";
                 agregarNotificacion(notificacion, notificacion.getMensaje() + mensaje, fecha);
             }//for
@@ -97,7 +97,7 @@ public class NotificacionesPopup extends JPopupMenu {
 
         if (notificacion != null) {//para validar si hay notificaciones o no
             JLabel textoNotificacion = new JLabel("<html><b>" + mensaje + "</b><br>" + fecha + "</html>");//el label que contendrá el texto de notificacion
-            textoNotificacion.setFont(new Font("Roboto Light", Font.PLAIN, 12));
+            textoNotificacion.setFont(new Font("Roboto Light", Font.PLAIN, 13));
             textoNotificacion.setBorder(new EmptyBorder(5, 10, 5, 5));
             textoNotificacion.setForeground(notificacion.getFecha().isEqual(LocalDate.now()) || notificacion.getFecha().isBefore(LocalDate.now())
                     ? new Color(156, 21, 10)

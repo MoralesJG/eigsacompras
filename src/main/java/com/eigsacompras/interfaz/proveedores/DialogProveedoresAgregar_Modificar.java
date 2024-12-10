@@ -174,16 +174,16 @@ public class DialogProveedoresAgregar_Modificar extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 List<ProductoProveedor> productoProveedores = datosTabla();
                 if(idProveedor==0){//si no hay id se agrega un nuevo proveedor
-                    if(new ProveedorControlador().agregarProveedor(JTF_Nombre.getText(),JTF_Correo.getText(),JTF_Telefono.getText(), JTA_Ubicacion.getText(),productoProveedores)){//este if para que limpie la interfaz solo cuando se agrega una Compra
+                    if(new ProveedorControlador().agregarProveedor(JTF_Nombre.getText(),JTF_Correo.getText(),JTF_Telefono.getText(), JTA_Ubicacion.getText(),productoProveedores)){//este if para que limpie la interfaz solo cuando se agrega un proveedor
                         limpiarInterfaz();//esto hace el if si todo se agrega correctamente
-                    }//if compraControlador
+                    }//if proveedorControlador
                 }else{
                     if(new ProveedorControlador().actualizarProveedor(JTF_Nombre.getText(),JTF_Correo.getText(),JTF_Telefono.getText(), JTA_Ubicacion.getText(),idProveedor,productoProveedores)){
                         dispose();//si se actualiza correctamente se cierra la ventana
                     }//if
                 }//if idProveedor
             }
-        });//boton guardar compra
+        });//boton guardar proveedor
     }//eventos
 
     public List<ProductoProveedor> datosTabla(){

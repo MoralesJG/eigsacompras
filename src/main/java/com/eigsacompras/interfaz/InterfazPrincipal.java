@@ -7,19 +7,16 @@ import com.eigsacompras.controlador.ProveedorControlador;
 import com.eigsacompras.enums.TipoEstatus;
 import com.eigsacompras.interfaz.notificaciones.NotificacionesPopup;
 import com.eigsacompras.interfaz.reportes.ModeloTablaArbolReportes;
-import com.eigsacompras.interfaz.compras.DialogComprasAgregar_Modificar;
-import com.eigsacompras.interfaz.compras.ModeloTablaArbolCompras;
-import com.eigsacompras.interfaz.productos.DialogProductosAgregar_Modificar;
-import com.eigsacompras.interfaz.productos.ModeloTablaArbolProductos;
-import com.eigsacompras.interfaz.proveedores.DialogProveedoresAgregar_Modificar;
-import com.eigsacompras.interfaz.proveedores.ModeloTablaArbolProveedores;
+import com.eigsacompras.interfaz.compras.*;
+import com.eigsacompras.interfaz.productos.*;
+import com.eigsacompras.interfaz.proveedores.*;
+import com.eigsacompras.interfaz.usuarios.UsuariosPopup;
 import com.eigsacompras.modelo.Compra;
 import com.eigsacompras.modelo.Notificacion;
 import com.eigsacompras.modelo.Producto;
 import com.eigsacompras.modelo.Proveedor;
 import com.eigsacompras.utilidades.GenerarPDF;
 import org.jdesktop.swingx.JXTreeTable;
-
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -31,7 +28,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +105,7 @@ public class InterfazPrincipal extends JFrame {
     private List<Compra> filtro = new CompraControlador().listarCompra();
     private NotificacionesPopup notificacionesPopup;
     private NotificacionControlador notificacionControlador;
-
+    private UsuariosPopup usuariosPopup;
 
     public InterfazPrincipal() {
         inicializarComponentesPrincipales();
@@ -155,6 +151,7 @@ public class InterfazPrincipal extends JFrame {
         JP_CardLayout.add(JP_Proveedores, "Proveedores");
         JP_CardLayout.add(JP_Productos, "Productos");
         JP_CardLayout.add(JP_Reportes, "Reportes");
+
         cardLayout.show(JP_CardLayout, "Inicio");//se muestra desde el arranque el panel Inicio
 
     }//principales
@@ -247,6 +244,14 @@ public class InterfazPrincipal extends JFrame {
                 notificacionesPopup.show(JB_Notificaciones, 0, JB_Notificaciones.getHeight()+13);//para mostrar el popup de notificaciones
             }
         });//boton de notificaciones
+
+        JB_Usuarios.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                usuariosPopup =  new UsuariosPopup();
+                usuariosPopup.show(JB_Usuarios, 0, JB_Usuarios.getHeight()+13);//para mostrar el popup de usuarios
+            }
+        });
 
     }//eventos principales
 
@@ -933,6 +938,7 @@ public class InterfazPrincipal extends JFrame {
     }//vistaTabla (llamado por el metodo inicializarEventosProductos )
 
     //PANEL REPORTES
+
     public void inicializarComponentesReportes() {
         //botones
         JB_ReporteAplicar.setFocusPainted(false);
@@ -1277,9 +1283,6 @@ public class InterfazPrincipal extends JFrame {
             }
         }
     }//imprimir
-
-
-
 
     public static void main(String[] args) {
         //crea la instancia de InterfazPrincipal

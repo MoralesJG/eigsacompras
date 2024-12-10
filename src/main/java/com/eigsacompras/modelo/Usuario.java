@@ -15,7 +15,7 @@ public class Usuario {
         this.idUsuario=idUsuario;
     }
 
-    public Usuario(int idUsuario, String contrasena, String correo, String nombre, TipoAcceso tipo) {
+    public Usuario(int idUsuario, String correo, String nombre, TipoAcceso tipo) {
         this.idUsuario = idUsuario;
         this.contrasena = contrasena;
         this.correo = correo;
@@ -29,6 +29,8 @@ public class Usuario {
         this.nombre = nombre;
         this.tipo = tipo;
     }
+
+
 
     public int getIdUsuario() {
         return idUsuario;

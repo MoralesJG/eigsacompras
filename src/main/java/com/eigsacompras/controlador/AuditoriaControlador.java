@@ -17,4 +17,6 @@ public class AuditoriaControlador {
         return auditoriaDAO.listarAuditoria();
     }//listar
 
+
+
 }
