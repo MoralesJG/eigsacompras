@@ -167,19 +167,20 @@ public class UsuarioDAO implements IUsuarioDAO{
     }
 
     @Override
-    public String obtenerPassword(String correo){
+    public String obtenerPassword(String correoUsuario){
         String password = null;
         try {
             conexion = Conexion.getConexion();
-            String sql = "SELECT contrasena FROM usuario WHERE email=?";
+            String sql = "SELECT contrasena FROM usuario WHERE (email= ? OR nombre = ?) AND estatus = 'activo'";
             ps = conexion.prepareStatement(sql);
-            ps.setString(1,correo);
+            ps.setString(1,correoUsuario);
+            ps.setString(2,correoUsuario);
             rs = ps.executeQuery();
             if (rs.next()){
                 password =  rs.getString("contrasena");
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al validar la contraseña" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al validar la contraseña " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally {
             Conexion.cerrar(conexion, ps, rs);
         }

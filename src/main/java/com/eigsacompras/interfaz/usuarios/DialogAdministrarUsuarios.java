@@ -1,6 +1,8 @@
 package com.eigsacompras.interfaz.usuarios;
 
+import com.eigsacompras.controlador.RecuperacionControlador;
 import com.eigsacompras.controlador.UsuarioControlador;
+import com.eigsacompras.dao.RecuperacionPasswordDAO;
 import com.eigsacompras.modelo.Usuario;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -23,6 +25,7 @@ public class DialogAdministrarUsuarios extends JDialog {
     private DefaultTableModel modeloTabla;
     private JScrollPane scroll;
     private UsuarioControlador usuarioControlador;
+    private RecuperacionPasswordDAO recuperacionPassword;
     private Usuario usuario;
     private Map<String,Integer> mapa;
 
@@ -43,6 +46,7 @@ public class DialogAdministrarUsuarios extends JDialog {
 
     public void inicializarComponentes(){
         usuarioControlador = new UsuarioControlador();//se inicia el controlador
+        recuperacionPassword = new RecuperacionPasswordDAO();
         JB_Modificar.setFocusPainted(false);
         JB_Modificar.setBorderPainted(false);
         JB_Modificar.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -116,7 +120,9 @@ public class DialogAdministrarUsuarios extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 int seleccionado = JT_Tabla.getSelectedRow();
                 if(seleccionado!=-1){
-                    usuarioControlador.desactivarUsuario(mapa.get(JT_Tabla.getValueAt(seleccionado,2)));
+                    if(usuarioControlador.desactivarUsuario(mapa.get(JT_Tabla.getValueAt(seleccionado,2)))){
+                        recuperacionPassword.eliminarRecuperacionPassword(mapa.get(JT_Tabla.getValueAt(seleccionado,2)));//se elimina todos los posibles codigos almacenados
+                    }
                     cargarDatosTabla(usuarioControlador.listarUsuario());
                 }
 

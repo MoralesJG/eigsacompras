@@ -59,12 +59,12 @@ public class RecuperacionPasswordDAO implements IRecuperacionPasswordDAO{
     }//validar
 
     @Override
-    public boolean eliminarRecuperacionPassword(String codigo) {
+    public boolean eliminarRecuperacionPassword(int idUsuario) {
         try {
             conexion = Conexion.getConexion();
-            String sql = "DELETE FROM recuperacionPassword WHERE codigo_recuperacion=?";
+            String sql = "DELETE FROM recuperacionPassword WHERE id_usuario = ?";
             ps=conexion.prepareStatement(sql);
-            ps.setString(1,codigo);
+            ps.setInt(1,idUsuario);
             ps.executeUpdate();
 
             return true;

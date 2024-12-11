@@ -34,7 +34,7 @@ public class RecuperacionControlador {
 
     public boolean validarRecuperacionPassword(String codigo, int idUsuario){
         if(recuperacionPasswordDAO.validarCodigoRecuperacion(codigo,idUsuario)){
-            recuperacionPasswordDAO.eliminarRecuperacionPassword(codigo);//se elimina de la base de datos
+            recuperacionPasswordDAO.eliminarRecuperacionPassword(idUsuario);//se elimina de la base de datos
             JOptionPane.showMessageDialog(null, "Código correcto", "Validar", JOptionPane.INFORMATION_MESSAGE);
             return true;
         }else {

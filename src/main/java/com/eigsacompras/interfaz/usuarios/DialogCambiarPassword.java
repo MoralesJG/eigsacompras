@@ -74,7 +74,9 @@ public class DialogCambiarPassword extends JDialog {
         JB_Cambiar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(usuarioControlador.cambiarPassword(idUsuario,JTF_Password.getText(),JTF_ConfirmarPassword.getText())){
+                String password = new String(JTF_Password.getPassword()).trim();//trim quita los espacios en blanco
+                String confirmarPassword = new String(JTF_ConfirmarPassword.getPassword()).trim();
+                if(usuarioControlador.cambiarPassword(idUsuario,password,confirmarPassword)){
                     dispose();
                 }
             }

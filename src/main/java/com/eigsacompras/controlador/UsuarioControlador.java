@@ -8,6 +8,7 @@ import com.eigsacompras.modelo.Usuario;
 import com.eigsacompras.utilidades.EncriptarPassword;
 
 import javax.swing.*;
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,21 +23,24 @@ public class UsuarioControlador {
     }
 
     public boolean agregarUsuario(String nombre, String correo, TipoAcceso tipo, String contrasena, String contrasenaConfirmada) {
-        if (!nombre.isEmpty() && !correo.isEmpty() && !contrasena.isEmpty()) {
+        if (!nombre.isEmpty() && !correo.isEmpty() && !contrasena.isEmpty() && !contrasenaConfirmada.isEmpty()) {
             if(validarCorreo(correo)){
                 if(validarPassword(contrasena)){
                     if(contrasena.equals(contrasenaConfirmada)) {
                         String hash = EncriptarPassword.encriptar(contrasena);//se encripta la contraseña
                         Usuario usuario = new Usuario(hash, correo, nombre, tipo);
-                        usuarioDAO.agregarUsuario(usuario);
-                        JOptionPane.showMessageDialog(null, "Usuario agregado correctamente.", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
-                        return true;
+                        if(usuarioDAO.agregarUsuario(usuario)) {
+                            JOptionPane.showMessageDialog(null, "Usuario agregado correctamente.", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+                            return true;
+                        }else{
+                            return false;
+                        }
                     }else{
                         JOptionPane.showMessageDialog(null,"Las contraseñas no coinciden, revisar","Validación de contraseñas",JOptionPane.WARNING_MESSAGE);
                         return false;
                     }
                 }else{
-                    JOptionPane.showMessageDialog(null,"La contraseña debe incluir, como mínimo, caracteres alfabéticos y numéricos.","Validación de contraseña",JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null,"La contraseña debe incluir, como mínimo, 8 caracteres entre alfabéticos y numéricos.","Validación de contraseña",JOptionPane.WARNING_MESSAGE);
                     return false;
                 }//if validar contraseña
             }else{
@@ -70,15 +74,18 @@ public class UsuarioControlador {
         }// if validar vacíos
     }//actualizar
 
-    public void desactivarUsuario(int idUsuario) {
+    public boolean desactivarUsuario(int idUsuario) {
         int opc = JOptionPane.showConfirmDialog(null, "¿Está seguro de desactivar este usuario?\n Esto le bloqueará el acceso al sistema", "Confirmacion", JOptionPane.YES_NO_OPTION);
         if (opc == JOptionPane.YES_OPTION) {
             if(usuarioDAO.desactivarUsuario(idUsuario)) {
                 JOptionPane.showMessageDialog(null, "Usuario desactivado correctamente.", "Desactivado", JOptionPane.INFORMATION_MESSAGE);
+                return true;
             } else {
                 JOptionPane.showMessageDialog(null, "Error al desactivar el usuario. Por favor, inténtelo nuevamente.", "No desactivado", JOptionPane.ERROR_MESSAGE);
+                return false;
             }
         }
+        return false;
     }//eliminar
 
     public List<Usuario> buscarUsuarios(String termino){
@@ -127,8 +134,8 @@ public class UsuarioControlador {
         return matcher.matches();
     }//para validar que sea segura antes de encriptar
 
-    public boolean validarPasswordRecuperacion(String correo, String password) {
-        String hash = usuarioDAO.obtenerPassword(correo);
+    public boolean validarUsuarioLogin(String correoUsuario, String password) {
+        String hash = usuarioDAO.obtenerPassword(correoUsuario);
         if (hash != null) {
             return EncriptarPassword.verificar(password, hash);
         }

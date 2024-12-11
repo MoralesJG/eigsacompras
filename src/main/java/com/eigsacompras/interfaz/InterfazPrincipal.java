@@ -139,7 +139,7 @@ public class InterfazPrincipal extends JFrame {
 
     public void inicializarComponentesPrincipales() {
         //frame
-        setSize(1920, 1080);
+        setSize(960,540);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setUndecorated(false);//mantiene la barra de tareas
         setContentPane(Principal);
@@ -1284,9 +1284,9 @@ public class InterfazPrincipal extends JFrame {
         }
     }//imprimir
 
-    public static void main(String[] args) {
-        //crea la instancia de InterfazPrincipal
-        InterfazPrincipal frame = new InterfazPrincipal();
-        frame.setVisible(true); // Hacer visible la ventana
-    }//main
+//    public static void main(String[] args) {
+//        //crea la instancia de InterfazPrincipal
+//        InterfazPrincipal frame = new InterfazPrincipal();
+//        frame.setVisible(true); // Hacer visible la ventana
+//    }//main
 }

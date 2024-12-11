@@ -1,7 +1,9 @@
 package com.eigsacompras.interfaz.usuarios;
 
+import com.eigsacompras.interfaz.InterfazPrincipal;
+import com.eigsacompras.interfaz.inicioSesion.InicioSesion;
+
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,9 +16,11 @@ public class UsuariosPopup extends JPopupMenu {
     private JLabel iconoAdministrar, iconoAgregar, iconoSalir;
     private JButton administrar, agregar, salir;
     private JLabel fechaContenedor, bienvenida;
+    private JPanel principal;
 
     public UsuariosPopup() {
         inicializarComponentes();
+        this.principal = principal;
         inicializarEventos();
     }
 
@@ -119,7 +123,12 @@ public class UsuariosPopup extends JPopupMenu {
         salir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(UsuariosPopup.this);//se obtiene la ventana principal
+                if (parentFrame != null) {
+                    parentFrame.dispose(); //cierra la ventana principal
+                    InicioSesion login = new InicioSesion();
+                    login.setVisible(true);//abre el login
+                }
             }
         });//salir
     }
