@@ -198,12 +198,12 @@ public class DialogProductosAgregar_Modificar extends JDialog {
         producto = new ProductoControlador().listarProductoPorId(idProducto);
         JTA_Descripcion.setText(producto.getDescripcion());
         //tabla de proveedor
-        for(ProductoProveedor productoProveedor: producto.getProveedores()){
-
-            Object [] fila = {productoProveedor.getProveedor().getNombre(),"$"+productoProveedor.getPrecioOfrecido()};
-            modeloTabla.addRow(fila);
-        }//for
-
+        if(!producto.getProveedores().isEmpty()) {
+            for (ProductoProveedor productoProveedor : producto.getProveedores()) {
+                Object[] fila = {productoProveedor.getProveedor().getNombre(), "$" + productoProveedor.getPrecioOfrecido()};
+                modeloTabla.addRow(fila);
+            }//for
+        }//if si producto no tiene proveedores
     }//mostrarDatos
 
     public void limpiarInterfaz(){

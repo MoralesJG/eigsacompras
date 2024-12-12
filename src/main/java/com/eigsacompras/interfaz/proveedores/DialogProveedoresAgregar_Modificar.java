@@ -226,15 +226,17 @@ public class DialogProveedoresAgregar_Modificar extends JDialog {
         JTF_Telefono.setText(proveedor.getTelefono());
         JTA_Ubicacion.setText(proveedor.getUbicacion());
         //tabla de productos
-        for(ProductoProveedor producto: proveedor.getProductos()){
-            if(producto.getDisponibilidad().equals(TipoDisponibilidad.DISPONIBLE)){
-                JCB_Disponilidad.setSelectedItem("DISPONIBLE");
-            }else{
-                JCB_Disponilidad.setSelectedItem("NO DISPONIBLE");
-            }
-            Object [] fila = {producto.getProducto().getDescripcion(),"$"+producto.getPrecioOfrecido()};
-            modeloTabla.addRow(fila);
-        }//for
+        if(!proveedor.getProductos().isEmpty()) {//si no hay productos al proveedor continua normalmente
+            for (ProductoProveedor producto : proveedor.getProductos()) {
+                if (producto.getDisponibilidad().equals(TipoDisponibilidad.DISPONIBLE)) {
+                    JCB_Disponilidad.setSelectedItem("DISPONIBLE");
+                } else {
+                    JCB_Disponilidad.setSelectedItem("NO DISPONIBLE");
+                }
+                Object[] fila = {producto.getProducto().getDescripcion(), "$" + producto.getPrecioOfrecido()};
+                modeloTabla.addRow(fila);
+            }//for
+        }//if
 
     }//mostrarDatos
 

@@ -1,11 +1,9 @@
 package com.eigsacompras.dao;
 
 import com.eigsacompras.basededatos.Conexion;
-import com.eigsacompras.enums.TipoDisponibilidad;
 import com.eigsacompras.modelo.Producto;
 import com.eigsacompras.modelo.ProductoProveedor;
 import com.eigsacompras.modelo.Proveedor;
-
 import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,12 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProductoDAO implements IProductoDAO{
+public class ProductoDAO implements IProductoDAO {
     private Connection conexion;
     private PreparedStatement ps;
     private ResultSet rs;
 
-    public ProductoDAO(){
+    public ProductoDAO() {
     }
 
     @Override
@@ -53,9 +51,8 @@ public class ProductoDAO implements IProductoDAO{
             conexion = Conexion.getConexion();
             String sql = "SELECT prod.*, pp.precio_ofrecido, prov.nombre AS nombre_proveedor " +
                     "FROM producto prod " +
-                    "JOIN producto_proveedor pp ON prod.id_producto = pp.id_producto " +
-                    "JOIN proveedor prov ON pp.id_proveedor = prov.id_proveedor " +
-                    "ORDER BY prod.id_producto";
+                    "LEFT JOIN producto_proveedor pp ON prod.id_producto = pp.id_producto " +
+                    "LEFT JOIN proveedor prov ON pp.id_proveedor = prov.id_proveedor ";
             ps = conexion.prepareStatement(sql);
             rs = ps.executeQuery();
 
@@ -69,16 +66,18 @@ public class ProductoDAO implements IProductoDAO{
                     productoMap.put(idProducto, producto);
                 }
 
-                ProductoProveedor productoProveedor = new ProductoProveedor();
-                productoProveedor.setPrecioOfrecido(rs.getDouble("precio_ofrecido"));
+                if(rs.getString("precio_ofrecido")!=null) {
+                    ProductoProveedor productoProveedor = new ProductoProveedor();
+                    productoProveedor.setPrecioOfrecido(rs.getDouble("precio_ofrecido"));
 
-                Proveedor proveedor = new Proveedor();
-                proveedor.setNombre(rs.getString("nombre_proveedor"));
+                    Proveedor proveedor = new Proveedor();
+                    proveedor.setNombre(rs.getString("nombre_proveedor"));
 
-                productoProveedor.setProveedor(proveedor);
+                    productoProveedor.setProveedor(proveedor);
 
-                producto.getProveedores().add(productoProveedor);
-            }
+                    producto.getProveedores().add(productoProveedor);
+                }//if
+            }//while
             listaProductos.addAll(productoMap.values());
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al listar productos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -94,15 +93,15 @@ public class ProductoDAO implements IProductoDAO{
             conexion = Conexion.getConexion();
             String sql = "UPDATE producto set descripcion=? WHERE id_producto=?";
             PreparedStatement ps = conexion.prepareStatement(sql);
-            ps.setString(1,producto.getDescripcion());
-            ps.setInt(2,producto.getIdProducto());
+            ps.setString(1, producto.getDescripcion());
+            ps.setInt(2, producto.getIdProducto());
             ps.executeUpdate();
 
             return true;
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al actualizar producto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
-        }finally {
+        } finally {
             Conexion.cerrar(conexion, ps, null);
         }//cierre finally
     }//actualizar
@@ -113,13 +112,13 @@ public class ProductoDAO implements IProductoDAO{
             conexion = Conexion.getConexion();
             String sql = "DELETE FROM producto WHERE id_producto = ?";
             ps = conexion.prepareStatement(sql);
-            ps.setInt(1,idProducto);
+            ps.setInt(1, idProducto);
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al eliminar un producto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
-        }finally {
+        } finally {
             Conexion.cerrar(conexion, ps, null);
         }//cierre finally
     }//eliminar
@@ -132,23 +131,22 @@ public class ProductoDAO implements IProductoDAO{
             conexion = Conexion.getConexion();
             String sql = "SELECT prod.*, pp.precio_ofrecido, pp.id_proveedor, prov.nombre AS nombre_proveedor " +
                     "FROM producto prod " +
-                    "JOIN producto_proveedor pp ON prod.id_producto = pp.id_producto " +
-                    "JOIN proveedor prov ON pp.id_proveedor = prov.id_proveedor " +
-                    "WHERE prod.id_producto = ?";
+                    "LEFT JOIN producto_proveedor pp ON prod.id_producto = pp.id_producto " +
+                    "LEFT JOIN proveedor prov ON pp.id_proveedor = prov.id_proveedor " +
+                    "WHERE prod.id_producto = ? ";
             ps = conexion.prepareStatement(sql);
             ps.setInt(1, idProducto);
 
             rs = ps.executeQuery();
             while (rs.next()) {
-                if (producto == null) {
+                if(producto == null) {
                     producto = new Producto();
                     producto.setIdProducto(rs.getInt("id_producto"));
                     producto.setDescripcion(rs.getString("descripcion"));
                     producto.setProveedores(new ArrayList<>());
                 }
-
-                int idProveedor = rs.getInt("pp.id_proveedor");
-                if (!proveedorMap.containsKey(idProveedor)) {
+                int idProveedor = rs.getInt("id_proveedor");
+                if (idProveedor != 0 && !proveedorMap.containsKey(idProveedor)) {//si no hay proveedor continua normal el codigo
                     ProductoProveedor productoProveedor = new ProductoProveedor();
                     productoProveedor.setPrecioOfrecido(rs.getDouble("precio_ofrecido"));
 
@@ -158,8 +156,9 @@ public class ProductoDAO implements IProductoDAO{
 
                     producto.getProveedores().add(productoProveedor);
                     proveedorMap.put(idProveedor, productoProveedor);
-                }
-            }
+
+                }//if
+            }//while
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al buscar producto por Id: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
@@ -176,8 +175,8 @@ public class ProductoDAO implements IProductoDAO{
             conexion = Conexion.getConexion();
             String sql = "SELECT prod.*, pp.precio_ofrecido, pp.id_proveedor, prov.nombre AS nombre_proveedor " +
                     "FROM producto prod " +
-                    "JOIN producto_proveedor pp ON prod.id_producto = pp.id_producto " +
-                    "JOIN proveedor prov ON pp.id_proveedor = prov.id_proveedor " +
+                    "LEFT JOIN producto_proveedor pp ON prod.id_producto = pp.id_producto " +
+                    "LEFT JOIN proveedor prov ON pp.id_proveedor = prov.id_proveedor " +
                     "WHERE prod.descripcion LIKE ? OR prov.nombre LIKE ?";
             ps = conexion.prepareStatement(sql);
             ps.setString(1, "%" + termino + "%");
@@ -194,17 +193,18 @@ public class ProductoDAO implements IProductoDAO{
                     producto.setProveedores(new ArrayList<>());
                     productoMap.put(idProducto, producto);
                 }
+                if(rs.getString("pp.id_proveedor")!=null) {//si no hay proveedores no se asigna nada
+                    ProductoProveedor productoProveedor = new ProductoProveedor();
+                    productoProveedor.setIdProveedor(rs.getInt("pp.id_proveedor"));
+                    productoProveedor.setPrecioOfrecido(rs.getDouble("precio_ofrecido"));
 
-                ProductoProveedor productoProveedor = new ProductoProveedor();
-                productoProveedor.setIdProveedor(rs.getInt("pp.id_proveedor"));
-                productoProveedor.setPrecioOfrecido(rs.getDouble("precio_ofrecido"));
+                    Proveedor proveedor = new Proveedor();
+                    proveedor.setNombre(rs.getString("nombre_proveedor"));
+                    productoProveedor.setProveedor(proveedor);
 
-                Proveedor proveedor = new Proveedor();
-                proveedor.setNombre(rs.getString("nombre_proveedor"));
-                productoProveedor.setProveedor(proveedor);
-
-                producto.getProveedores().add(productoProveedor);
-            }
+                    producto.getProveedores().add(productoProveedor);
+                }//if
+            }//while
 
             listaProductos.addAll(productoMap.values());
         } catch (SQLException e) {
@@ -214,7 +214,6 @@ public class ProductoDAO implements IProductoDAO{
         }
         return listaProductos;
     }//buscar productos
-
 
 
 }

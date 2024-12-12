@@ -22,14 +22,15 @@ public class ProveedorControlador {
         if(validarProveedor(nombre, correo, telefono,ubicacion)){
             if(validarCorreo(correo)) {
                 Proveedor proveedor = new Proveedor(ubicacion, telefono, nombre, correo);
-                if (!productosProveedor.isEmpty()) {
                     try {
                         int idProveedor = proveedorDAO.agregarProveedor(proveedor);
                         if (idProveedor!=-1){
-                            for (ProductoProveedor producto : productosProveedor) {
-                                producto.setIdProveedor(idProveedor);
-                                productoProveedorDAO.agregarProductoProveedor(producto);
-                            }
+                            if(!productosProveedor.isEmpty()) {//si no hay productos continua normalmente
+                                for (ProductoProveedor producto : productosProveedor) {
+                                    producto.setIdProveedor(idProveedor);
+                                    productoProveedorDAO.agregarProductoProveedor(producto);
+                                }
+                            }//if
                             JOptionPane.showMessageDialog(null, "Proveedor agregado correctamente.", "Agregado", JOptionPane.INFORMATION_MESSAGE);
                             return true;
                         }else {
@@ -41,10 +42,6 @@ public class ProveedorControlador {
                         JOptionPane.showMessageDialog(null, "Error al agregar al proveedor. Por favor, inténtelo nuevamente. Error: " + e, "No agregado", JOptionPane.ERROR_MESSAGE);
                         return false;
                     }//try
-                } else {
-                    JOptionPane.showMessageDialog(null, "Agregue al menos 1 producto.", "Sin productos", JOptionPane.WARNING_MESSAGE);
-                    return false;
-                }//if productos proveedor
             }else{
                 JOptionPane.showMessageDialog(null, "Correo inválido. Verificar", "Verificar correo", JOptionPane.WARNING_MESSAGE);
                 return false;
@@ -66,24 +63,21 @@ public class ProveedorControlador {
     public boolean actualizarProveedor(String nombre, String correo, String telefono, String ubicacion, int idProveedor, List<ProductoProveedor> productosProveedor){
         if(validarProveedor(nombre, correo, telefono,ubicacion)){
             Proveedor proveedor = new Proveedor (ubicacion,correo,telefono,nombre,idProveedor);
-            if (!productosProveedor.isEmpty()) {
                 if (proveedorDAO.actualizarProveedor(proveedor)) {
                     productoProveedorDAO.eliminarProductoProveedorPorIdProveedor(idProveedor);//se eliminan los productos con el proveedor
-                    for (ProductoProveedor producto : productosProveedor) {//se agregan los productos nuevamente incluidos los nuevos a ese proveedor
-                        productoProveedorDAO.agregarProductoProveedor(producto);
-                    }
-                    //se eliminan todos los productos asociados al proveedor ya que si se modifica el proveedor y se quieren agregar otros productos si solo se actualiza no se podrá agregar lo nuevos productos al proveedor...
-                    //...por lo que para asegurar que se actualice correctamente incluyendo los nuevos productos que se quieren agregar es necesario eliminar todo y agregar todo lo nuevo
+                    if(!productosProveedor.isEmpty()) {//si no hay productos continua normalmente
+                        for (ProductoProveedor producto : productosProveedor) {//se agregan los productos nuevamente incluidos los nuevos a ese proveedor
+                            productoProveedorDAO.agregarProductoProveedor(producto);
+                        }
+                        //se eliminan todos los productos asociados al proveedor ya que si se modifica el proveedor y se quieren agregar otros productos si solo se actualiza no se podrá agregar lo nuevos productos al proveedor...
+                        //...por lo que para asegurar que se actualice correctamente incluyendo los nuevos productos que se quieren agregar es necesario eliminar todo y agregar todo lo nuevo
+                    }//if
                     JOptionPane.showMessageDialog(null, "Todo actualizado correctamente.", "Actualizado", JOptionPane.INFORMATION_MESSAGE);
                     return true;
                 } else {
                     JOptionPane.showMessageDialog(null, "Error al actualizar el proveedor. Por favor, inténtelo nuevamente.", "No actualizado", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }//if dao
-            }else{
-                JOptionPane.showMessageDialog(null, "Agregue al menos 1 producto.", "Sin productos", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }//if valida productoProveedor vacio
         }else {
             JOptionPane.showMessageDialog(null,"Hay uno o más campos vacíos, Revíselos","Campo vacío",JOptionPane.WARNING_MESSAGE);
             return false;

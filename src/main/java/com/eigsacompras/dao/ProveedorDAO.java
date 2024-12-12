@@ -55,9 +55,8 @@ public class ProveedorDAO implements IProveedorDAO{
             conexion = Conexion.getConexion();
             String sql = "SELECT prov.*, pp.precio_ofrecido, pp.disponibilidad, prod.descripcion AS descripcion_producto " +
                     "FROM proveedor prov " +
-                    "JOIN producto_proveedor pp ON prov.id_proveedor = pp.id_proveedor " +
-                    "JOIN producto prod ON pp.id_producto = prod.id_producto " +
-                    "ORDER BY prov.id_proveedor";
+                    "LEFT JOIN producto_proveedor pp ON prov.id_proveedor = pp.id_proveedor " +
+                    "LEFT JOIN producto prod ON pp.id_producto = prod.id_producto ";
             ps = conexion.prepareStatement(sql);
             rs = ps.executeQuery();
 
@@ -75,18 +74,20 @@ public class ProveedorDAO implements IProveedorDAO{
                     proveedorMap.put(idProveedor, proveedor);//lista al mapa
                 }
 
-                //Se crea el producto
-                Producto producto = new Producto();
-                producto.setDescripcion(rs.getString("descripcion_producto"));
+                if(rs.getString("descripcion_producto")!=null) {//si no hay producto no se asigna nada a proveedor
+                    //Se crea el producto
+                    Producto producto = new Producto();
+                    producto.setDescripcion(rs.getString("descripcion_producto"));
 
-                //se crea productoProveedor
-                ProductoProveedor productoProveedor = new ProductoProveedor();
-                productoProveedor.setPrecioOfrecido(rs.getDouble("precio_ofrecido"));
-                productoProveedor.setDisponibilidad(TipoDisponibilidad.valueOf(rs.getString("disponibilidad").toUpperCase()));
-                productoProveedor.setProducto(producto);
-                // Agregar el producto-proveedor a la lista de productos del proveedor
-                proveedor.getProductos().add(productoProveedor);//se agrega productoProveedor a la lista en proveedor
-            }
+                    //se crea productoProveedor
+                    ProductoProveedor productoProveedor = new ProductoProveedor();
+                    productoProveedor.setPrecioOfrecido(rs.getDouble("precio_ofrecido"));
+                    productoProveedor.setDisponibilidad(TipoDisponibilidad.valueOf(rs.getString("disponibilidad").toUpperCase()));
+                    productoProveedor.setProducto(producto);
+                    // Agregar el producto-proveedor a la lista de productos del proveedor
+                    proveedor.getProductos().add(productoProveedor);//se agrega productoProveedor a la lista en proveedor
+                }
+            }//while
             listaProveedor.addAll(proveedorMap.values());
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al listar el proveedor" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -143,8 +144,8 @@ public class ProveedorDAO implements IProveedorDAO{
             conexion = Conexion.getConexion();
             String sql = "SELECT prov.*, pp.precio_ofrecido, pp.disponibilidad, prod.descripcion AS descripcion_producto " +
                     "FROM proveedor prov " +
-                    "JOIN producto_proveedor pp ON prov.id_proveedor = pp.id_proveedor " +
-                    "JOIN producto prod ON pp.id_producto = prod.id_producto " +
+                    "LEFT JOIN producto_proveedor pp ON prov.id_proveedor = pp.id_proveedor " +
+                    "LEFT JOIN producto prod ON pp.id_producto = prod.id_producto " +
                     "WHERE prov.id_proveedor = ? ";
             ps = conexion.prepareStatement(sql);
             ps.setInt(1, idProveedor);
@@ -161,15 +162,17 @@ public class ProveedorDAO implements IProveedorDAO{
                     proveedor.setProductos(new ArrayList<>());
                 }//if
 
-                Producto producto = new Producto();
-                producto.setDescripcion(rs.getString("descripcion_producto"));
+                if(rs.getString("descripcion_producto")!=null) {//si no hay productos no se asigna nada
+                    Producto producto = new Producto();
+                    producto.setDescripcion(rs.getString("descripcion_producto"));
 
-                ProductoProveedor productoProveedor = new ProductoProveedor();
-                productoProveedor.setPrecioOfrecido(rs.getDouble("precio_ofrecido"));
-                productoProveedor.setDisponibilidad(TipoDisponibilidad.valueOf(rs.getString("disponibilidad").toUpperCase()));
-                productoProveedor.setProducto(producto);
+                    ProductoProveedor productoProveedor = new ProductoProveedor();
+                    productoProveedor.setPrecioOfrecido(rs.getDouble("precio_ofrecido"));
+                    productoProveedor.setDisponibilidad(TipoDisponibilidad.valueOf(rs.getString("disponibilidad").toUpperCase()));
+                    productoProveedor.setProducto(producto);
 
-                proveedor.getProductos().add(productoProveedor);
+                    proveedor.getProductos().add(productoProveedor);
+                }
             }//while
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al buscar el proveedor \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -217,16 +220,18 @@ public class ProveedorDAO implements IProveedorDAO{
                     proveedor.setProductos(new ArrayList<>());
                     proveedorMap.put(idProveedor, proveedor);
                 }
-                Producto producto = new Producto();
-                producto.setDescripcion(rs.getString("descripcion_producto"));
+                if(rs.getString("descripcion_producto")!=null) {//si no hay productos no se asigna nada
+                    Producto producto = new Producto();
+                    producto.setDescripcion(rs.getString("descripcion_producto"));
 
-                ProductoProveedor productoProveedor = new ProductoProveedor();
-                productoProveedor.setPrecioOfrecido(rs.getDouble("precio_ofrecido"));
-                productoProveedor.setDisponibilidad(TipoDisponibilidad.valueOf(rs.getString("disponibilidad").toUpperCase()));
-                productoProveedor.setProducto(producto);
+                    ProductoProveedor productoProveedor = new ProductoProveedor();
+                    productoProveedor.setPrecioOfrecido(rs.getDouble("precio_ofrecido"));
+                    productoProveedor.setDisponibilidad(TipoDisponibilidad.valueOf(rs.getString("disponibilidad").toUpperCase()));
+                    productoProveedor.setProducto(producto);
 
-                proveedor.getProductos().add(productoProveedor);
-            }
+                    proveedor.getProductos().add(productoProveedor);
+                }//if
+            }//while
             listaProveedor.addAll(proveedorMap.values());
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al buscar proveedores: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

@@ -906,8 +906,8 @@ public class InterfazPrincipal extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {//para cuando se selecciona un subnodo de la tabla y se mande un mensaje de advertencia
                     if (tablaArbolProducto.getSelectedRow() != -1) {
-                        String nombreProducto = tablaArbolProducto.getStringAt(tablaArbolProducto.getSelectedRow(), 1);//para acceder al id en el hash map
-                        DialogProductosAgregar_Modificar modificar = new DialogProductosAgregar_Modificar(mapaProductos.get(nombreProducto));
+                        String nombreProducto = tablaArbolProducto.getStringAt(tablaArbolProducto.getSelectedRow(), 1);
+                        DialogProductosAgregar_Modificar modificar = new DialogProductosAgregar_Modificar(mapaProductos.get(nombreProducto));//para acceder al id en el hash map
                         modificar.setVisible(true);
                         tablaProductos();//al cerrarse la ventana se actualiza la tabla para mostrar los cambios
                     } else {
