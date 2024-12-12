@@ -34,10 +34,11 @@ public class DialogComprasAgregar_Modificar extends JDialog {
     private JLabel JTF_Titulo;
     private Map<String,Integer> proveedorMapa = new HashMap<>();
     private CompraProducto compraProductos;
-    private int idCompra;
+    private int idCompra, idUsuario;
 
-    public DialogComprasAgregar_Modificar(int idCompra) {
+    public DialogComprasAgregar_Modificar(int idCompra, int idUsuario) {
         this.idCompra = idCompra;
+        this.idUsuario = idUsuario;
         setResizable(true);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int maxHeight = (int) (screenSize.height * 0.93);//usa el 93% de la altura total de la pantalla
@@ -255,7 +256,7 @@ public class DialogComprasAgregar_Modificar extends JDialog {
                             if (new CompraControlador().agregarCompras(JTF_OrdenCompra.getText(), JTF_Condiciones.getText(), LocalDate.parse(JTF_FechaEmision.getText()), JTF_OrdenTrabajo.getText(),
                                     LocalDate.parse(JTF_FechaEntrega.getText()), JTF_Agente.getText(), JTF_Comprador.getText(), JTF_Revisado.getText(), JTF_Aprovado.getText(),
                                     TipoEstatus.valueOf(String.valueOf(JCB_Estatus.getSelectedItem())), JTA_NotasGenerales.getText(), TipoCompra.valueOf(String.valueOf(JCB_Tipo.getSelectedItem())), null,
-                                    null, idProveedor, 1, compraProductos)) {//este if para que limpie la interfaz solo cuando se agrega una Compra
+                                    null, idProveedor,idUsuario, compraProductos)) {//este if para que limpie la interfaz solo cuando se agrega una Compra
                                 limpiarInterfaz();//esto hace el if si es true
                             }//if compraControlador
 

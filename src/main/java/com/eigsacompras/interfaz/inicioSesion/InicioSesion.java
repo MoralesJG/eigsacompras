@@ -1,5 +1,6 @@
 package com.eigsacompras.interfaz.inicioSesion;
 
+import com.eigsacompras.controlador.RecuperacionControlador;
 import com.eigsacompras.controlador.UsuarioControlador;
 import com.eigsacompras.enums.TipoAcceso;
 import com.eigsacompras.interfaz.InterfazPrincipal;
@@ -36,6 +37,7 @@ public class InicioSesion extends JFrame{
     private JButton JB_RegistrarseCrear;
     private JLabel JL_IconoConfirmarPassword;
     private UsuarioControlador usuarioControlador;
+    private RecuperacionControlador recuperacionControlador;
     private CardLayout cardLayout;
 
     public InicioSesion() {
@@ -97,7 +99,7 @@ public class InicioSesion extends JFrame{
         JB_PasswordOlvidada.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         //logos
-        JL_LogoIniciar.setIcon(new ImageIcon(getClass().getResource("/imagenes/EIGSA.png")));
+        JL_LogoIniciar.setIcon(new ImageIcon(getClass().getResource("/imagenes/LogoEigsaInicioSesion.png")));
         JL_IconoLockIniciar.setIcon(new ImageIcon(getClass().getResource("/imagenes/lock.png")));
         JL_IconoMailIniciar.setIcon(new ImageIcon(getClass().getResource("/imagenes/mail.png")));
     }//inicializar componentes iniciar sesion
@@ -191,7 +193,8 @@ public class InicioSesion extends JFrame{
                 String correoUsuario = JTF_UsuarioCorreoIniciar.getText().trim();//el trimp para eliminar espacios en blanco
                 String password = new String(JTF_PasswordIniciar.getPassword()).trim();
                 if(usuarioControlador.validarUsuarioLogin(correoUsuario,password)){
-                    InterfazPrincipal inicio = new InterfazPrincipal();
+                    int idUsuario = usuarioControlador.buscarUsuarioPorCorreoNombre(correoUsuario);
+                    InterfazPrincipal inicio = new InterfazPrincipal(idUsuario);
                     dispose();
                     inicio.setVisible(true);
                 }else{
@@ -236,7 +239,7 @@ public class InicioSesion extends JFrame{
         JB_IniciarSesionCrear.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         //logos
-        JL_IconoLogo.setIcon(new ImageIcon(getClass().getResource("/imagenes/EIGSA.png")));
+        JL_IconoLogo.setIcon(new ImageIcon(getClass().getResource("/imagenes/LogoEigsaInicioSesion.png")));
         JL_IconoLockCrear.setIcon(new ImageIcon(getClass().getResource("/imagenes/lock.png")));
         JL_IconoConfirmarPassword.setIcon(new ImageIcon(getClass().getResource("/imagenes/lock.png")));
         JL_IconoMailCrear.setIcon(new ImageIcon(getClass().getResource("/imagenes/mail.png")));

@@ -1,9 +1,7 @@
 package com.eigsacompras.interfaz;
 
-import com.eigsacompras.controlador.CompraControlador;
-import com.eigsacompras.controlador.NotificacionControlador;
-import com.eigsacompras.controlador.ProductoControlador;
-import com.eigsacompras.controlador.ProveedorControlador;
+import com.eigsacompras.controlador.*;
+import com.eigsacompras.enums.TipoAcceso;
 import com.eigsacompras.enums.TipoEstatus;
 import com.eigsacompras.interfaz.notificaciones.NotificacionesPopup;
 import com.eigsacompras.interfaz.reportes.ModeloTablaArbolReportes;
@@ -11,10 +9,7 @@ import com.eigsacompras.interfaz.compras.*;
 import com.eigsacompras.interfaz.productos.*;
 import com.eigsacompras.interfaz.proveedores.*;
 import com.eigsacompras.interfaz.usuarios.UsuariosPopup;
-import com.eigsacompras.modelo.Compra;
-import com.eigsacompras.modelo.Notificacion;
-import com.eigsacompras.modelo.Producto;
-import com.eigsacompras.modelo.Proveedor;
+import com.eigsacompras.modelo.*;
 import com.eigsacompras.utilidades.GenerarPDF;
 import org.jdesktop.swingx.JXTreeTable;
 import javax.swing.*;
@@ -39,7 +34,6 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
-
 
 public class InterfazPrincipal extends JFrame {
     private JPanel Principal;
@@ -105,11 +99,14 @@ public class InterfazPrincipal extends JFrame {
     private List<Compra> filtro = new CompraControlador().listarCompra();
     private NotificacionesPopup notificacionesPopup;
     private NotificacionControlador notificacionControlador;
+    private UsuarioControlador usuarioControlador;
     private UsuariosPopup usuariosPopup;
+    private int idUsuario;
 
-    public InterfazPrincipal() {
+    public InterfazPrincipal(int idUsuario) {
         inicializarComponentesPrincipales();
         barraMenu();
+        this.idUsuario = idUsuario;
         //panel Inicio
         inicializarComponentesInicio();
         tablaInicio();
@@ -132,7 +129,9 @@ public class InterfazPrincipal extends JFrame {
         inicializarEventosReportes();
 
         inicializarEventosPrincipales();
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        restringirAccesos();//leer dentro del metodo
         setVisible(true);
         entregasProximas();//metodo que manda advertencias sobre compras proximas a entregar o desfasadas de tiempo
     }//constructor
@@ -158,7 +157,7 @@ public class InterfazPrincipal extends JFrame {
 
     public void barraMenu() {
         //iconos
-        JL_Logo.setIcon(new ImageIcon(getClass().getResource("/imagenes/logo-eisga.png")));
+        JL_Logo.setIcon(new ImageIcon(getClass().getResource("/imagenes/LogoEigsaMenu.png")));
         JB_Notificaciones.setIcon(new ImageIcon(getClass().getResource("/imagenes/Message.png")));
         JB_Notificaciones.setFocusPainted(false);
         JB_Notificaciones.setBorder(null);
@@ -248,7 +247,7 @@ public class InterfazPrincipal extends JFrame {
         JB_Usuarios.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                usuariosPopup =  new UsuariosPopup();
+                usuariosPopup =  new UsuariosPopup(idUsuario);
                 usuariosPopup.show(JB_Usuarios, 0, JB_Usuarios.getHeight()+13);//para mostrar el popup de usuarios
             }
         });
@@ -487,7 +486,7 @@ public class InterfazPrincipal extends JFrame {
         JB_comprasAgregar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogComprasAgregar_Modificar comprasAgregar = new DialogComprasAgregar_Modificar(0);//se manda 0 ya que pide el idCompra en caso de que sea modificar
+                DialogComprasAgregar_Modificar comprasAgregar = new DialogComprasAgregar_Modificar(0,idUsuario);//se manda 0 ya que pide el idCompra en caso de que sea modificar
                 comprasAgregar.setVisible(true);
                 tablaCompras();//al cerrarse la ventana se actualiza la tabla para mostrar los cambios
             }
@@ -512,7 +511,7 @@ public class InterfazPrincipal extends JFrame {
                 try {//para cuando se selecciona un subnodo de la tabla y se mande un mensaje de adventancia
                     if (tablaArbolCompras.getSelectedRow() != -1) {
                         String ordenCompra = tablaArbolCompras.getStringAt(tablaArbolCompras.getSelectedRow(), 1);//para acceder al id en el hash map
-                        DialogComprasAgregar_Modificar modificar = new DialogComprasAgregar_Modificar(mapaCompras.get(ordenCompra));
+                        DialogComprasAgregar_Modificar modificar = new DialogComprasAgregar_Modificar(mapaCompras.get(ordenCompra),idUsuario);
                         modificar.setVisible(true);
                         tablaCompras();//al cerrarse la ventana se actualiza la tabla para mostrar los cambios
                     } else {
@@ -1284,9 +1283,25 @@ public class InterfazPrincipal extends JFrame {
         }
     }//imprimir
 
-//    public static void main(String[] args) {
-//        //crea la instancia de InterfazPrincipal
-//        InterfazPrincipal frame = new InterfazPrincipal();
-//        frame.setVisible(true); // Hacer visible la ventana
-//    }//main
+    public void restringirAccesos(){
+        //este metodo restringe los accesos cuando el usuario es de tipo empleado, se hace a lo último ya que es después de inicializar
+        //todo y así tener mejor control sobre los componentes e igual antes de mostrar la pantalla para que una vez se muestre ya esté
+        //configurado correctamente de lo contrario si el usuario es administrador todo esto se ignora y el sistema corre normalmemte
+        usuarioControlador = new UsuarioControlador();
+        Usuario usuario = usuarioControlador.buscarUsuarioPorId(idUsuario);
+        if(usuario.getTipo().equals(TipoAcceso.EMPLEADO)){
+            //panel de compras
+            JB_comprasModificar.setEnabled(false);
+            JB_comprasEliminar.setEnabled(false);
+            //panel de proveedorees
+            JB_ProveedorModificar.setEnabled(false);
+            JB_ProveedorEliminar.setEnabled(false);
+            //panel productos
+            JB_ProductoModificar.setEnabled(false);
+            JB_ProductoEliminar.setEnabled(false);
+
+
+
+        }
+    }
 }

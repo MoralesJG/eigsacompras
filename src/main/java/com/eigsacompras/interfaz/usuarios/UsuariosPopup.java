@@ -1,7 +1,10 @@
 package com.eigsacompras.interfaz.usuarios;
 
+import com.eigsacompras.controlador.UsuarioControlador;
+import com.eigsacompras.enums.TipoAcceso;
 import com.eigsacompras.interfaz.InterfazPrincipal;
 import com.eigsacompras.interfaz.inicioSesion.InicioSesion;
+import com.eigsacompras.modelo.Usuario;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -17,11 +20,17 @@ public class UsuariosPopup extends JPopupMenu {
     private JButton administrar, agregar, salir;
     private JLabel fechaContenedor, bienvenida;
     private JPanel principal;
+    private int idUsuario;
+    private UsuarioControlador usuarioControlador;
+    private  Usuario usuario;
 
-    public UsuariosPopup() {
+    public UsuariosPopup(int idUsuario) {
+        this.idUsuario = idUsuario;
         inicializarComponentes();
-        this.principal = principal;
         inicializarEventos();
+
+        restringirAcceso();//se ejecuta al finalizar la inialización del popup
+
     }
 
     private void inicializarComponentes() {
@@ -30,6 +39,8 @@ public class UsuariosPopup extends JPopupMenu {
         setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
         setBorder(new LineBorder(Color.GRAY));
 
+
+        this.usuarioControlador = new UsuarioControlador();
         // PANEL de bienvenida y fecha
         JPanel panelBienvenida = new JPanel(new BorderLayout());
         panelBienvenida.setBackground(new Color(236, 240, 241));
@@ -40,7 +51,10 @@ public class UsuariosPopup extends JPopupMenu {
         fechaContenedor.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         fechaContenedor.setFont(new Font("Roboto Light", Font.BOLD, 16));
 
-        bienvenida = new JLabel("¡Bienvenido Gabriel!");//Modificar por el nombre de USUARIO
+        usuario = usuarioControlador.buscarUsuarioPorId(idUsuario);
+        String[] nombre = usuario.getNombre().split(" ");//para tomar el primer nombre
+
+        bienvenida = new JLabel("¡Bienvenido "+nombre[0]+"!");
         bienvenida.setHorizontalAlignment(SwingConstants.CENTER);
         bienvenida.setBorder(BorderFactory.createEmptyBorder(5, 0, 25, 0));
         bienvenida.setFont(new Font("Roboto Light", Font.BOLD, 21));
@@ -131,5 +145,14 @@ public class UsuariosPopup extends JPopupMenu {
                 }
             }
         });//salir
+    }
+
+    private void restringirAcceso(){
+        //se restringe ciertos accesos cuando el usuario es de tipo empleado
+        if(usuario.getTipo().equals(TipoAcceso.EMPLEADO)){
+            administrar.setEnabled(false);
+            agregar.setEnabled(false);
+        }
+
     }
 }

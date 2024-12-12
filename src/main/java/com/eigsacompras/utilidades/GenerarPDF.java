@@ -25,7 +25,7 @@ public class GenerarPDF {
             document.open();
 
             //logo de la empresa y textos a los lados
-            Image logo = Image.getInstance(getClass().getResource("/imagenes/LogoEigsa.png"));
+            Image logo = Image.getInstance(getClass().getResource("/imagenes/LogoEigsaReporte.png"));
             agregarLogoConTextos(document,logo);
 
             //fuente del titulo del pdf

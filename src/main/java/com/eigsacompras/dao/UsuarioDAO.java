@@ -204,4 +204,26 @@ public class UsuarioDAO implements IUsuarioDAO{
             Conexion.cerrar(conexion, ps, null);
         }//cierre finally
     }//cambioContraseña
+
+    @Override
+    public int buscarUsuarioPorCorreoNombre(String parametro){
+        int idUsuario = -1;
+        try {
+            conexion = Conexion.getConexion();
+            String sql = "SELECT id_usuario FROM usuario WHERE estatus = 'activo' AND (email  = ? or nombre = ?)";
+            ps = conexion.prepareStatement(sql);
+            ps.setString(1, parametro);
+            ps.setString(2,parametro);
+            rs = ps.executeQuery();
+            if(rs.next()){
+                idUsuario = rs.getInt("id_usuario");
+            }//while
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error obtener el id del usuario: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }//cierre finally
+
+        return idUsuario;
+    }
 }

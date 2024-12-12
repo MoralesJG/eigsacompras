@@ -141,5 +141,9 @@ public class UsuarioControlador {
         }
         return false;
     }//validar contraseña en la recuperación
+
+    public int buscarUsuarioPorCorreoNombre(String parametro){
+        return usuarioDAO.buscarUsuarioPorCorreoNombre(parametro);
+    }//buscar por correo
     
 }

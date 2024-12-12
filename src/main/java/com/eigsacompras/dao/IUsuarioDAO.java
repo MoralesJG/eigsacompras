@@ -13,5 +13,6 @@ public interface IUsuarioDAO {
     Usuario buscarUsuarioPorId(int idUsuario);
     String obtenerPassword(String correo);
     boolean cambiarPassword(int idUsuario, String password);
+    int buscarUsuarioPorCorreoNombre(String parametro);
 
 }
