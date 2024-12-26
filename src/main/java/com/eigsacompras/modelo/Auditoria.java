@@ -3,19 +3,20 @@ package com.eigsacompras.modelo;
 import com.eigsacompras.enums.TipoAccion;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Auditoria {
     private int idAuditoria;
     private String tablaAfectada;
     private int idRegistroAfectado;
     private TipoAccion accion;
-    private LocalDate fechaCambio;
+    private LocalDateTime fechaCambio;
     private String descripcion;
     private int idUsuario;
 
     public Auditoria(){}
 
-    public Auditoria(int idAuditoria, int idUsuario, String descripcion, LocalDate fechaCambio, TipoAccion accion, int idRegistroAfectado, String tablaAfectada) {
+    public Auditoria(int idAuditoria, int idUsuario, String descripcion, LocalDateTime fechaCambio, TipoAccion accion, int idRegistroAfectado, String tablaAfectada) {
         this.idAuditoria = idAuditoria;
         this.idUsuario = idUsuario;
         this.descripcion = descripcion;
@@ -24,7 +25,7 @@ public class Auditoria {
         this.idRegistroAfectado = idRegistroAfectado;
         this.tablaAfectada = tablaAfectada;
     }
-    public Auditoria(int idUsuario, String descripcion, LocalDate fechaCambio, TipoAccion accion, int idRegistroAfectado, String tablaAfectada) {
+    public Auditoria(int idUsuario, String descripcion, LocalDateTime fechaCambio, TipoAccion accion, int idRegistroAfectado, String tablaAfectada) {
         this.idUsuario = idUsuario;
         this.descripcion = descripcion;
         this.fechaCambio = fechaCambio;
@@ -57,11 +58,11 @@ public class Auditoria {
         this.descripcion = descripcion;
     }
 
-    public LocalDate getFechaCambio() {
+    public LocalDateTime getFechaCambio() {
         return fechaCambio;
     }
 
-    public void setFechaCambio(LocalDate fechaCambio) {
+    public void setFechaCambio(LocalDateTime fechaCambio) {
         this.fechaCambio = fechaCambio;
     }
 

@@ -121,7 +121,7 @@ public class UsuariosPopup extends JPopupMenu {
         administrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogAdministrarUsuarios administrar = new DialogAdministrarUsuarios();
+                DialogAdministrarUsuarios administrar = new DialogAdministrarUsuarios(idUsuario);
                 administrar.setVisible(true);
             }
         });//administrar
@@ -129,7 +129,7 @@ public class UsuariosPopup extends JPopupMenu {
         agregar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogUsuariosAgregar_Modificar agregarUsuario = new DialogUsuariosAgregar_Modificar(null);
+                DialogUsuariosAgregar_Modificar agregarUsuario = new DialogUsuariosAgregar_Modificar(null,idUsuario);
                 agregarUsuario.setVisible(true);
             }
         });//agregar

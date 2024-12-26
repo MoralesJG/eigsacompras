@@ -446,7 +446,7 @@ public class InicioSesion extends JFrame{
                 String correo = !JTF_CorreoCrear.getText().equals("Correo") ? JTF_CorreoCrear.getText() : "";
                 String password = !JTF_PasswordCrear.getText().equals("Contraseña") ? new String(JTF_PasswordCrear.getPassword()).trim() : "";
                 String passwordConfirmar = !JTF_PasswordConfirmar.getText().equals("Confirmar contraseña") ? new String(JTF_PasswordConfirmar.getPassword()).trim() : "";//el trim para eliminar espacios en blanco
-                if(usuarioControlador.agregarUsuario(usuario,correo,TipoAcceso.EMPLEADO,password,passwordConfirmar)){//se manda por defecto empleado
+                if(usuarioControlador.agregarUsuario(usuario,correo,TipoAcceso.EMPLEADO,password,passwordConfirmar,0)){//se manda por defecto empleado
                     cardLayout.show(JP_Principal,"IniciarSesion");//se abre iniciar sesion
                     inicializarTextFieldIniciar();
                 }

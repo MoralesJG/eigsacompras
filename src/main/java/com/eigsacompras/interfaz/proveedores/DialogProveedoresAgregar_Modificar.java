@@ -25,9 +25,11 @@ public class DialogProveedoresAgregar_Modificar extends JDialog {
     private JLabel JTF_Titulo;
     private ProductoProveedor productoProveedor;
     private int idProveedor;
+    private int idUsuario;
 
-    public DialogProveedoresAgregar_Modificar(int idProveedor) {
+    public DialogProveedoresAgregar_Modificar(int idProveedor, int idUsuario) {
         this.idProveedor=idProveedor;
+        this.idUsuario=idUsuario;
         setResizable(true);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int maxHeight = (int) (screenSize.height * 0.93);//usa el 93% de la altura total de la pantalla
@@ -174,11 +176,11 @@ public class DialogProveedoresAgregar_Modificar extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 List<ProductoProveedor> productoProveedores = datosTabla();
                 if(idProveedor==0){//si no hay id se agrega un nuevo proveedor
-                    if(new ProveedorControlador().agregarProveedor(JTF_Nombre.getText(),JTF_Correo.getText(),JTF_Telefono.getText(), JTA_Ubicacion.getText(),productoProveedores)){//este if para que limpie la interfaz solo cuando se agrega un proveedor
+                    if(new ProveedorControlador().agregarProveedor(JTF_Nombre.getText(),JTF_Correo.getText(),JTF_Telefono.getText(), JTA_Ubicacion.getText(),productoProveedores,idUsuario)){//este if para que limpie la interfaz solo cuando se agrega un proveedor
                         limpiarInterfaz();//esto hace el if si todo se agrega correctamente
                     }//if proveedorControlador
                 }else{
-                    if(new ProveedorControlador().actualizarProveedor(JTF_Nombre.getText(),JTF_Correo.getText(),JTF_Telefono.getText(), JTA_Ubicacion.getText(),idProveedor,productoProveedores)){
+                    if(new ProveedorControlador().actualizarProveedor(JTF_Nombre.getText(),JTF_Correo.getText(),JTF_Telefono.getText(), JTA_Ubicacion.getText(),idProveedor,productoProveedores,idUsuario)){
                         dispose();//si se actualiza correctamente se cierra la ventana
                     }//if
                 }//if idProveedor

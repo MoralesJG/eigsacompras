@@ -2,12 +2,15 @@ package com.eigsacompras.controlador;
 
 import com.eigsacompras.dao.CompraDAO;
 import com.eigsacompras.dao.CompraProductoDAO;
+import com.eigsacompras.enums.TipoAccion;
 import com.eigsacompras.enums.TipoCompra;
 import com.eigsacompras.enums.TipoEstatus;
 import com.eigsacompras.modelo.Compra;
 import com.eigsacompras.modelo.CompraProducto;
 import javax.swing.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -15,10 +18,12 @@ import java.util.List;
 public class CompraControlador {
     private CompraDAO compraDAO;
     private LocalDate fechaActual = LocalDate.now();
+    private AuditoriaControlador auditoriaControlador;
 
 
     public CompraControlador() {
         this.compraDAO = new CompraDAO();
+        auditoriaControlador = new AuditoriaControlador();
     }
 
     public boolean agregarCompras(String ordenCompra, String condiciones, LocalDate fechaEmision, String ordenTrabajo, LocalDate fechaEntrega, String agenteProveedor, String nombreComprador, String revisadoPor, String aprobadoPor, TipoEstatus estatus, String notasGenerales, TipoCompra tipo, LocalDate fechaInicioRenta, LocalDate fechaFinRenta, int idProveedor, int idUsuario, List<CompraProducto> compraProductos) {
@@ -35,6 +40,7 @@ public class CompraControlador {
                         new CompraProductoDAO().agregarCompraProducto(producto);
                     }//for
                     new NotificacionControlador().agregarNotificacion(fechaEntrega,"Orden No. "+ordenCompra.replaceAll("\\D+",""),idCompra);//se agrega la notificación
+                    mandarAuditoria(idCompra,TipoAccion.INSERTAR,"Se insertó una compra con id = "+idCompra,idUsuario);
                     JOptionPane.showMessageDialog(null, "Compra agregada correctamente.", "Agregado", JOptionPane.INFORMATION_MESSAGE);
                     return true;
                 } catch (Exception e) {
@@ -97,7 +103,7 @@ public class CompraControlador {
                     }else{
                         new NotificacionControlador().actualizarNotificacion(fechaEntrega,"Orden No. "+ordenCompra.replaceAll("\\D+",""),idCompra);//se actualiza la notificacion
                     }//cierre if
-
+                    mandarAuditoria(idCompra,TipoAccion.ACTUALIZAR,"Se actualizó la compra con id = "+idCompra,idUsuario);
                     JOptionPane.showMessageDialog(null, "Todo actualizado correctamente.", "Actualizado", JOptionPane.INFORMATION_MESSAGE);
                     return true;
                 } else {
@@ -114,13 +120,14 @@ public class CompraControlador {
         }//if validar
     }//actualizarCompra
 
-    public void eliminarCompra(int idCompra) {
+    public void eliminarCompra(int idCompra,int idUsuario) {
         int opc = JOptionPane.showConfirmDialog(null, "¿Está seguro de eliminar esta compra?", "Confirmacion", JOptionPane.YES_NO_OPTION);
         if (opc == JOptionPane.YES_OPTION) {
             if (new CompraProductoDAO().eliminarCompraProducto(idCompra)) {
                 new NotificacionControlador().eliminarNotificacion(idCompra);
                 compraDAO.eliminarCompra(idCompra);
                 JOptionPane.showMessageDialog(null, "Compra eliminada correctamente.", "Eliminado", JOptionPane.INFORMATION_MESSAGE);
+                mandarAuditoria(idCompra,TipoAccion.ELIMINAR,"Se eliminó la compra con id = "+idCompra,idUsuario);
             } else {
                 JOptionPane.showMessageDialog(null, "Error al eliminar la compra. Por favor, inténtelo nuevamente.", "No eliminado", JOptionPane.ERROR_MESSAGE);
             }
@@ -209,5 +216,11 @@ public class CompraControlador {
             }//if else desde/hasta vacio
         }//if else todo
     }//validar filtro fecha
+
+    public void mandarAuditoria(int idRegistro, TipoAccion accion,String descripcion,int idUsuario){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"); LocalDateTime fecha =
+                LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter);
+        auditoriaControlador.agregarAuditoria("COMPRAS",idRegistro,accion,fecha,descripcion,idUsuario);
+    }//auditoria
 }
 

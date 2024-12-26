@@ -19,7 +19,7 @@ public class TestUsuarioDao {
             usuario.setContrasena("lol1010");
            //usuario.setIdUsuario(4);
 
-            if (usuarioDAO.agregarUsuario(usuario))
+            if (usuarioDAO.agregarUsuario(usuario)!=-1)
                 System.out.println("Usuario agregado correctamente");
             else
                 System.out.println("Error al agregar");

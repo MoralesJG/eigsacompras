@@ -3,12 +3,15 @@ package com.eigsacompras.controlador;
 import com.eigsacompras.dao.AuditoriaDAO;
 import com.eigsacompras.dao.UsuarioDAO;
 import com.eigsacompras.enums.TipoAcceso;
+import com.eigsacompras.enums.TipoAccion;
 import com.eigsacompras.modelo.RecuperacionPassword;
 import com.eigsacompras.modelo.Usuario;
 import com.eigsacompras.utilidades.EncriptarPassword;
 
 import javax.swing.*;
 import java.sql.SQLOutput;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,14 +25,16 @@ public class UsuarioControlador {
         this.auditoriaControlador = new AuditoriaControlador();
     }
 
-    public boolean agregarUsuario(String nombre, String correo, TipoAcceso tipo, String contrasena, String contrasenaConfirmada) {
+    public boolean agregarUsuario(String nombre, String correo, TipoAcceso tipo, String contrasena, String contrasenaConfirmada,int idUsuarioActivo) {
         if (!nombre.isEmpty() && !correo.isEmpty() && !contrasena.isEmpty() && !contrasenaConfirmada.isEmpty()) {
             if(validarCorreo(correo)){
                 if(validarPassword(contrasena)){
                     if(contrasena.equals(contrasenaConfirmada)) {
                         String hash = EncriptarPassword.encriptar(contrasena);//se encripta la contraseña
                         Usuario usuario = new Usuario(hash, correo, nombre, tipo);
-                        if(usuarioDAO.agregarUsuario(usuario)) {
+                        int idUsuarioGenerado = usuarioDAO.agregarUsuario(usuario);
+                        if(idUsuarioGenerado!=-1) {
+                            mandarAuditoria(idUsuarioGenerado , TipoAccion.INSERTAR,"Se insertó un usuario con id = "+idUsuarioGenerado,idUsuarioActivo);
                             JOptionPane.showMessageDialog(null, "Usuario agregado correctamente.", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
                             return true;
                         }else{
@@ -57,11 +62,12 @@ public class UsuarioControlador {
         return usuarioDAO.listarUsuario();
     }//listar
 
-    public boolean actualizarUsuario(String nombre, String correo, TipoAcceso tipo, int idUsuario) {
+    public boolean actualizarUsuario(String nombre, String correo, TipoAcceso tipo, int idUsuarioActualizar, int idUsuarioActivo) {
         if (!nombre.isEmpty() && !correo.isEmpty()) {
             if(validarCorreo(correo)) {
-                Usuario usuario = new Usuario(idUsuario, correo, nombre, tipo);
+                Usuario usuario = new Usuario(idUsuarioActualizar, correo, nombre, tipo);
                 usuarioDAO.actualizarUsuario(usuario);
+                mandarAuditoria(idUsuarioActualizar , TipoAccion.ACTUALIZAR,"Se actualizó el usuario con id = "+idUsuarioActualizar,idUsuarioActivo);
                 JOptionPane.showMessageDialog(null, "Usuario actualizado correctamente.", "Actualizado", JOptionPane.INFORMATION_MESSAGE);
                 return true;
             }else{
@@ -74,10 +80,11 @@ public class UsuarioControlador {
         }// if validar vacíos
     }//actualizar
 
-    public boolean desactivarUsuario(int idUsuario) {
+    public boolean desactivarUsuario(int idUsuarioDesactivar, int idUsuarioActivo) {
         int opc = JOptionPane.showConfirmDialog(null, "¿Está seguro de desactivar este usuario?\n Esto le bloqueará el acceso al sistema", "Confirmacion", JOptionPane.YES_NO_OPTION);
         if (opc == JOptionPane.YES_OPTION) {
-            if(usuarioDAO.desactivarUsuario(idUsuario)) {
+            if(usuarioDAO.desactivarUsuario(idUsuarioDesactivar)) {
+                mandarAuditoria(idUsuarioDesactivar , TipoAccion.ELIMINAR,"Se eliminó el usuario con id = "+idUsuarioDesactivar,idUsuarioActivo);
                 JOptionPane.showMessageDialog(null, "Usuario desactivado correctamente.", "Desactivado", JOptionPane.INFORMATION_MESSAGE);
                 return true;
             } else {
@@ -145,5 +152,11 @@ public class UsuarioControlador {
     public int buscarUsuarioPorCorreoNombre(String parametro){
         return usuarioDAO.buscarUsuarioPorCorreoNombre(parametro);
     }//buscar por correo
+
+    public void mandarAuditoria(int idRegistro, TipoAccion accion,String descripcion,int idUsuario){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        LocalDateTime fecha = LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter);
+        auditoriaControlador.agregarAuditoria("USUARIOS",idRegistro,accion,fecha,descripcion,idUsuario);
+    }//auditoria
     
 }

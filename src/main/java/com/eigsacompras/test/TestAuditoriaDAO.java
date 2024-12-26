@@ -20,7 +20,7 @@ public class TestAuditoriaDAO {
         auditoria.setTablaAfectada("Compra");
         auditoria.setIdRegistroAfectado(1);
         auditoria.setAccion(TipoAccion.INSERTAR);
-        auditoria.setFechaCambio(LocalDate.now());
+        //auditoria.setFechaCambio(LocalDate.now());
         auditoria.setDescripcion("La tabla compra fue alterada con un imsert ");
         auditoria.setIdUsuario(1);
 

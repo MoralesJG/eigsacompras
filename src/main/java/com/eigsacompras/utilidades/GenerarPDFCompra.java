@@ -9,12 +9,11 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.*;
 import javax.swing.*;
 import java.io.FileOutputStream;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class GenerarPDF {
+public class GenerarPDFCompra {
 
     public void generarReporte(List<Compra> compras, String path) {
         try {

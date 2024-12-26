@@ -1,6 +1,5 @@
 package com.eigsacompras.interfaz.usuarios;
 
-import com.eigsacompras.controlador.RecuperacionControlador;
 import com.eigsacompras.controlador.UsuarioControlador;
 import com.eigsacompras.dao.RecuperacionPasswordDAO;
 import com.eigsacompras.modelo.Usuario;
@@ -28,8 +27,9 @@ public class DialogAdministrarUsuarios extends JDialog {
     private RecuperacionPasswordDAO recuperacionPassword;
     private Usuario usuario;
     private Map<String,Integer> mapa;
+    private int idUsuario;
 
-    public DialogAdministrarUsuarios() {
+    public DialogAdministrarUsuarios(int idUsuario) {
         setResizable(true);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int maxHeight = (int) (screenSize.height * 0.93);//usa el 93% de la altura total de la pantalla
@@ -39,6 +39,7 @@ public class DialogAdministrarUsuarios extends JDialog {
         setModal(true);
         SwingUtilities.invokeLater(() -> contentPane.requestFocusInWindow());//elimina la seleccion al iniciar
 
+        this.idUsuario=idUsuario;
         inicializarComponentes();
         inicalizarEventos();
 
@@ -120,7 +121,7 @@ public class DialogAdministrarUsuarios extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 int seleccionado = JT_Tabla.getSelectedRow();
                 if(seleccionado!=-1){
-                    if(usuarioControlador.desactivarUsuario(mapa.get(JT_Tabla.getValueAt(seleccionado,2)))){
+                    if(usuarioControlador.desactivarUsuario(mapa.get(JT_Tabla.getValueAt(seleccionado,2)),idUsuario)){
                         recuperacionPassword.eliminarRecuperacionPassword(mapa.get(JT_Tabla.getValueAt(seleccionado,2)));//se elimina todos los posibles codigos almacenados
                     }
                     cargarDatosTabla(usuarioControlador.listarUsuario());
@@ -190,7 +191,7 @@ public class DialogAdministrarUsuarios extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 int seleccionado = JT_Tabla.getSelectedRow();
                 if(seleccionado !=-1){
-                    DialogUsuariosAgregar_Modificar modificarAgregar = new DialogUsuariosAgregar_Modificar(mapa.get(JT_Tabla.getValueAt(seleccionado,2)));
+                    DialogUsuariosAgregar_Modificar modificarAgregar = new DialogUsuariosAgregar_Modificar(mapa.get(JT_Tabla.getValueAt(seleccionado,2)),idUsuario);
                     //se desactivan algunos componentes para mejorar la visualización de la pantalla a mostrar
                     JB_Modificar.setVisible(false);
                     JB_Desactivar.setVisible(false);

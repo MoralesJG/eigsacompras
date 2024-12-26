@@ -2,14 +2,9 @@ package com.eigsacompras.dao;
 
 import com.eigsacompras.basededatos.Conexion;
 import com.eigsacompras.enums.TipoAcceso;
-import com.eigsacompras.modelo.Notificacion;
 import com.eigsacompras.modelo.Usuario;
-
 import javax.swing.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,24 +16,28 @@ public class UsuarioDAO implements IUsuarioDAO{
     public UsuarioDAO(){
     }
     @Override
-    public boolean agregarUsuario(Usuario usuario) {
+    public int agregarUsuario(Usuario usuario) {
+        int idGenerado = -1;
         try {
             conexion = Conexion.getConexion();
             String sql = "INSERT INTO usuario (nombre,email,tipo,contrasena) VALUES(?,?,?,?)";
-            ps = conexion.prepareStatement(sql);
+            ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);//para que pueda retornar la llave primaria generada
             ps.setString(1,usuario.getNombre());
             ps.setString(2,usuario.getCorreo());
             ps.setString(3,usuario.getTipo().name());
             ps.setString(4,usuario.getContrasena());
             ps.executeUpdate();
 
-            return true;
+            rs=ps.getGeneratedKeys();//se agrega el id del usuario al ser agregado
+            if(rs.next())
+                idGenerado=rs.getInt(1);
+            return idGenerado;
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al agregar usuario: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
+            return idGenerado;
         }finally {
-            Conexion.cerrar(conexion, ps, null);
+            Conexion.cerrar(conexion, ps, rs);
         }//cierre finally
     }//agregar
 

@@ -18,10 +18,12 @@ public class DialogUsuariosAgregar_Modificar extends JDialog {
     private JComboBox JCB_Tipo;
     private Integer idUsuario;
     private Usuario usuario;
+    private int idUsuarioActivo;
     private UsuarioControlador usuarioControlador;
 
-    public DialogUsuariosAgregar_Modificar(Integer idUsuario) {
-        this.idUsuario=idUsuario;
+    public DialogUsuariosAgregar_Modificar(Integer idUsuario,int idUsuarioActivo) {
+        this.idUsuario=idUsuario;//se usa para ser modificado
+        this.idUsuarioActivo=idUsuarioActivo;//el id del usuario que inicia sesion
         this.usuarioControlador = new UsuarioControlador();
         setResizable(true);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -102,11 +104,11 @@ public class DialogUsuariosAgregar_Modificar extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(idUsuario==null){//si no hay id se agrega un nuevo usuario
-                        if (new UsuarioControlador().agregarUsuario(JTF_Nombre.getText(), JTF_Correo.getText(), (TipoAcceso) JCB_Tipo.getSelectedItem(), JTF_Password.getText(),JTF_Confirmar.getText())) {//este if para que limpie la interfaz solo cuando se agrega un usuario
+                        if (new UsuarioControlador().agregarUsuario(JTF_Nombre.getText(), JTF_Correo.getText(), (TipoAcceso) JCB_Tipo.getSelectedItem(), JTF_Password.getText(),JTF_Confirmar.getText(),idUsuarioActivo)) {//este if para que limpie la interfaz solo cuando se agrega un usuario
                             limpiarInterfaz();//esto hace el if si todo se agrega correctamente
                         }//if usuarioControlador
                 }else{
-                    if(new UsuarioControlador().actualizarUsuario(JTF_Nombre.getText(),JTF_Correo.getText(), (TipoAcceso) JCB_Tipo.getSelectedItem(),idUsuario)){
+                    if(new UsuarioControlador().actualizarUsuario(JTF_Nombre.getText(),JTF_Correo.getText(), (TipoAcceso) JCB_Tipo.getSelectedItem(),idUsuario,idUsuarioActivo)){
                         dispose();//si se actualiza correctamente se cierra la ventana
                     }//if actualizar
                 }//if idUsuario
