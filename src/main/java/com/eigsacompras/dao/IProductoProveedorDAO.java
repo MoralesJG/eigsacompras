@@ -8,7 +8,8 @@ public interface IProductoProveedorDAO {
     boolean agregarProductoProveedor(ProductoProveedor productoProveedor);
     List<ProductoProveedor> listarProductoProveedor();
     boolean actualizarProductoProveedor(ProductoProveedor productoProveedor);
-    boolean eliminarProductoProveedor(int idProductoProveedor);
+    boolean eliminarProductoProveedorPorIdProveedor(int idProveedor);
+    boolean eliminarProductoProveedorPorIdProducto(int idProducto);
     boolean buscarPorIdProductoProveedor(int idProductoProveedor);
 
 }

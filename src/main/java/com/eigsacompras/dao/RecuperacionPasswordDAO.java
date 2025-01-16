@@ -59,12 +59,12 @@ public class RecuperacionPasswordDAO implements IRecuperacionPasswordDAO{
     }//validar
 
     @Override
-    public boolean eliminarRecuperacionPassword(String codigo) {
+    public boolean eliminarRecuperacionPassword(int idUsuario) {
         try {
             conexion = Conexion.getConexion();
-            String sql = "DELETE FROM recuperacionPassword WHERE codigo_recuperacion=?";
+            String sql = "DELETE FROM recuperacionPassword WHERE id_usuario = ?";
             ps=conexion.prepareStatement(sql);
-            ps.setString(1,codigo);
+            ps.setInt(1,idUsuario);
             ps.executeUpdate();
 
             return true;
@@ -81,7 +81,7 @@ public class RecuperacionPasswordDAO implements IRecuperacionPasswordDAO{
         int idUsuario = -1;
         try {
             conexion = Conexion.getConexion();
-            String sql = "SELECT id_usuario FROM usuario WHERE email=?";
+            String sql = "SELECT id_usuario FROM usuario WHERE email=? AND estatus = 'activo' ";
             ps=conexion.prepareStatement(sql);
             ps.setString(1,email);
             rs=ps.executeQuery();
@@ -89,7 +89,7 @@ public class RecuperacionPasswordDAO implements IRecuperacionPasswordDAO{
                 idUsuario = rs.getInt("id_usuario");
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Error interno al intentar recuperar el id del usuario "+e,"Erro",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,"Error interno al intentar recuperar el id del usuario "+e,"Error",JOptionPane.ERROR_MESSAGE);
         }finally {
             Conexion.cerrar(conexion,ps,rs);
             }

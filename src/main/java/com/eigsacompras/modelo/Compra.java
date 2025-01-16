@@ -26,6 +26,7 @@ public class Compra {
    private int idUsuario;
 
    private List<CompraProducto> productos;//solo a nivel de aplicación
+   private String proveedorNombre; //a nivel de aplicacion
 
     public Compra() {
     }
@@ -210,6 +211,14 @@ public class Compra {
 
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
+    }
+
+    public String getProveedorNombre() {
+        return proveedorNombre;
+    }
+
+    public void setProveedorNombre(String proveedorNombre) {
+        this.proveedorNombre = proveedorNombre;
     }
 
     @Override
