@@ -7,7 +7,7 @@ import java.util.List;
 public interface IRecuperacionPasswordDAO {
     boolean agregarCodigoRecuperacion(RecuperacionPassword recuperacionPassword);
     boolean validarCodigoRecuperacion(String codigo, int idUsuario);
-    boolean eliminarRecuperacionPassword(String codigo);
+    boolean eliminarRecuperacionPassword(int idUsuario);
     int idUsuarioPorEmail(String email);
 
 }

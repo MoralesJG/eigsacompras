@@ -9,6 +9,7 @@ public class ProductoProveedor {
     private int idProducto;
     private int idProveedor;
     private Producto producto;//a nivel de aplicacion
+    private Proveedor proveedor;//a nivel de aplicacion
 
     public ProductoProveedor(){}
 
@@ -74,6 +75,14 @@ public class ProductoProveedor {
         this.producto = producto;
     }
 
+    public Proveedor getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(Proveedor proveedor) {
+        this.proveedor = proveedor;
+    }
+
     @Override
     public String toString() {
         return "ProductoProveedor{" +
@@ -82,6 +91,8 @@ public class ProductoProveedor {
                 ", disponibilidad=" + disponibilidad +
                 ", idProducto=" + idProducto +
                 ", idProveedor=" + idProveedor +
+                ", producto=" + producto +
+                ", proveedor=" + proveedor +
                 '}';
     }
 }

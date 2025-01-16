@@ -36,3 +36,8 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+## All ###
+conexion.properties
+application.properties
+config.properties

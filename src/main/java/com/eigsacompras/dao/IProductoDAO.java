@@ -10,4 +10,5 @@ public interface IProductoDAO {
     boolean actualizarProducto(Producto producto);
     boolean eliminarProducto(int idProducto);
     Producto buscarProductoPorId(int idProducto);
+    List<Producto> buscarProductos(String termino);
 }

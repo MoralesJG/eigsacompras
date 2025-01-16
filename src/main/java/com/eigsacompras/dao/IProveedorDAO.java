@@ -9,4 +9,5 @@ public interface IProveedorDAO {
     boolean actualizarProveedor(Proveedor proveedor);
     boolean eliminarProveedor(int idProveedor);
     Proveedor buscarProveedorPorId(int idProveedor);
+    List<Proveedor> buscarProveedores(String termino);
 }

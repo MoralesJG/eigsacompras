@@ -4,6 +4,7 @@ import com.eigsacompras.basededatos.Conexion;
 import com.eigsacompras.enums.TipoDisponibilidad;
 import com.eigsacompras.modelo.ProductoProveedor;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,7 +35,7 @@ public class ProductoProveedorDAO implements IProductoProveedorDAO{
 
             return true;
         } catch (SQLException e) {
-            System.out.println("Error al agregar"+e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al agregar a Producto Proveedor \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }finally {
             Conexion.cerrar(conexion, ps, null);
@@ -61,7 +62,7 @@ public class ProductoProveedorDAO implements IProductoProveedorDAO{
             }
 
         } catch (SQLException e) {
-            System.out.println("Error al listar"+e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al mostrar los productos proveedores \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }finally {
             Conexion.cerrar(conexion, ps, rs);
         }//cierre finally
@@ -84,7 +85,7 @@ public class ProductoProveedorDAO implements IProductoProveedorDAO{
 
             return true;
         } catch (SQLException e) {
-            System.out.println("Error al actualizar "+e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al actualizar los productos proveedoresmes \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }finally {
             Conexion.cerrar(conexion, ps, null);
@@ -92,7 +93,7 @@ public class ProductoProveedorDAO implements IProductoProveedorDAO{
     }//actualizar
 
     @Override
-    public boolean eliminarProductoProveedor(int idProveedor) {
+    public boolean eliminarProductoProveedorPorIdProveedor(int idProveedor) {
         try {
             conexion = Conexion.getConexion();
             String sql = "DELETE FROM producto_proveedor WHERE id_proveedor = ?";//se elimina a traves del id proveedor
@@ -102,12 +103,30 @@ public class ProductoProveedorDAO implements IProductoProveedorDAO{
 
             return true;
         } catch (SQLException e) {
-            System.out.println("Error al eliminar "+e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al eliminar un producto proveedor \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }finally {
             Conexion.cerrar(conexion, ps, null);
         }//cierre finally
-    }//eliminar
+    }//eliminar por id proveedor
+
+    @Override
+    public boolean eliminarProductoProveedorPorIdProducto(int idProducto){
+        try {
+            conexion = Conexion.getConexion();
+            String sql = "DELETE FROM producto_proveedor WHERE id_producto = ?";//se elimina a traves del id producto
+            ps = conexion.prepareStatement(sql);
+            ps.setInt(1,idProducto);
+            ps.executeUpdate();
+
+            return true;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al eliminar un producto proveedor \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }finally {
+            Conexion.cerrar(conexion, ps, null);
+        }//cierre finally
+    }//eliminar producto proveedor
 
     @Override
     public boolean buscarPorIdProductoProveedor(int idProductoProveedor) {
