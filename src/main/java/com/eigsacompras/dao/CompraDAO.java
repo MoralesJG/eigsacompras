@@ -262,7 +262,7 @@ public class CompraDAO implements ICompraDAO{
 
             return true;
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al agregar la compra \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error al actualizar la compra \n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }finally {
             Conexion.cerrar(conexion, ps, null);
@@ -442,38 +442,51 @@ public class CompraDAO implements ICompraDAO{
         Map<Integer, Compra> compraMap = new HashMap<>();
         try {
             conexion = Conexion.getConexion();
-            String sql = "SELECT c.*, cp.partida, cp.cantidad, cp.precio_unitario, cp.total, " +
-                    "prod.descripcion AS descripcion_producto, p.nombre AS nombre_proveedor " +
-                    "FROM compra c " +
-                    "JOIN compra_producto cp ON c.id_compra = cp.id_compra " +
-                    "JOIN producto prod ON cp.id_producto = prod.id_producto " +
-                    "JOIN proveedor p ON c.id_proveedor = p.id_proveedor " +
-                    "WHERE 1 = 1 " +
-                    "AND (prod.descripcion LIKE ? OR ? = '') " +
-                    "AND (c.orden_trabajo LIKE ? OR ? = '') " +
-                    "AND (c.estatus = ? OR ? = '') " +
-                    "AND (p.nombre LIKE ? OR ? = '') " +
-                    "AND (c.fecha_emision BETWEEN ? AND ? OR ? = 'TODO') " +
-                    "ORDER BY c.fecha_entrega";
+            StringBuilder sql = new StringBuilder(
+                    "SELECT c.*, cp.partida, cp.cantidad, cp.precio_unitario, cp.total, " +
+                            "prod.descripcion AS descripcion_producto, p.nombre AS nombre_proveedor " +
+                            "FROM compra c " +
+                            "JOIN compra_producto cp ON c.id_compra = cp.id_compra " +
+                            "JOIN producto prod ON cp.id_producto = prod.id_producto " +
+                            "JOIN proveedor p ON c.id_proveedor = p.id_proveedor " +
+                            "WHERE 1=1 ");
 
-            ps = conexion.prepareStatement(sql);
+            if (!todo) {
+                sql.append("AND c.fecha_emision BETWEEN ? AND ? ");
+            }
+            if (producto != null && !producto.trim().isEmpty()) {
+                sql.append("AND prod.descripcion LIKE ? ");
+            }
+            if (ordenTrabajo != null && !ordenTrabajo.trim().isEmpty()) {
+                sql.append("AND c.orden_trabajo LIKE ? ");
+            }
+            if (estatus != null && !estatus.trim().isEmpty()) {
+                sql.append("AND c.estatus = ? ");
+            }
+            if (proveedor != null && !proveedor.trim().isEmpty()) {
+                sql.append("AND p.nombre LIKE ? ");
+            }
+            sql.append("ORDER BY c.fecha_entrega");
 
-            ps.setString(1, "%"+producto+"%");
-            ps.setString(2, producto.isEmpty() ? "" : producto);//operador ternario
-            ps.setString(3, "%"+ordenTrabajo+"%");
-            ps.setString(4, ordenTrabajo.isEmpty() ? "" : ordenTrabajo);
-            ps.setString(5, estatus);
-            ps.setString(6, estatus.isEmpty() ? "" : estatus);
-            ps.setString(7, "%"+proveedor+"%");
-            ps.setString(8, proveedor.isEmpty() ? "" : proveedor);
-            if (todo) {
-                ps.setDate(9, null);
-                ps.setDate(10, null);
-                ps.setString(11, "TODO");
-            } else {
-                ps.setDate(9, Date.valueOf(desde));
-                ps.setDate(10, Date.valueOf(hasta));
-                ps.setString(11, "");
+            ps = conexion.prepareStatement(sql.toString());
+            int indice = 1;
+
+            //asigna parametros dinámicamente
+            if (!todo) {
+                ps.setDate(indice++, Date.valueOf(desde));
+                ps.setDate(indice++, Date.valueOf(hasta));
+            }
+            if (producto != null && !producto.trim().isEmpty()) {
+                ps.setString(indice++, "%" + producto + "%");
+            }
+            if (ordenTrabajo != null && !ordenTrabajo.trim().isEmpty()) {
+                ps.setString(indice++, "%" + ordenTrabajo + "%");
+            }
+            if (estatus != null && !estatus.trim().isEmpty()) {
+                ps.setString(indice++, estatus);
+            }
+            if (proveedor != null && !proveedor.trim().isEmpty()) {
+                ps.setString(indice++, "%" + proveedor + "%");
             }
 
             rs = ps.executeQuery();
@@ -485,13 +498,12 @@ public class CompraDAO implements ICompraDAO{
                     compra.setIdCompra(idCompra);
                     compra.setOrdenCompra(rs.getString("orden_compra"));
                     compra.setOrdenTrabajo(rs.getString("orden_trabajo"));
-                    compra.setCondiciones(rs.getString("Condiciones"));
+                    compra.setCondiciones(rs.getString("condiciones"));
                     compra.setFechaEmision(rs.getDate("fecha_emision").toLocalDate());
-                    compra.setOrdenTrabajo(rs.getString("orden_trabajo"));
                     compra.setProveedorNombre(rs.getString("nombre_proveedor"));
-                    if(rs.getString("fecha_entrega")==null){//cuando es tipo renta no hay fecha entrega
+                    if (rs.getString("fecha_entrega") == null) {
                         compra.setFechaEntrega(null);
-                    }else{
+                    } else {
                         compra.setFechaEntrega(rs.getDate("fecha_entrega").toLocalDate());
                     }
                     compra.setAgenteProveedor(rs.getString("agente_proveedor"));
@@ -501,7 +513,6 @@ public class CompraDAO implements ICompraDAO{
                     compra.setEstatus(TipoEstatus.valueOf(rs.getString("estatus").toUpperCase()));
                     compra.setNotasGenerales(rs.getString("notas_generales"));
                     compra.setTipo(TipoCompra.valueOf(rs.getString("tipo").toUpperCase()));
-
                     if (rs.getString("tipo").equalsIgnoreCase("renta")) {
                         compra.setFechaInicioRenta(rs.getDate("fecha_inicio_renta").toLocalDate());
                         compra.setFechaFinRenta(rs.getDate("fecha_fin_renta").toLocalDate());
@@ -511,8 +522,9 @@ public class CompraDAO implements ICompraDAO{
 
                     compra.setProductos(new ArrayList<>());
                     compraMap.put(idCompra, compra);
-                }//cierre del if
-                //agregar el producto asociado a la compra
+                }
+
+                // Agregar producto asociado
                 CompraProducto compraProducto = new CompraProducto();
                 compraProducto.setPartida(rs.getInt("partida"));
                 compraProducto.setCantidad(rs.getString("cantidad"));
@@ -522,7 +534,9 @@ public class CompraDAO implements ICompraDAO{
 
                 compra.getProductos().add(compraProducto);
             }
-            compraMap.values().forEach(c -> c.getProductos().sort(Comparator.comparingInt(CompraProducto::getPartida)));//se convierte el mapa a una lista de compras y la ordena
+
+            // Ordenar productos por partida y agregar a la lista final
+            compraMap.values().forEach(c -> c.getProductos().sort(Comparator.comparingInt(CompraProducto::getPartida)));
             listaCompras.addAll(compraMap.values());
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al filtrar compras: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -531,6 +545,7 @@ public class CompraDAO implements ICompraDAO{
         }
         return listaCompras;
     }//filtrar compras
+
 
 
 }

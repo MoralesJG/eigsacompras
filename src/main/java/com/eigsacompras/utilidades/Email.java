@@ -20,7 +20,7 @@ public class Email {
                 + "A continuación, encontrará su código de verificación:\n\n"
                 + "Código de verificación: " + codigo + "\n\n"
                 + "Ingrese este código en el sistema para restablecer su contraseña. "
-                + "Este código expirará en 1 horas.\n\n"
+                + "Este código expirará en 1 hora.\n\n"
                 + "Si no solicitó este cambio, por favor ignore este correo.";
         //se configura para gmail
         Properties props = new Properties();
@@ -28,6 +28,7 @@ public class Email {
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", smtpHost);
         props.put("mail.smtp.port", smtpPort);
+        props.put("mail.smtp.ssl.trust",smtpHost);
 
         //autentica el remitente
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {

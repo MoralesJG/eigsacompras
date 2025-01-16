@@ -69,6 +69,7 @@ public class DialogComprasAgregar_Modificar extends JDialog {
         JB_Cancelar.setFocusPainted(false);
         JB_Cancelar.setBorderPainted(false);
         JB_Cancelar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        JB_Imprimir.setVisible(false);
         JB_Imprimir.setFocusPainted(false);
         JB_Imprimir.setBorderPainted(false);
         JB_Imprimir.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -275,7 +276,7 @@ public class DialogComprasAgregar_Modificar extends JDialog {
                             if(new CompraControlador().actualizarCompra(JTF_OrdenCompra.getText(),JTF_Condiciones.getText(),LocalDate.parse(JTF_FechaEmision.getText()),JTF_OrdenTrabajo.getText(),
                                     LocalDate.parse(JTF_FechaEntrega.getText()),JTF_Agente.getText(),JTF_Comprador.getText(),JTF_Revisado.getText(),JTF_Aprovado.getText(),
                                     TipoEstatus.valueOf(String.valueOf(JCB_Estatus.getSelectedItem())),JTA_NotasGenerales.getText(),TipoCompra.valueOf(String.valueOf(JCB_Tipo.getSelectedItem())),null,
-                                    null,idProveedor,1,idCompra,compraProductos)){//este if para que limpie la interfaz solo cuando se agrega una compra
+                                    null,idProveedor,idUsuario,idCompra,compraProductos)){//este if para que limpie la interfaz solo cuando se agrega una compra
                                 dispose();
                             }//if
                         }else if(JCB_Tipo.getSelectedItem().equals(TipoCompra.RENTA)){
@@ -283,7 +284,7 @@ public class DialogComprasAgregar_Modificar extends JDialog {
                                     null,JTF_Agente.getText(),JTF_Comprador.getText(),JTF_Revisado.getText(),JTF_Aprovado.getText(),
                                     TipoEstatus.valueOf(String.valueOf(JCB_Estatus.getSelectedItem())),JTA_NotasGenerales.getText(),TipoCompra.valueOf(String.valueOf(JCB_Tipo.getSelectedItem())),
                                     LocalDate.parse(JTF_FechaInicioRenta.getText()),LocalDate.parse(JTF_FechaFinRenta.getText()),
-                                    idProveedor,1,idCompra,compraProductos)){//este if para que limpie la interfaz solo cuando se agrega una compra
+                                    idProveedor,idUsuario,idCompra,compraProductos)){//este if para que limpie la interfaz solo cuando se agrega una compra
                                 dispose();
                             }//if
                         }//elif

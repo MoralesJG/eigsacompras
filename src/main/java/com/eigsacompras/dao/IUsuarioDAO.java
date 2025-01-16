@@ -11,6 +11,7 @@ public interface IUsuarioDAO {
     boolean desactivarUsuario(int idUsuario);
     List<Usuario> buscarUsuarios(String termino);
     Usuario buscarUsuarioPorId(int idUsuario);
+    int contarUsuarios();
     String obtenerPassword(String correo);
     boolean cambiarPassword(int idUsuario, String password);
     int buscarUsuarioPorCorreoNombre(String parametro);

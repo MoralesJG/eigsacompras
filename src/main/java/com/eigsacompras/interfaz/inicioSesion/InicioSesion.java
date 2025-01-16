@@ -446,10 +446,13 @@ public class InicioSesion extends JFrame{
                 String correo = !JTF_CorreoCrear.getText().equals("Correo") ? JTF_CorreoCrear.getText() : "";
                 String password = !JTF_PasswordCrear.getText().equals("Contraseña") ? new String(JTF_PasswordCrear.getPassword()).trim() : "";
                 String passwordConfirmar = !JTF_PasswordConfirmar.getText().equals("Confirmar contraseña") ? new String(JTF_PasswordConfirmar.getPassword()).trim() : "";//el trim para eliminar espacios en blanco
-                if(usuarioControlador.agregarUsuario(usuario,correo,TipoAcceso.EMPLEADO,password,passwordConfirmar,0)){//se manda por defecto empleado
-                    cardLayout.show(JP_Principal,"IniciarSesion");//se abre iniciar sesion
+
+                //si no hay ningun usuario registrado se manda como administrador siempre y cuando sea el primero
+                TipoAcceso tipoAcceso = usuarioControlador.contarUsuarios() != 0 ? TipoAcceso.EMPLEADO : TipoAcceso.ADMINISTRADOR;
+                if (usuarioControlador.agregarUsuarioDesdeLogin(usuario, correo, tipoAcceso, password, passwordConfirmar)) {
+                    cardLayout.show(JP_Principal, "IniciarSesion"); //se abre iniciar sesión
                     inicializarTextFieldIniciar();
-                }
+                }//if
             }
         });//Boton de crear cuenta
 
@@ -509,6 +512,18 @@ public class InicioSesion extends JFrame{
 
 
     public static void main(String[] args) {
+        //inicia la base de datos
+        try {
+            com.eigsacompras.utilidades.InicializadorBaseDeDatos.iniciarBD();
+            System.out.println("Base de datos inicializada correctamente.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al inicializar la base de datos: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
+
+        //si todo pasa incia el login
         new InicioSesion();
     }
+
 }

@@ -233,6 +233,8 @@ public class InterfazPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(JP_CardLayout, "Inicio");
+                tablaInicio();
+                panelResumenInicio();
             }
         });//inicio
 
@@ -240,6 +242,7 @@ public class InterfazPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(JP_CardLayout, "Compras");
+                tablaCompras();
             }
         });//compras
 
@@ -247,6 +250,7 @@ public class InterfazPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(JP_CardLayout, "Proveedores");
+                tablaProveedores();
             }
         });//proveedores
 
@@ -254,6 +258,7 @@ public class InterfazPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(JP_CardLayout, "Productos");
+                tablaProductos();
             }
         });//productos
 
@@ -261,6 +266,8 @@ public class InterfazPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(JP_CardLayout, "Reportes");
+                filtro = compraControlador.listarCompra();
+                tablaReportes();
             }
         });//reportes
 
@@ -268,6 +275,9 @@ public class InterfazPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(JP_CardLayout, "Auditoria");
+                filtrarAuditoria = auditoriaControlador.listarAuditoria();
+                inicializarComponentesAuditoria();
+                tablaAuditoria();
             }
         });//auditoria
 

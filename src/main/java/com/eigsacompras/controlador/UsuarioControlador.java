@@ -1,15 +1,11 @@
 package com.eigsacompras.controlador;
 
-import com.eigsacompras.dao.AuditoriaDAO;
 import com.eigsacompras.dao.UsuarioDAO;
 import com.eigsacompras.enums.TipoAcceso;
 import com.eigsacompras.enums.TipoAccion;
-import com.eigsacompras.modelo.RecuperacionPassword;
 import com.eigsacompras.modelo.Usuario;
 import com.eigsacompras.utilidades.EncriptarPassword;
-
 import javax.swing.*;
-import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -58,6 +54,39 @@ public class UsuarioControlador {
         }//if validar campos vacios
     }//agregar
 
+    public boolean agregarUsuarioDesdeLogin(String nombre, String correo, TipoAcceso tipo, String contrasena, String contrasenaConfirmada){
+        //este agregar es para evitar agregar una auditoria para cuando se añade un usuario desde el inicio de sesion/crear cuenta
+        if (!nombre.isEmpty() && !correo.isEmpty() && !contrasena.isEmpty() && !contrasenaConfirmada.isEmpty()) {
+            if(validarCorreo(correo)){
+                if(validarPassword(contrasena)){
+                    if(contrasena.equals(contrasenaConfirmada)) {
+                        String hash = EncriptarPassword.encriptar(contrasena);//se encripta la contraseña
+                        Usuario usuario = new Usuario(hash, correo, nombre, tipo);
+                        if(usuarioDAO.agregarUsuario(usuario)!=-1){
+                            JOptionPane.showMessageDialog(null, "Usuario agregado correctamente.", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+                            return true;
+                        }else{
+                            JOptionPane.showMessageDialog(null,"Usuario no agregado. Inténtalo nuevamente","Advertencia",JOptionPane.WARNING_MESSAGE);
+                            return false;
+                        }//if insercción de usuario
+                    }else{
+                        JOptionPane.showMessageDialog(null,"Las contraseñas no coinciden, revisar","Validación de contraseñas",JOptionPane.WARNING_MESSAGE);
+                        return false;
+                    }//if constraseñas iguales
+                }else{
+                    JOptionPane.showMessageDialog(null,"La contraseña debe incluir, como mínimo, 8 caracteres entre alfabéticos y numéricos.","Validación de contraseña",JOptionPane.WARNING_MESSAGE);
+                    return false;
+                }//if validar contraseña
+            }else{
+                JOptionPane.showMessageDialog(null, "Correo inválido, revíselo", "Validación de coreo", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }//if validar correo
+        } else {
+            JOptionPane.showMessageDialog(null, "Hay uno o más campos vacíos, revíselos", "Validación de campos", JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }//if validar campos vacios
+    }//agregar usuario desde login
+
     public List<Usuario> listarUsuario() {
         return usuarioDAO.listarUsuario();
     }//listar
@@ -102,6 +131,10 @@ public class UsuarioControlador {
     public Usuario buscarUsuarioPorId(int idUsuario){
         return usuarioDAO.buscarUsuarioPorId(idUsuario);
     }//buscar por id
+
+    public int contarUsuarios(){
+        return usuarioDAO.contarUsuarios();
+    }//contar usuarios para crear el primer usuario tipo administrador
 
     public boolean cambiarPassword(int idUsuario, String nuevoPassword, String passwordConfirmada){
         if (!nuevoPassword.isEmpty() && !passwordConfirmada.isEmpty()) {

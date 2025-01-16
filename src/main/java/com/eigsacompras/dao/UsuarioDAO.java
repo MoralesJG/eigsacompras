@@ -139,6 +139,25 @@ public class UsuarioDAO implements IUsuarioDAO{
     }//usuarios
 
     @Override
+    public int contarUsuarios() {
+        int totalUsuarios = 0;
+        try {
+            conexion = Conexion.getConexion();
+            String sql = "SELECT COUNT(*) AS total_usuarios FROM Usuario";
+            ps = conexion.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                totalUsuarios = rs.getInt("total_usuarios");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al contar usuarios: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            Conexion.cerrar(conexion, ps, rs);
+        }
+        return totalUsuarios;
+    }//conteo de usuarios para crear el primer usuario tipo administrador
+
+    @Override
     public Usuario buscarUsuarioPorId(int idUsuario) {
         Usuario usuario = null;
         try {
